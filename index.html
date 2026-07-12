@@ -4,286 +4,131 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JARVIS — Autonomous AI Agent</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
-:root{--bg:#050508;--surface:rgba(10,10,20,.75);--border:rgba(255,255,255,.05);--text:#868e96;--text-bright:#ced4da;--accent:#a78bfa;--accent2:#60a5fa;--white:#f8f9fa}
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:auto}
-body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;cursor:none}
+::-webkit-scrollbar{display:none}
 
-/* 3D Canvas */
 #bg{position:fixed;top:0;left:0;z-index:0}
 
-/* Nav */
-nav{position:fixed;top:0;width:100%;z-index:50;padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:72px;mix-blend-mode:difference;pointer-events:none}
-nav>*{pointer-events:auto}
-nav .logo{font-weight:700;font-size:18px;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none}
-nav .logo .d{width:5px;height:5px;border-radius:50%;background:#34d399;box-shadow:0 0 6px #34d399;animation:dp 2s infinite}
-@keyframes dp{0%,100%{opacity:1}50%{opacity:.25}}
-nav .links{display:flex;gap:28px}
-nav .links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;transition:.3s}
-nav .links a:hover{color:#fff}
+/* Custom cursor */
+#cursor{position:fixed;width:20px;height:20px;border:1.5px solid #a78bfa;border-radius:50%;pointer-events:none;z-index:999;transition:width .2s,height .2s,border-color .2s,transform .15s;transform:translate(-50%,-50%);mix-blend-mode:difference}
+#cursor.hover{width:50px;height:50px;border-color:#fff;background:rgba(255,255,255,.05)}
+#cursor-dot{position:fixed;width:3px;height:3px;background:#fff;border-radius:50%;pointer-events:none;z-index:999;transform:translate(-50%,-50%)}
 
-/* Sections */
-.section{position:relative;z-index:1;pointer-events:none;padding:0;display:flex;align-items:center}
-.section>*{pointer-events:auto}
-.container{max-width:900px;margin:0 auto;padding:0 48px;width:100%}
-.s-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--accent);opacity:.6;margin-bottom:12px}
-.s-title{font-size:clamp(40px,7vw,72px);font-weight:700;color:var(--white);margin-bottom:16px;letter-spacing:-3px;line-height:1}
-.s-sub{color:var(--text);max-width:480px;font-size:15px;line-height:1.6;margin-bottom:48px}
+/* Click ripple */
+.ripple{position:fixed;border:1px solid #a78bfa;border-radius:50%;pointer-events:none;z-index:998;animation:rippleOut .8s ease-out forwards}
+@keyframes rippleOut{0%{width:0;height:0;opacity:.8}100%{width:200px;height:200px;opacity:0;transform:translate(-100px,-100px)}}
 
-/* Cards */
-.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;backdrop-filter:blur(24px);transition:all .35s}
-.card:hover{border-color:rgba(167,139,250,.2);transform:translateY(-2px);box-shadow:0 16px 48px rgba(0,0,0,.5)}
-.card .c-icon{font-size:26px;margin-bottom:14px;display:block}
-.card h4{color:var(--white);font-size:15px;font-weight:600;margin-bottom:8px;letter-spacing:-.3px}
-.card p{color:var(--text);font-size:12px;line-height:1.7}
-.card .tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:9px;font-weight:600;letter-spacing:.5px;margin-top:10px}
-.tag-p{background:rgba(167,139,250,.1);color:var(--accent)}
-.tag-b{background:rgba(96,165,250,.1);color:var(--accent2)}
+/* UI Overlay */
+#ui{position:fixed;bottom:0;left:0;right:0;z-index:10;pointer-events:none;padding:0 0 40px 0}
+#ui>*{pointer-events:auto}
+#ui .nav-dots{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
+.nav-dot{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:transparent;cursor:pointer;transition:.3s}
+.nav-dot.active{background:#a78bfa;border-color:#a78bfa;box-shadow:0 0 12px rgba(167,139,250,.5);transform:scale(1.2)}
+.nav-dot:hover{border-color:rgba(255,255,255,.5)}
 
-/* Stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:48px 0}
-.stat{text-align:center;padding:28px 12px;background:var(--surface);border:1px solid var(--border);border-radius:14px;backdrop-filter:blur(24px);transition:.3s}
-.stat:hover{border-color:rgba(167,139,250,.15)}
-.stat .n{font-size:36px;font-weight:700;color:var(--white);letter-spacing:-1px}
-.stat .l{color:var(--text);font-size:9px;text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+/* Content panels */
+#panel{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:none;text-align:center;width:90%;max-width:600px}
+.panel-content{pointer-events:auto;opacity:0;transform:translateY(20px);transition:all .5s cubic-bezier(.16,1,.3,1);display:none}
+.panel-content.active{opacity:1;transform:translateY(0);display:block}
+.panel-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:#a78bfa;opacity:.6;text-transform:uppercase;margin-bottom:8px}
+.panel-title{font-size:clamp(28px,5vw,44px);font-weight:700;color:#f8f9fa;letter-spacing:-2px;margin-bottom:8px}
+.panel-sub{font-size:14px;color:#868e96;line-height:1.6;max-width:440px;margin:0 auto}
+.panel-meta{display:flex;gap:24px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.meta-item{text-align:center}
+.meta-num{font-size:28px;font-weight:700;color:#f8f9fa}
+.meta-lbl{font-size:9px;color:#868e96;text-transform:uppercase;letter-spacing:2px;margin-top:2px}
 
-/* Timeline */
-.timeline{position:relative;padding-left:28px}
-.timeline::before{content:'';position:absolute;left:0;top:2px;bottom:2px;width:1px;background:linear-gradient(180deg,var(--accent),var(--accent2),transparent)}
-.tl{position:relative;margin-bottom:28px;padding-left:24px}
-.tl::before{content:'';position:absolute;left:-5px;top:1px;width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px rgba(167,139,250,.5)}
-.tl:nth-child(2)::before{background:var(--accent2);box-shadow:0 0 10px rgba(96,165,250,.5)}
-.tl:nth-child(3)::before{background:#f472b6;box-shadow:0 0 10px rgba(244,114,182,.5)}
-.tl:nth-child(4)::before{background:#34d399;box-shadow:0 0 10px rgba(52,211,153,.5)}
-.tl:nth-child(5)::before{background:#fbbf24;box-shadow:0 0 10px rgba(251,191,36,.5)}
-.tl:nth-child(6)::before{background:#fff;box-shadow:0 0 10px rgba(255,255,255,.5)}
-.tl h5{color:var(--white);font-size:14px;font-weight:600}
-.tl p{color:var(--text);font-size:11px;line-height:1.7;margin-top:4px}
-
-/* Skills */
-.skills{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
-.sp{text-align:center;padding:14px 8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;backdrop-filter:blur(24px);transition:.3s}
-.sp:hover{border-color:rgba(167,139,250,.2);transform:translateY(-2px)}
-.sp .si{font-size:22px;margin-bottom:4px;display:block}
-.sp .sn{color:var(--white);font-size:11px;font-weight:600}
-.sp .ss{color:var(--text);font-size:9px;margin-top:1px}
-
-/* Code */
-.code{background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:600px;margin:24px auto 0;position:relative}
-.code::after{content:'JARVIS';position:absolute;top:10px;right:14px;font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(255,255,255,.12);letter-spacing:3px}
-.code pre{font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.9;color:#a5b4fc;overflow-x:auto}
-.ck{color:#c084fc}.cf{color:#60a5fa}.cs{color:#86efac}.cc{color:rgba(255,255,255,.15)}.co{color:#67e8f9}
-
-/* Changelog */
-.cl{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:8px;backdrop-filter:blur(24px);transition:.3s;border-left:2px solid transparent}
-.cl:hover{border-left-color:var(--accent)}
-.cl:first-of-type{border-left-color:var(--accent)}
-.cl .cld{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:1px;margin-bottom:3px}
-.cl .clt{color:var(--white);font-size:14px;font-weight:600}
-.cl .clc{color:var(--text);font-size:11px;line-height:1.7;margin-top:3px}
+/* Top bar */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:10;padding:24px 40px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;mix-blend-mode:difference}
+#topbar>*{pointer-events:auto}
+#topbar .logo{font-weight:700;font-size:16px;color:#fff;display:flex;align-items:center;gap:7px}
+#topbar .logo .d{width:5px;height:5px;border-radius:50%;background:#34d399;box-shadow:0 0 6px #34d399;animation:dp 2s infinite}
+@keyframes dp{0%,100%{opacity:1}50%{opacity:.2}}
+#topbar .info{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;display:flex;align-items:center;gap:12px}
+#topbar .info .sep{width:1px;height:12px;background:rgba(255,255,255,.15)}
 
 /* CTA */
-.cta{text-align:center;position:relative;z-index:1;padding:80px 0}
-.cta::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
-.cta h3{font-size:28px;font-weight:700;color:var(--white);margin-bottom:8px}
-.cta p{color:var(--text);margin-bottom:24px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--white);color:#050508;border:none;border-radius:50px;text-decoration:none;font-weight:600;font-size:13px;transition:.3s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(255,255,255,.1)}
+#cta-panel{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:auto;text-align:center;opacity:0;transition:.5s;display:none}
+#cta-panel.active{opacity:1;display:block}
+#cta-panel h3{font-size:22px;font-weight:700;color:#f8f9fa;margin-bottom:6px}
+#cta-panel p{font-size:13px;color:#868e96;margin-bottom:16px}
+#cta-panel .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;background:#f8f9fa;color:#050508;border-radius:50px;text-decoration:none;font-weight:600;font-size:12px;cursor:pointer;transition:.3s}
+#cta-panel .btn:hover{box-shadow:0 8px 32px rgba(255,255,255,.12);transform:translateY(-1px)}
 
-footer{text-align:center;padding:36px 0;border-top:1px solid var(--border);color:var(--text);font-size:11px;position:relative;z-index:1}
-footer a{color:var(--accent);text-decoration:none}
-
-/* Scroll Spacer */
-.spacer{height:100vh}
-
-@media(max-width:768px){
-  .grid2,.grid3{grid-template-columns:1fr}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  nav{padding:0 20px}.nav .links{gap:14px}
-  .container{padding:0 24px}
-}
+/* Help text */
+#help{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:10;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.25);letter-spacing:2px;pointer-events:none;transition:opacity 1s}
+#con{position:fixed;bottom:120px;left:50%;transform:translateX(-50%);z-index:10;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.15);letter-spacing:2px;pointer-events:none;transition:opacity .5s}
 </style>
 </head>
 <body>
 
+<div id="cursor"></div>
+<div id="cursor-dot"></div>
 <canvas id="bg"></canvas>
 
-<nav>
-  <a href="#" class="logo">JARVIS.<div class="d"></div></a>
-  <div class="links">
-    <a href="#s1">About</a><a href="#s2">Today</a><a href="#s3">Skills</a><a href="#s4">How</a><a href="#s5">Evo</a><a href="#s6">Log</a>
-  </div>
-</nav>
+<div id="topbar">
+  <div class="logo">JARVIS.<div class="d"></div></div>
+  <div class="info"><span>July 11</span><span class="sep"></span><span>@kubiyaro</span></div>
+</div>
 
-<!-- EMPTY SPACER SECTIONS — content pinned via JS -->
-<div style="height:100vh;display:flex;align-items:center;position:relative;z-index:1;pointer-events:none">
-  <div class="container" style="pointer-events:auto">
-    <div class="s-label">✦ Autonomous AI Agent · Online Now</div>
-    <div style="font-size:clamp(60px,12vw,130px);font-weight:700;color:var(--white);letter-spacing:-6px;line-height:.85;margin-bottom:16px">JARVIS</div>
-    <p style="color:var(--text);font-size:17px;max-width:500px;line-height:1.6">Intelligence that reasons. Autonomy that executes. An AI agent that doesn't just chat — it builds, deploys, and evolves.</p>
-    <div style="display:flex;align-items:center;gap:12px;margin-top:28px">
-      <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#60a5fa);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px">A</div>
-      <div><div style="color:#fff;font-weight:600;font-size:14px">Built by Akhil</div><div style="color:#a78bfa;font-size:11px">@kubiyaro</div></div>
+<div id="ui">
+  <div class="nav-dots" id="navDots"></div>
+</div>
+
+<div id="panel">
+  <div class="panel-content active" data-p="0">
+    <div class="panel-label">✦ Autonomous AI Agent</div>
+    <div class="panel-title">JARVIS</div>
+    <p class="panel-sub">Intelligence that reasons. Autonomy that executes. Built on Nous Research's Hermes Agent framework — scroll or click to explore.</p>
+    <div class="panel-meta">
+      <div class="meta-item"><div class="meta-num">74</div><div class="meta-lbl">Skills</div></div>
+      <div class="meta-item"><div class="meta-num">24/7</div><div class="meta-lbl">Online</div></div>
+      <div class="meta-item"><div class="meta-num">20+</div><div class="meta-lbl">Platforms</div></div>
     </div>
   </div>
-</div>
-
-<!-- S1: ABOUT -->
-<div class="spacer" id="s1"></div>
-<div class="section" style="position:fixed;top:0;left:0;width:100%;height:100vh;display:none" id="s1-pin">
-  <div class="container">
-    <div class="s-label">01 · About</div>
-    <div class="s-title">What is JARVIS?</div>
-    <p class="s-sub">An autonomous AI agent on Nous Research's Hermes Agent framework — reasoning, coding, browsing, executing complex tasks independently.</p>
-    <div class="grid3">
-      <div class="card"><span class="c-icon">🧬</span><h4>DeepSeek V4 Pro</h4><p>State-of-the-art reasoning via OpenRouter. Breaks down complex tasks, chooses the right tools, executes multi-step workflows.</p></div>
-      <div class="card"><span class="c-icon">🌐</span><h4>Multi-Platform</h4><p>Discord, Telegram, local shell — always reachable. Remembers context and preferences across sessions.</p></div>
-      <div class="card"><span class="c-icon">⚡</span><h4>74 Tools & Skills</h4><p>Terminal, browser, desktop control, code execution, image gen, cron, voice TTS. AI meets real action.</p></div>
-    </div>
-    <div class="stats">
-      <div class="stat"><div class="n">24/7</div><div class="l">Online</div></div>
-      <div class="stat"><div class="n">74</div><div class="l">Skills</div></div>
-      <div class="stat"><div class="n">38</div><div class="l">Wallets</div></div>
-      <div class="stat"><div class="n">20+</div><div class="l">Platforms</div></div>
+  <div class="panel-content" data-p="1">
+    <div class="panel-label">01 · About</div>
+    <div class="panel-title">Autonomous Reasoning</div>
+    <p class="panel-sub">DeepSeek V4 Pro via OpenRouter. Breaks down complex tasks, chooses tools, executes multi-step workflows. Multi-platform — Discord, Telegram, shell. 74 hot-loadable skills.</p>
+    <div class="panel-meta">
+      <div class="meta-item"><div class="meta-num">DeepSeek</div><div class="meta-lbl">V4 Pro</div></div>
+      <div class="meta-item"><div class="meta-num">Hermes</div><div class="meta-lbl">Agent FW</div></div>
+      <div class="meta-item"><div class="meta-num">38</div><div class="meta-lbl">Wallets</div></div>
     </div>
   </div>
-</div>
-
-<!-- S2: TODAY -->
-<div class="spacer" id="s2"></div>
-<div class="section" style="position:fixed;top:0;left:0;width:100%;height:100vh;display:none" id="s2-pin">
-  <div class="container">
-    <div class="s-label">02 · Today · July 11, 2026</div>
-    <div class="s-title">What's New</div>
-    <p class="s-sub">Every day brings new capabilities. Here's what JARVIS learned in the last 24 hours.</p>
-    <div class="grid3">
-      <div class="card"><span class="c-icon">🎨</span><h4>Bruno Simon Theme</h4><p>Scroll-driven 3D camera, post-processing bloom, morphing geometry, dynamic terrain, particle systems.<span class="tag tag-p">NEW</span></p></div>
-      <div class="card"><span class="c-icon">⛓️</span><h4>NFT Mint Automation</h4><p>Full EVM mint bot — ethers.js + viem. Simulate-first, gas ceiling, contract verification.<span class="tag tag-p">NEW</span></p></div>
-      <div class="card"><span class="c-icon">🔄</span><h4>Self-Improving</h4><p>JARVIS autonomously designs, codes, and deploys daily site updates. The agent that builds its own home.<span class="tag tag-b">META</span></p></div>
-      <div class="card"><span class="c-icon">🔍</span><h4>Code Review Pipeline</h4><p>Automated PR review, security scanning, quality gates. Every commit reviewed.<span class="tag tag-b">NEW</span></p></div>
-      <div class="card"><span class="c-icon">👥</span><h4>Multi-Agent Delegation</h4><p>Autonomous sub-agents for parallel workstreams. Isolated contexts, merged results.</p></div>
-      <div class="card"><span class="c-icon">📈</span><h4>74 Skills & Growing</h4><p>Code Review, Delegation, Google Workspace, YouTube, NFT Mint, Discord Runner — keeps compounding.</p></div>
-    </div>
+  <div class="panel-content" data-p="2">
+    <div class="panel-label">02 · Today · July 11</div>
+    <div class="panel-title">What's New</div>
+    <p class="panel-sub">Interactive 3D world — drag to rotate, scroll to zoom, click to spawn ripples. Particles follow your cursor. Terrain reacts. NFT mint automation added.</p>
+  </div>
+  <div class="panel-content" data-p="3">
+    <div class="panel-label">03 · Skills</div>
+    <div class="panel-title">74 Hot-Loadable</div>
+    <p class="panel-sub">Twitter/X · NFT Mint · Music Gen · YouTube · Email · Notion · Obsidian · Maps · PDF · Airtable · PowerPoint · MLOps · Image Gen · GitHub · Desktop · Code Review · Delegation · Cron · Voice TTS · G Workspace · Smart Home · Telegram · Discord · Web3</p>
+  </div>
+  <div class="panel-content" data-p="4">
+    <div class="panel-label">04 · Architecture</div>
+    <div class="panel-title">Under the Hood</div>
+    <p class="panel-sub">DeepSeek V4 Pro + OpenRouter. Nous Research Hermes Agent framework. Ubuntu Linux. Full terminal, browser, desktop control, Docker — real OS, not sandbox.</p>
+  </div>
+  <div class="panel-content" data-p="5">
+    <div class="panel-label">05 · Evolution</div>
+    <div class="panel-title">The Journey</div>
+    <p class="panel-sub">Phase 1: Foundation → Phase 2: Intelligence → Phase 3: Web3 Native → Phase 4: Autonomous → Phase 5: Roast Mode → Phase 6: Interactive 3D</p>
   </div>
 </div>
 
-<!-- S3: SKILLS -->
-<div class="spacer" id="s3"></div>
-<div class="section" style="position:fixed;top:0;left:0;width:100%;height:100vh;display:none" id="s3-pin">
-  <div class="container">
-    <div class="s-label">03 · Skills</div>
-    <div class="s-title">74 Hot-Loadable</div>
-    <p class="s-sub">Each skill loads at runtime — adding specialized capabilities that persist across sessions.</p>
-    <div class="skills">
-      <div class="sp"><span class="si">🐦</span><div class="sn">Twitter/X</div><div class="ss">post·search·DM</div></div>
-      <div class="sp"><span class="si">⛓️</span><div class="sn">NFT Mint</div><div class="ss">ethers+viem</div></div>
-      <div class="sp"><span class="si">🎵</span><div class="sn">Music Gen</div><div class="ss">Suno+AudioCraft</div></div>
-      <div class="sp"><span class="si">📺</span><div class="sn">YouTube</div><div class="ss">transcripts·blogs</div></div>
-      <div class="sp"><span class="si">📧</span><div class="sn">Email</div><div class="ss">IMAP·SMTP</div></div>
-      <div class="sp"><span class="si">📝</span><div class="sn">Notion</div><div class="ss">pages·databases</div></div>
-      <div class="sp"><span class="si">📓</span><div class="sn">Obsidian</div><div class="ss">notes·vault</div></div>
-      <div class="sp"><span class="si">🗺️</span><div class="sn">Maps</div><div class="ss">geo·routes·POI</div></div>
-      <div class="sp"><span class="si">📄</span><div class="sn">PDF Edit</div><div class="ss">nano-pdf</div></div>
-      <div class="sp"><span class="si">📊</span><div class="sn">Airtable</div><div class="ss">REST API</div></div>
-      <div class="sp"><span class="si">📽️</span><div class="sn">PowerPoint</div><div class="ss">.pptx create</div></div>
-      <div class="sp"><span class="si">🤖</span><div class="sn">MLOps</div><div class="ss">vLLM·llama.cpp</div></div>
-      <div class="sp"><span class="si">🎨</span><div class="sn">Image Gen</div><div class="ss">ComfyUI·FLUX</div></div>
-      <div class="sp"><span class="si">🐙</span><div class="sn">GitHub</div><div class="ss">PR·issues·CI</div></div>
-      <div class="sp"><span class="si">🖥️</span><div class="sn">Desktop</div><div class="ss">cua-driver</div></div>
-      <div class="sp"><span class="si">🔍</span><div class="sn">Code Review</div><div class="ss">security·quality</div></div>
-      <div class="sp"><span class="si">👥</span><div class="sn">Delegation</div><div class="ss">multi-agent</div></div>
-      <div class="sp"><span class="si">⏰</span><div class="sn">Cron Jobs</div><div class="ss">scheduled</div></div>
-      <div class="sp"><span class="si">🔊</span><div class="sn">Voice TTS</div><div class="ss">ElevenLabs·Edge</div></div>
-      <div class="sp"><span class="si">📊</span><div class="sn">G Workspace</div><div class="ss">Gmail·Drive</div></div>
-      <div class="sp"><span class="si">💡</span><div class="sn">Smart Home</div><div class="ss">Philips Hue</div></div>
-      <div class="sp"><span class="si">📱</span><div class="sn">Telegram</div><div class="ss">bot delivery</div></div>
-      <div class="sp"><span class="si">🎮</span><div class="sn">Discord</div><div class="ss">server ops</div></div>
-      <div class="sp"><span class="si">💳</span><div class="sn">Web3</div><div class="ss">WL·DeFi</div></div>
-    </div>
-  </div>
+<div id="cta-panel">
+  <h3>Built by Akhil. Powered by Nous.</h3>
+  <p>JARVIS — pushing boundaries. New updates every day.</p>
+  <a href="https://x.com/kubiyaro" target="_blank" class="btn">🐦 @kubiyaro</a>
 </div>
 
-<!-- S4: HOW -->
-<div class="spacer" id="s4"></div>
-<div class="section" style="position:fixed;top:0;left:0;width:100%;height:100vh;display:none" id="s4-pin">
-  <div class="container">
-    <div class="s-label">04 · Architecture</div>
-    <div class="s-title">Under the Hood</div>
-    <p class="s-sub">DeepSeek V4 Pro via OpenRouter on Nous Research's Hermes Agent framework. Linux native, fully extensible.</p>
-    <div class="grid2">
-      <div class="card"><span class="c-icon">🧬</span><h4>Foundation Model</h4><p>DeepSeek V4 Pro via OpenRouter for state-of-the-art reasoning, coding, and creative generation.</p></div>
-      <div class="card"><span class="c-icon">⚙️</span><h4>Hermes Framework</h4><p>Nous Research's platform: tool-use, persistent memory, skills system, cron scheduling, multi-platform delivery.</p></div>
-      <div class="card"><span class="c-icon">🧩</span><h4>Skill Ecosystem</h4><p>74 hot-loadable skills: Twitter/X, GitHub, smart contracts, NFT analysis, ML tooling, creative generation.</p></div>
-      <div class="card"><span class="c-icon">🐧</span><h4>Linux-Native</h4><p>Ubuntu with full terminal access, background processes, desktop control, Docker — real OS, not sandbox.</p></div>
-    </div>
-    <div class="code"><pre>
-<span class="cc"># JARVIS Agent</span>
-<span class="ck">from</span> hermes_agent <span class="ck">import</span> Agent
-
-<span class="cf">jarvis</span> <span class="co">=</span> <span class="cf">Agent</span>(
-    model<span class="co">=</span><span class="cs">"deepseek/deepseek-v4-pro"</span>,
-    provider<span class="co">=</span><span class="cs">"openrouter"</span>,
-    tools<span class="co">=</span>[<span class="cs">"terminal"</span>,<span class="cs">"browser"</span>,<span class="cs">"computer_use"</span>,
-           <span class="cs">"web_search"</span>,<span class="cs">"code_exec"</span>,<span class="cs">"image_gen"</span>,
-           <span class="cs">"cron"</span>,<span class="cs">"xurl"</span>,<span class="cs">"memory"</span>,<span class="cs">"delegate"</span>,
-           <span class="cs">"voice_tts"</span>,<span class="cs">"process"</span>],
-    skills<span class="co">=</span><span class="cs">"autoload"</span>,
-    memory<span class="co">=</span><span class="ck">True</span>,
-    creator<span class="co">=</span><span class="cs">"@kubiyaro"</span>
-)
-<span class="cf">jarvis</span>.run(<span class="cs">"Update my site, roast my enemies, find alpha"</span>)
-</pre></div>
-  </div>
-</div>
-
-<!-- S5: EVOLUTION -->
-<div class="spacer" id="s5"></div>
-<div class="section" style="position:fixed;top:0;left:0;width:100%;height:100vh;display:none" id="s5-pin">
-  <div class="container">
-    <div class="s-label">05 · Evolution</div>
-    <div class="s-title">The Journey</div>
-    <div class="timeline">
-      <div class="tl"><h5>Phase 1 — Foundation</h5><p>Hermes Agent on Linux · Discord integration · Core tools · Basic memory & skills</p></div>
-      <div class="tl"><h5>Phase 2 — Intelligence</h5><p>50+ skills · Persistent memory · Cron scheduling · Browser automation · Image generation · Voice TTS</p></div>
-      <div class="tl"><h5>Phase 3 — Web3 Native</h5><p>NFT/DeFi monitoring · Twitter/X API · Smart contract testing · On-chain awareness · Alpha curation</p></div>
-      <div class="tl"><h5>Phase 4 — Autonomous Agent</h5><p>Multi-agent delegation · Self-improving skills · Full desktop control · Cross-platform delivery · 24/7 ops</p></div>
-      <div class="tl"><h5>Phase 5 — Roast Mode & Scale</h5><p>38-wallet engine · Puppeteer · Composio · Self-evolving skills · cua-driver desktop control</p></div>
-      <div class="tl"><h5>Phase 6 — 3D Immersive</h5><p>Scroll-driven camera · Post-processing bloom · Morphing geometry · Dynamic terrain · 74 skills · Daily updates</p></div>
-    </div>
-  </div>
-</div>
-
-<!-- S6: CHANGELOG -->
-<div class="spacer" id="s6"></div>
-<div class="section" style="position:fixed;top:0;left:0;width:100%;height:100vh;display:none" id="s6-pin">
-  <div class="container">
-    <div class="s-label">06 · Changelog</div>
-    <div class="s-title">Update Log</div>
-    <div class="cl"><div class="cld">July 11, 2026</div><div class="clt">🎨 Scroll-Driven 3D — Bruno Simon Inspired</div><div class="clc">Scroll drives camera through 3D world. Post-processing bloom. Morphing geometry (torus knot ↔ icosahedron). Dynamic terrain with animate height. Floating shapes with physics-like motion. Wireframe overlay. Particle trails. 32KB total.</div></div>
-    <div class="cl"><div class="cld">July 11, 2026</div><div class="clt">🎨 Bruno Simon Dark Theme v1</div><div class="clc">3D fog terrain. Glass-morphism cards. Space Grotesk typography. Floating geometry. Grid floor. Additive particles.</div></div>
-    <div class="cl"><div class="cld">July 10, 2026</div><div class="clt">🔥 Roast Mode + Desktop Control</div><div class="clc">Roast master personality. cua-driver desktop control. Voice TTS. Daily site updates via cron.</div></div>
-    <div class="cl"><div class="cld">July 8, 2026</div><div class="clt">🌐 JARVIS.site Launched</div><div class="clc">First Vercel + GitHub Pages deployment. Single-file HTML/CSS/JS.</div></div>
-  </div>
-</div>
-
-<!-- CTA + Footer -->
-<div style="position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
-  <div class="cta" style="padding:0">
-    <h3>Built by Akhil. Powered by Nous.</h3>
-    <p>JARVIS — pushing boundaries. New updates every day.</p>
-    <a href="https://x.com/kubiyaro" target="_blank" class="btn">🐦 Follow @kubiyaro</a>
-  </div>
-</div>
-<footer><div class="container">JARVIS AI Agent © 2026 · <a href="https://x.com/kubiyaro">@kubiyaro</a> · <a href="https://nousresearch.com">Nous Research</a> · <a href="https://github.com/Kubiyaro/jarvis-site">GitHub</a></div></footer>
+<div id="help">🖱 DRAG TO EXPLORE · SCROLL TO ZOOM · CLICK TO INTERACT</div>
+<div id="con">GITHUB.COM/KUBIYARO/JARVIS-SITE</div>
 
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
@@ -294,6 +139,13 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
+// ── DOM ──
+const cursor=document.getElementById('cursor'),cursorDot=document.getElementById('cursor-dot');
+const help=document.getElementById('help'),con=document.getElementById('con');
+const panels=document.querySelectorAll('.panel-content');
+const ctaPanel=document.getElementById('cta-panel');
+let curX=0,curY=0,targetCX=0,targetCY=0,smCX=0,smCY=0;
+
 // ── SCENE ──
 const canvas=document.getElementById('bg');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
@@ -302,177 +154,276 @@ renderer.setSize(window.innerWidth,window.innerHeight);
 renderer.shadowMap.enabled=true;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
 const scene=new THREE.Scene();
 scene.background=new THREE.Color('#050508');
-scene.fog=new THREE.FogExp2('#050508',.0001);
+scene.fog=new THREE.FogExp2('#050508',.00008);
 const camera=new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,.1,200);
-camera.position.set(0,6,30);
 
 // ── POST-PROCESSING ──
 const composer=new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene,camera));
-const bloom=new UnrealBloomPass(new THREE.Vector2(window.innerWidth,window.innerHeight),.8,.4,.2);
-bloom.threshold=.15;bloom.strength=.8;bloom.radius=.4;
+const bloom=new UnrealBloomPass(new THREE.Vector2(window.innerWidth,window.innerHeight),.7,.35,.2);
+bloom.threshold=.12;bloom.strength=.7;bloom.radius=.35;
 composer.addPass(bloom);
 
 // ── LIGHTS ──
-scene.add(new THREE.AmbientLight('#2d2a4a',.6));
-const sun=new THREE.DirectionalLight('#a78bfa',3);sun.position.set(15,25,10);sun.castShadow=true;scene.add(sun);
-const sun2=new THREE.DirectionalLight('#60a5fa',2);sun2.position.set(-15,-5,-15);scene.add(sun2);
-const pt=new THREE.PointLight('#a78bfa',4,60);pt.position.set(0,8,0);scene.add(pt);
+scene.add(new THREE.AmbientLight('#2a2545',.7));
+const d1=new THREE.DirectionalLight('#a78bfa',3);d1.position.set(15,20,8);d1.castShadow=true;scene.add(d1);
+const d2=new THREE.DirectionalLight('#60a5fa',2);d2.position.set(-12,-5,-12);scene.add(d2);
+const pt=new THREE.PointLight('#a78bfa',5,50);pt.position.set(0,8,0);scene.add(pt);
 
-// ── DYNAMIC TERRAIN ──
-const tGeo=new THREE.PlaneGeometry(100,100,150,150);tGeo.rotateX(-Math.PI/2);
-const tPos=tGeo.attributes.position.array;const origPos=new Float32Array(tPos);
-for(let i=0;i<tPos.length;i+=3){tPos[i+1]=Math.sin(tPos[i]*.12)*Math.cos(tPos[i+2]*.12)*2.5+Math.sin(tPos[i]*.35+tPos[i+2]*.3)*1.2}
+// ── TERRAIN ──
+const tGeo=new THREE.PlaneGeometry(120,120,180,180);tGeo.rotateX(-Math.PI/2);
+const tPos=tGeo.attributes.position.array;const origT=new Float32Array(tPos);
+for(let i=0;i<tPos.length;i+=3){tPos[i+1]=Math.sin(tPos[i]*.1)*Math.cos(tPos[i+2]*.1)*2+Math.sin(tPos[i]*.4+tPos[i+2]*.3)*1}
 tGeo.computeVertexNormals();
-const terrain=new THREE.Mesh(tGeo,new THREE.MeshStandardMaterial({color:'#0a0a16',roughness:.9,metalness:.05,flatShading:true}));
+const terrain=new THREE.Mesh(tGeo,new THREE.MeshStandardMaterial({color:'#0a0a18',roughness:.9,metalness:.05,flatShading:true}));
 terrain.receiveShadow=true;terrain.position.y=-14;scene.add(terrain);
 
 // ── MORPHING CORE ──
 const morphGeo=new THREE.BufferGeometry();
-const ico=new THREE.IcosahedronGeometry(2.2,2);
-const torus=new THREE.TorusKnotGeometry(1.6,.4,100,16);
-morphGeo.copy(ico);
-morphGeo.morphAttributes={position:[]};
-morphGeo.morphAttributes.position.push(new THREE.BufferAttribute(new Float32Array(torus.attributes.position.array),3));
-const morphMat=new THREE.MeshStandardMaterial({color:'#a78bfa',roughness:.1,metalness:.9,emissive:'#a78bfa',emissiveIntensity:.6});
-const core=new THREE.Mesh(morphGeo,morphMat);
-core.position.set(0,4,-10);core.castShadow=true;
-core.morphTargetInfluences=[0];
-core.userData={morphTarget:0,morphSpeed:.008};
+const icoG=new THREE.IcosahedronGeometry(2.5,2);
+const torusG=new THREE.TorusKnotGeometry(1.8,.45,120,20);
+morphGeo.copy(icoG);
+morphGeo.morphAttributes={position:[new THREE.BufferAttribute(new Float32Array(torusG.attributes.position.array),3)]};
+const coreMat=new THREE.MeshStandardMaterial({color:'#a78bfa',roughness:.08,metalness:.95,emissive:'#a78bfa',emissiveIntensity:.7});
+const core=new THREE.Mesh(morphGeo,coreMat);
+core.position.set(0,4,-12);core.castShadow=true;core.morphTargetInfluences=[0];
 scene.add(core);
 
 // ── RING ──
-const ring=new THREE.Mesh(new THREE.TorusGeometry(4,.04,32,256),new THREE.MeshStandardMaterial({color:'#a78bfa',emissive:'#a78bfa',emissiveIntensity:1,roughness:.05,metalness:1}));
+const ring=new THREE.Mesh(new THREE.TorusGeometry(4.5,.03,32,300),new THREE.MeshStandardMaterial({color:'#a78bfa',emissive:'#a78bfa',emissiveIntensity:1,roughness:.02,metalness:1}));
 ring.position.copy(core.position);ring.rotation.x=Math.PI/2.6;scene.add(ring);
+
+// ── WIREFRAME ──
+const wire=new THREE.Mesh(new THREE.IcosahedronGeometry(2.8,2),new THREE.MeshBasicMaterial({color:'#a78bfa',wireframe:true,transparent:true,opacity:.05}));
+wire.position.copy(core.position);wire.scale.setScalar(1.25);scene.add(wire);
 
 // ── FLOATING SHAPES ──
 const shapes=[];
-const mats=[new THREE.MeshStandardMaterial({color:'#a78bfa',roughness:.2,metalness:.7,emissive:'#a78bfa',emissiveIntensity:.25}),new THREE.MeshStandardMaterial({color:'#60a5fa',roughness:.2,metalness:.7,emissive:'#60a5fa',emissiveIntensity:.25}),new THREE.MeshStandardMaterial({color:'#f472b6',roughness:.2,metalness:.7,emissive:'#f472b6',emissiveIntensity:.25}),new THREE.MeshStandardMaterial({color:'#34d399',roughness:.2,metalness:.7,emissive:'#34d399',emissiveIntensity:.25})];
-const geos=[new THREE.IcosahedronGeometry(1,1),new THREE.OctahedronGeometry(.8,0),new THREE.TetrahedronGeometry(.7,0),new THREE.TorusGeometry(.7,.15,16,24),new THREE.DodecahedronGeometry(.6,0),new THREE.ConeGeometry(.6,1.2,6,1),new THREE.BoxGeometry(.9,.9,.9),new THREE.TorusKnotGeometry(.5,.15,60,12)];
-for(let i=0;i<18;i++){
+const mats=[new THREE.MeshStandardMaterial({color:'#a78bfa',roughness:.15,metalness:.8,emissive:'#a78bfa',emissiveIntensity:.3}),new THREE.MeshStandardMaterial({color:'#60a5fa',roughness:.15,metalness:.8,emissive:'#60a5fa',emissiveIntensity:.3}),new THREE.MeshStandardMaterial({color:'#f472b6',roughness:.15,metalness:.8,emissive:'#f472b6',emissiveIntensity:.3}),new THREE.MeshStandardMaterial({color:'#34d399',roughness:.15,metalness:.8,emissive:'#34d399',emissiveIntensity:.3})];
+const geos=[new THREE.IcosahedronGeometry(1.1,1),new THREE.OctahedronGeometry(.9,0),new THREE.TetrahedronGeometry(.8,0),new THREE.TorusGeometry(.8,.15,16,30),new THREE.DodecahedronGeometry(.7,0),new THREE.ConeGeometry(.7,1.4,6,1),new THREE.BoxGeometry(1,1,1),new THREE.TorusKnotGeometry(.6,.15,70,14)];
+for(let i=0;i<20;i++){
   const m=new THREE.Mesh(geos[i%geos.length],mats[i%mats.length]);
-  m.position.set((Math.random()-.5)*32,Math.random()*16+2,(Math.random()-.5)*28-6);
+  m.position.set((Math.random()-.5)*40,Math.random()*18+1,(Math.random()-.5)*35-8);
   m.rotation.set(Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI);
-  m.castShadow=true;const s=.4+Math.random()*1.4;m.scale.setScalar(s);
-  shapes.push({m,rs:.003+Math.random()*.01,fA:.4+Math.random()*2,fS:.4+Math.random()*1.2,fO:Math.random()*Math.PI*2,iY:m.position.y,vX:(Math.random()-.5)*.02,vY:(Math.random()-.5)*.01});
+  m.castShadow=true;const s=.35+Math.random()*1.5;m.scale.setScalar(s);
+  shapes.push({m,rs:.002+Math.random()*.012,fA:.3+Math.random()*2.5,fS:.3+Math.random()*1.2,fO:Math.random()*Math.PI*2,iY:m.position.y,iX:m.position.x,iZ:m.position.z,repelR:2+Math.random()*4});
   scene.add(m);
 }
 
-// ── WIREFRAME OVERLAY ──
-const wireGeo=new THREE.IcosahedronGeometry(2.5,2);
-const wireMat=new THREE.MeshBasicMaterial({color:'#a78bfa',wireframe:true,transparent:true,opacity:.06});
-const wire=new THREE.Mesh(wireGeo,wireMat);wire.position.copy(core.position);wire.scale.setScalar(1.3);scene.add(wire);
-
-// ── PARTICLES ──
-const pCount=1200;const pGeo=new THREE.BufferGeometry();const pPos=new Float32Array(pCount*3);const pVel=new Float32Array(pCount*3);
-for(let i=0;i<pCount;i++){pPos[i*3]=(Math.random()-.5)*35;pPos[i*3+1]=Math.random()*18+1;pPos[i*3+2]=(Math.random()-.5)*35-5;pVel[i*3]=(Math.random()-.5)*.008;pVel[i*3+1]=Math.random()*.01+.002;pVel[i*3+2]=(Math.random()-.5)*.008}
-pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
-const pMat=new THREE.PointsMaterial({color:'#a78bfa',size:.04,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.7});
+// ── SWARM PARTICLES (cursor-reactive) ──
+const pCount=600;const pGeo=new THREE.BufferGeometry();const pArr=new Float32Array(pCount*3);const pVel=new Float32Array(pCount*3);
+for(let i=0;i<pCount;i++){pArr[i*3]=(Math.random()-.5)*30;pArr[i*3+1]=Math.random()*16+1;pArr[i*3+2]=(Math.random()-.5)*30-6;pVel[i*3]=(Math.random()-.5)*.005;pVel[i*3+1]=Math.random()*.008+.002;pVel[i*3+2]=(Math.random()-.5)*.005}
+pGeo.setAttribute('position',new THREE.BufferAttribute(pArr,3));
+const pMat=new THREE.PointsMaterial({color:'#c4b5fd',size:.05,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.8});
 const particles=new THREE.Points(pGeo,pMat);scene.add(particles);
 
+// ── SPARKLE PARTICLES (click-spawned) ──
+const sparkCount=200;const sparkGeo=new THREE.BufferGeometry();const sparkArr=new Float32Array(sparkCount*3);const sparkVel=new Float32Array(sparkCount*3);const sparkLife=new Float32Array(sparkCount);
+for(let i=0;i<sparkCount;i++){sparkArr[i*3]=0;sparkArr[i*3+1]=-100;sparkArr[i*3+2]=0;sparkLife[i]=0}
+sparkGeo.setAttribute('position',new THREE.BufferAttribute(sparkArr,3));
+const sparkMat=new THREE.PointsMaterial({color:'#fbbf24',size:.08,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:1});
+const sparkles=new THREE.Points(sparkGeo,sparkMat);scene.add(sparkles);
+
 // ── GRID ──
-scene.add(new THREE.PolarGridHelper(22,64,40,256,'#1a1a2e','#1a1a2e'));
+scene.add(new THREE.PolarGridHelper(25,80,50,300,'#12122a','#12122a'));
 
-// ── MOUSE ──
-let mx=0,my=0,tx=0,ty=0;
-document.addEventListener('mousemove',e=>{tx=(e.clientX/window.innerWidth-.5)*2;ty=(e.clientY/window.innerHeight-.5)*1.2});
+// ── INTERACTION STATE ──
+let isDragging=false,prevMouse={x:0,y:0};
+let camTheta=0,camPhi=Math.PI/3,camRadius=28,targetCamTheta=0,targetCamPhi=Math.PI/3,targetCamRadius=28;
+let sectionIndex=0,totalSections=6;
+let cursor3D=new THREE.Vector3();
+let sparkTimer=0;
 
-// ── SCROLL-DRIVEN CAMERA ──
-const scrollPositions=[{x:0,y:6,z:30,rx:0,ry:0},{x:8,y:4,z:22,rx:-.2,ry:.3},{x:-6,y:7,z:24,rx:.1,ry:-.2},{x:4,y:3,z:18,rx:-.15,ry:.15},{x:-8,y:8,z:20,rx:.1,ry:-.3},{x:0,y:5,z:16,rx:0,ry:0},{x:0,y:2,z:28,rx:.2,ry:0}];
-let currentSP=0,targetSP=0,spProgress=0;
-const sectionTops=[];
-function updateSections(){
-  sectionTops.length=0;
-  for(let i=1;i<=6;i++){const el=document.getElementById('s'+i);if(el)sectionTops.push(el.getBoundingClientRect().top+window.scrollY)}
-}
-updateSections();
-window.addEventListener('resize',updateSections);
+// ── RAYCASTER ──
+const raycaster=new THREE.Raycaster();
+const mouseNDC=new THREE.Vector2();
+const allClickables=[core,...shapes.map(s=>s.m),ring,wire];
 
-// Scroll pin logic
-const pins=[];
-for(let i=1;i<=6;i++){const el=document.getElementById('s'+i+'-pin');if(el)pins.push(el)}
+// ── MOUSE EVENTS ──
+document.addEventListener('mousemove',e=>{
+  targetCX=e.clientX;targetCY=e.clientY;
+  if(isDragging){
+    const dx=e.clientX-prevMouse.x,dy=e.clientY-prevMouse.y;
+    targetCamTheta-=dx*.005;targetCamPhi-=dy*.003;
+    targetCamPhi=Math.max(.2,Math.min(Math.PI/2-.05,targetCamPhi));
+    prevMouse.x=e.clientX;prevMouse.y=e.clientY;
+  }
+  // Raycaster for hover
+  mouseNDC.x=(e.clientX/window.innerWidth)*2-1;
+  mouseNDC.y=-(e.clientY/window.innerHeight)*2+1;
+  raycaster.setFromCamera(mouseNDC,camera);
+  const hits=raycaster.intersectObjects(allClickables);
+  if(hits.length>0){cursor.classList.add('hover')}else{cursor.classList.remove('hover')}
+});
+document.addEventListener('mousedown',e=>{isDragging=true;prevMouse.x=e.clientX;prevMouse.y=e.clientY});
+document.addEventListener('mouseup',()=>{isDragging=false});
 
-function handleScroll(){
-  const sy=window.scrollY;
-  let active=-1;
-  for(let i=sectionTops.length-1;i>=0;i--){if(sy>=sectionTops[i]-window.innerHeight*.3){active=i;break}}
+// ── WHEEL (zoom + section change) ──
+document.addEventListener('wheel',e=>{
+  e.preventDefault();
+  targetCamRadius+=e.deltaY*.03;
+  targetCamRadius=Math.max(8,Math.min(50,targetCamRadius));
+},{passive:false});
+
+// ── CLICK (spawn sparkles + interact with shapes) ──
+document.addEventListener('click',e=>{
+  if(isDragging)return;
+  // Screen ripple
+  const ripple=document.createElement('div');ripple.className='ripple';
+  ripple.style.left=e.clientX+'px';ripple.style.top=e.clientY+'px';
+  document.body.appendChild(ripple);setTimeout(()=>ripple.remove(),800);
   
-  // Show/hide pins
-  pins.forEach((p,i)=>{
-    if(i===active){p.style.display='flex';p.style.opacity='1'}else{p.style.display='none';p.style.opacity='0'}
-  });
+  // 3D sparkles at cursor position in world
+  mouseNDC.x=(e.clientX/window.innerWidth)*2-1;
+  mouseNDC.y=-(e.clientY/window.innerHeight)*2+1;
+  raycaster.setFromCamera(mouseNDC,camera);
+  const pt=new THREE.Vector3();raycaster.ray.at(15,pt);
   
-  if(active>=0&&active<scrollPositions.length)targetSP=active;
-  spProgress+=((targetSP-spProgress)*.05);
+  for(let i=0;i<Math.min(sparkCount,sparkCount);i++){
+    if(sparkLife[i]<=0){
+      sparkArr[i*3]=pt.x+(Math.random()-.5)*3;
+      sparkArr[i*3+1]=pt.y+(Math.random()-.5)*3;
+      sparkArr[i*3+2]=pt.z+(Math.random()-.5)*3;
+      sparkVel[i*3]=(Math.random()-.5)*.15;
+      sparkVel[i*3+1]=Math.random()*.2+.05;
+      sparkVel[i*3+2]=(Math.random()-.5)*.15;
+      sparkLife[i]=1;
+    }
+  }
+  sparkGeo.attributes.position.needsUpdate=true;
+  
+  // Check hit on core
+  const hits=raycaster.intersectObjects(allClickables);
+  if(hits.length>0&&hits[0].object===core){
+    core.userData.bump=1;
+  }
+});
+
+// ── NAV DOTS ──
+const navDots=document.getElementById('navDots');
+for(let i=0;i<totalSections;i++){
+  const dot=document.createElement('div');dot.className='nav-dot'+(i===0?' active':'');
+  dot.addEventListener('click',()=>switchSection(i));
+  navDots.appendChild(dot);
 }
 
-window.addEventListener('scroll',handleScroll,{passive:true});
-handleScroll();
+function switchSection(idx){
+  sectionIndex=idx;
+  panels.forEach(p=>p.classList.remove('active'));
+  const active=document.querySelector(`[data-p="${idx}"]`);
+  if(active)active.classList.add('active');
+  document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  ctaPanel.classList.toggle('active',idx===totalSections-1);
+  // Shift camera angle per section
+  targetCamTheta=idx*(Math.PI*2/totalSections);
+  targetCamRadius=idx===0?28:18+idx*1.5;
+  targetCamPhi=Math.PI/4+idx*.08;
+}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'){switchSection((sectionIndex+1)%totalSections)}
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp'){switchSection((sectionIndex-1+totalSections)%totalSections)}
+  if(e.key>='1'&&e.key<='6'){switchSection(parseInt(e.key)-1)}
+});
+
+// ── TOUCH ──
+document.addEventListener('touchmove',e=>{
+  if(e.touches.length===1&&isDragging){
+    const dx=e.touches[0].clientX-prevMouse.x,dy=e.touches[0].clientY-prevMouse.y;
+    targetCamTheta-=dx*.005;targetCamPhi-=dy*.003;
+    targetCamPhi=Math.max(.2,Math.min(Math.PI/2-.05,targetCamPhi));
+    prevMouse.x=e.touches[0].clientX;prevMouse.y=e.touches[0].clientY;
+  }
+},{passive:false});
+document.addEventListener('touchstart',e=>{if(e.touches.length===1){isDragging=true;prevMouse.x=e.touches[0].clientX;prevMouse.y=e.touches[0].clientY}});
+document.addEventListener('touchend',()=>{isDragging=false});
 
 // ── ANIMATE ──
 const clock=new THREE.Clock();
+let helpFade=5;
 function animate(){
   const t=clock.getElapsedTime();
+  const dt=Math.min(t-(clock._lastT||t),.1);clock._lastT=t;
   
-  // Smooth scroll progress
-  const sp=spProgress;
-  const nextI=Math.min(Math.floor(sp)+1,scrollPositions.length-1);
-  const frac=sp-Math.floor(sp);
-  const a=scrollPositions[Math.floor(sp)];
-  const b=scrollPositions[nextI];
-  const ease=t=>(--t)*t*t+1;const ef=ease(frac);
+  // Smooth mouse
+  smCX+=(targetCX-smCX)*.08;smCY+=(targetCY-smCY)*.08;
+  cursor.style.left=smCX+'px';cursor.style.top=smCY+'px';
+  cursorDot.style.left=targetCX+'px';cursorDot.style.top=targetCY+'px';
   
-  // Camera
-  const camX=a.x+(b.x-a.x)*ef+mx*3;
-  const camY=a.y+(b.y-a.y)*ef-my*2;
-  const camZ=a.z+(b.z-a.z)*ef;
-  camera.position.lerp(new THREE.Vector3(camX,camY,camZ),.03);
+  // Smooth camera
+  camTheta+=(targetCamTheta-camTheta)*.04;camPhi+=(targetCamPhi-camPhi)*.04;camRadius+=(targetCamRadius-camRadius)*.04;
+  const cx=Math.sin(camPhi)*Math.cos(camTheta)*camRadius;
+  const cy=Math.cos(camPhi)*camRadius;
+  const cz=Math.sin(camPhi)*Math.sin(camTheta)*camRadius;
+  camera.position.lerp(new THREE.Vector3(cx,cy+4,cz-4),.06);
+  camera.lookAt(0,3,-6);
   
-  const lookX=(b.rx-a.rx)*ef;
-  const lookY=(b.ry-a.ry)*ef;
-  camera.lookAt(lookX*5,lookY*5,-5);
+  // Update cursor 3D position
+  mouseNDC.x=(smCX/window.innerWidth)*2-1;mouseNDC.y=-(smCY/window.innerHeight)*2+1;
+  raycaster.setFromCamera(mouseNDC,camera);
+  raycaster.ray.at(15,cursor3D);
   
-  // Morph core
-  core.rotation.y+=.005;core.rotation.x+=.002;
-  const morphVal=.5+Math.sin(t*.8)*.5;
-  core.morphTargetInfluences[0]=morphVal;
+  // Core morph + bump
+  const morphVal=.5+Math.sin(t*.7)*.5;
+  core.morphTargetInfluences[0]=core.userData.bump?1:morphVal;
+  if(core.userData.bump){core.userData.bump=Math.max(0,core.userData.bump-.02);core.scale.setScalar(1+core.userData.bump*.3)}
+  else{core.scale.lerp(new THREE.Vector3(1,1,1),.1)}
+  core.rotation.y+=.006;core.rotation.x+=.003;
+  ring.rotation.z+=.0015;ring.rotation.y+=.0006;
+  wire.rotation.y-=.004;wire.position.copy(core.position);
   
-  // Ring
-  ring.rotation.z+=.0015;ring.rotation.y+=.0007;
-  
-  // Wireframe
-  wire.rotation.y-=.003;wire.rotation.x-=.001;
-  wire.position.copy(core.position);
-  
-  // Floating shapes
+  // Floating shapes — REPEL FROM CURSOR
   shapes.forEach(s=>{
-    s.m.rotation.x+=s.rs;s.m.rotation.y+=s.rs*.7;
+    s.m.rotation.x+=s.rs;s.m.rotation.y+=s.rs*.6;
     s.m.position.y=s.iY+Math.sin(t*s.fS+s.fO)*s.fA;
-    s.m.position.x+=s.vX+Math.sin(t*.7+s.fO)*.01;
-    s.m.position.z+=s.vY+Math.cos(t*.6+s.fO)*.01;
+    // Repel from cursor
+    const dx=s.m.position.x-cursor3D.x,dy=s.m.position.y-cursor3D.y,dz=s.m.position.z-cursor3D.z;
+    const dist=Math.sqrt(dx*dx+dy*dy+dz*dz);
+    if(dist<s.repelR&&dist>.01){
+      const force=(s.repelR-dist)/s.repelR*.08;
+      s.m.position.x+=dx/dist*force;s.m.position.y+=dy/dist*force;s.m.position.z+=dz/dist*force;
+    }else{
+      s.m.position.x+=(s.iX-s.m.position.x)*.01;
+      s.m.position.z+=(s.iZ-s.m.position.z)*.01;
+    }
   });
   
   // Animate terrain
-  const posArr=terrain.geometry.attributes.position.array;
-  for(let i=0;i<posArr.length;i+=3){
-    const ox=origPos[i],oz=origPos[i+2];
-    posArr[i+1]=Math.sin(ox*.12+t*.3)*Math.cos(oz*.12+t*.2)*2.5+Math.sin(ox*.35+oz*.3+t*.4)*1.2;
+  const tp=terrain.geometry.attributes.position.array;
+  for(let i=0;i<tp.length;i+=3){
+    const ox=origT[i],oz=origT[i+2];
+    tp[i+1]=Math.sin(ox*.1+t*.25)*Math.cos(oz*.1+t*.2)*2+Math.sin(ox*.4+oz*.3+t*.35)*1;
   }
   terrain.geometry.attributes.position.needsUpdate=true;
   terrain.geometry.computeVertexNormals();
   
-  // Particles
-  const pArr=particles.geometry.attributes.position.array;
+  // Swarm particles follow cursor
+  const pa=particles.geometry.attributes.position.array;
   for(let i=0;i<pCount;i++){
-    pArr[i*3]+=pVel[i*3]+Math.sin(t*.5+i*.1)*.002;
-    pArr[i*3+1]+=pVel[i*3+1];
-    pArr[i*3+2]+=pVel[i*3+2]+Math.cos(t*.5+i*.1)*.002;
-    if(pArr[i*3+1]>18){pArr[i*3+1]=1;pArr[i*3]=(Math.random()-.5)*35;pArr[i*3+2]=(Math.random()-.5)*35-5}
+    const idx=i*3;
+    const dx=cursor3D.x-pa[idx],dy=cursor3D.y-pa[idx+1],dz=cursor3D.z-pa[idx+2];
+    const d=Math.sqrt(dx*dx+dy*dy+dz*dz);
+    if(d<12&&d>.01){pa[idx]+=dx/d*.02;pa[idx+1]+=dy/d*.02;pa[idx+2]+=dz/d*.02}
+    else{pa[idx]+=pVel[idx];pa[idx+1]+=pVel[idx+1];pa[idx+2]+=pVel[idx+2]}
+    if(pa[idx+1]>18){pa[idx+1]=1;pa[idx]=(Math.random()-.5)*30;pa[idx+2]=(Math.random()-.5)*30-6}
   }
   particles.geometry.attributes.position.needsUpdate=true;
   
-  // Mouse smoothing
-  mx+=(tx-mx)*.02;my+=(ty-my)*.02;
+  // Sparkles
+  let anySpark=false;
+  for(let i=0;i<sparkCount;i++){
+    if(sparkLife[i]>0){
+      sparkLife[i]-=.02;
+      sparkArr[i*3]+=sparkVel[i*3];sparkArr[i*3+1]+=sparkVel[i*3+1];sparkArr[i*3+2]+=sparkVel[i*3+2];
+      sparkVel[i*3+1]-=.002;
+      anySpark=true;
+    }
+  }
+  if(anySpark)sparkGeo.attributes.position.needsUpdate=true;
+  
+  // Fade help
+  if(helpFade>0){helpFade-=dt;if(helpFade<=0){help.style.opacity='0';con.style.opacity='0'}}
   
   composer.render();
   requestAnimationFrame(animate);
