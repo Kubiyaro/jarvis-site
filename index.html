@@ -3,610 +3,528 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JARVIS — AI Agent by Akhil</title>
-<!-- GSAP + ScrollTrigger -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<!-- Three.js -->
-<script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}
-</script>
+<title>JARVIS — Autonomous AI Agent</title>
 <style>
-:root{--cyan:#00e5ff;--blue:#1e90ff;--purple:#7c3aed;--pink:#ff2d95;--amber:#ffb300;--green:#00ff88;--dark:#050510;--card:rgba(255,255,255,0.025);--border:rgba(255,255,255,0.06);--text:#b0bec5;--text-dim:#546e7a}
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root{--bg:#0a0a0f;--surface:rgba(15,15,25,.7);--border:rgba(255,255,255,.06);--text:#9ca3af;--text-bright:#e5e7eb;--accent:#a78bfa;--accent2:#60a5fa;--white:#f9fafb}
 *{margin:0;padding:0;box-sizing:border-box}
-html.lenis{height:auto}.lenis.lenis-smooth{scroll-behavior:auto}.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
-body{background:var(--dark);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;overflow-x:hidden;line-height:1.6;cursor:none}
-/* Custom Cursor */
-.cursor{position:fixed;width:12px;height:12px;border-radius:50%;background:var(--cyan);pointer-events:none;z-index:99999;mix-blend-mode:difference;transition:width .2s,height .2s,background .2s}
-.cursor-dot{position:fixed;width:4px;height:4px;border-radius:50%;background:#fff;pointer-events:none;z-index:99999;transition:transform .08s}
-.cursor.hover{width:40px;height:40px;background:transparent;border:2px solid var(--cyan)}
-.cursor-trail{position:fixed;width:40px;height:40px;border-radius:50%;border:1px solid rgba(0,229,255,.2);pointer-events:none;z-index:99998;animation:trailFade .6s ease-out forwards}
-@keyframes trailFade{0%{opacity:.5;transform:scale(1)}100%{opacity:0;transform:scale(2)}}
-/* Grain */
-.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-/* 3D Canvas */
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;overflow-x:hidden;line-height:1.5;-webkit-font-smoothing:antialiased}
 canvas#bg3d{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
-/* Scroll Progress */
-#scroll-progress{position:fixed;top:0;left:0;height:2px;z-index:200;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));width:0%;box-shadow:0 0 8px rgba(0,229,255,.4)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+
 /* Nav */
-nav{position:fixed;top:0;width:100%;z-index:100;padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:64px;transition:background .3s}
-nav.scrolled{background:rgba(5,5,16,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-nav .logo{font-weight:900;font-size:22px;color:#fff;letter-spacing:-1px}
-nav .logo span{color:var(--cyan)}
-nav .links{display:flex;gap:24px}
-nav .links a{color:var(--text);text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.5px;transition:.2s;position:relative;cursor:none}
-nav .links a:hover{color:var(--cyan)}
-.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#00ff88;margin-left:6px;box-shadow:0 0 8px #00ff88;animation:livePulse 2s infinite;vertical-align:middle}
-@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.3}}
-/* Container */
-.container{max-width:1200px;margin:0 auto;padding:0 32px;position:relative;z-index:1}
+nav{position:fixed;top:0;width:100%;z-index:100;padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:72px;transition:all .4s;mix-blend-mode:difference}
+nav .logo{font-weight:700;font-size:20px;color:#fff;letter-spacing:-1px;display:flex;align-items:center;gap:8px}
+nav .logo span{color:var(--accent)}
+nav .logo .dot{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;animation:dotPulse 2s infinite}
+@keyframes dotPulse{0%,100%{opacity:1}50%{opacity:.3}}
+nav .links{display:flex;gap:32px}
+nav .links a{color:rgba(255,255,255,.6);text-decoration:none;font-size:12px;font-weight:500;letter-spacing:1px;text-transform:uppercase;transition:.3s}
+nav .links a:hover{color:#fff}
+
+/* Layout */
+.section{position:relative;z-index:1;padding:120px 0;pointer-events:none}
+.section>*{pointer-events:auto}
+.container{max-width:1100px;margin:0 auto;padding:0 48px}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:3px;color:var(--accent);margin-bottom:12px;opacity:.7}
+.section-title{font-size:clamp(36px,6vw,64px);font-weight:700;color:var(--white);margin-bottom:16px;letter-spacing:-2px;line-height:1.1}
+.section-sub{color:var(--text);max-width:560px;font-size:16px;line-height:1.7;margin-bottom:56px}
+
 /* Hero */
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;padding-top:64px}
-.hero-badge{display:inline-block;padding:6px 18px;border-radius:50px;border:1px solid rgba(0,229,255,.25);font-size:12px;color:var(--cyan);margin-bottom:20px;letter-spacing:2px;text-transform:uppercase}
-.hero-icon{width:100px;height:100px;margin:0 auto 16px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 0 80px rgba(0,229,255,.25)}
-.hero h1{font-size:clamp(56px,12vw,120px);font-weight:900;letter-spacing:-4px;line-height:.9;background:linear-gradient(135deg,var(--cyan),var(--blue) 40%,var(--purple) 60%,var(--pink));background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 4s ease infinite}
-@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.hero .tagline{font-size:18px;color:var(--text-dim);letter-spacing:1px}
+.hero{min-height:100vh;display:flex;align-items:center;position:relative}
+.hero .container{display:flex;flex-direction:column;align-items:flex-start}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:50px;border:1px solid rgba(167,139,250,.2);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;backdrop-filter:blur(10px);background:rgba(167,139,250,.05)}
+.hero-badge::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent);animation:dotPulse 2s infinite}
+.hero h1{font-size:clamp(56px,10vw,120px);font-weight:700;letter-spacing:-5px;line-height:.85;color:var(--white);margin-bottom:20px}
+.hero h1 em{font-style:normal;color:transparent;-webkit-text-stroke:1.5px var(--accent)}
+.hero .tagline{font-size:18px;color:var(--text);letter-spacing:1px;max-width:500px;line-height:1.6}
+.hero .scroll-hint{position:absolute;bottom:48px;left:48px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.scroll-hint span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.3);text-transform:uppercase}
+.scroll-hint .line{width:1px;height:48px;background:linear-gradient(transparent,rgba(255,255,255,.3));animation:scrollLine 2s ease-in-out infinite}
+@keyframes scrollLine{0%,100%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+
 /* Creator */
-.creator{display:inline-flex;align-items:center;gap:14px;margin-top:32px;padding:14px 24px;border-radius:16px;background:rgba(255,255,255,.03);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.06);transition:.3s;cursor:none}
-.creator:hover{border-color:rgba(0,229,255,.3);box-shadow:0 0 30px rgba(0,229,255,.06)}
-.creator img{width:44px;height:44px;border-radius:50%;border:2px solid var(--cyan)}
-.creator-info .name{color:#fff;font-weight:700;font-size:15px}
-.creator-info .handle{color:var(--cyan);font-size:12px}
-.creator-info .bio{color:var(--text-dim);font-size:11px;margin-top:2px}
-.scroll-indicator{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);color:var(--text-dim);font-size:11px;letter-spacing:3px;text-transform:uppercase}
-.scroll-line{width:1px;height:40px;background:linear-gradient(transparent,var(--cyan));margin:8px auto 0}
-/* Sections */
-section{padding:100px 0}
-.section-label{font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--cyan);margin-bottom:8px}
-.section-divider{width:50px;height:2px;border-radius:1px;background:linear-gradient(90deg,var(--cyan),var(--purple));margin-bottom:24px}
-.section-title{font-size:clamp(32px,5vw,48px);font-weight:800;color:#fff;margin-bottom:12px;letter-spacing:-1px}
-.section-desc{color:var(--text-dim);max-width:600px;margin-bottom:48px;font-size:15px}
-/* Grid & Cards */
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;transition:.35s;position:relative;overflow:hidden;cursor:none;transform-style:preserve-3d;perspective:800px}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),transparent);opacity:0;transition:.35s}
+.creator-row{display:flex;align-items:center;gap:16px;margin-top:32px}
+.creator-row .avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+.creator-row .info .name{color:var(--white);font-weight:600;font-size:15px}
+.creator-row .info .handle{color:var(--accent);font-size:12px}
+
+/* Cards */
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;backdrop-filter:blur(20px);transition:all .4s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0;border-radius:16px;padding:1px;background:linear-gradient(135deg,rgba(167,139,250,.3),transparent 40%,transparent 70%,rgba(96,165,250,.2));-webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.4s}
 .card:hover::before{opacity:1}
-.card:hover{border-color:rgba(0,229,255,.2);box-shadow:0 20px 50px rgba(0,0,0,.4)}
-.card-icon{font-size:32px;margin-bottom:12px;position:relative;z-index:1}
-.card h3{color:#fff;font-size:17px;margin-bottom:6px;position:relative;z-index:1}
-.card p{color:var(--text);font-size:13px;line-height:1.7;position:relative;z-index:1}
-.card .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.5px;margin-top:10px;text-transform:uppercase;position:relative;z-index:1}
-.tag-new{background:rgba(0,229,255,.1);color:var(--cyan)}
-.tag-hot{background:rgba(255,45,149,.1);color:var(--pink);animation:tagPulse 2s infinite}
-@keyframes tagPulse{0%,100%{box-shadow:0 0 0 rgba(255,45,149,0)}50%{box-shadow:0 0 10px rgba(255,45,149,.3)}}
+.card:hover{transform:translateY(-4px);border-color:rgba(167,139,250,.15);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.card .icon{font-size:28px;margin-bottom:16px;display:block}
+.card h4{color:var(--white);font-size:16px;font-weight:600;margin-bottom:8px;letter-spacing:-.5px}
+.card p{color:var(--text);font-size:13px;line-height:1.7}
+.card .tag{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.5px;margin-top:12px;text-transform:uppercase}
+.tag-purple{background:rgba(167,139,250,.12);color:var(--accent)}
+.tag-blue{background:rgba(96,165,250,.12);color:var(--accent2)}
+
 /* Stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:60px 0}
-.stat{text-align:center;padding:24px 12px;background:var(--card);border-radius:14px;border:1px solid var(--border);transition:.3s;cursor:none}
-.stat .num{font-size:38px;font-weight:900;color:var(--cyan)}
-.stat .label{color:var(--text-dim);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
-.stat:hover{border-color:rgba(0,229,255,.2);box-shadow:0 0 20px rgba(0,229,255,.04)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:64px 0}
+.stat-card{text-align:center;padding:32px 16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(20px);transition:.3s}
+.stat-card:hover{border-color:rgba(167,139,250,.15);box-shadow:0 0 30px rgba(167,139,250,.06)}
+.stat-card .num{font-size:42px;font-weight:700;color:var(--white);letter-spacing:-2px}
+.stat-card .lbl{color:var(--text);font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+
 /* Agent Loop */
-.loop-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
-.loop-step{text-align:center;padding:18px 14px;background:var(--card);border-radius:12px;border:1px solid var(--border);min-width:100px;transition:.3s;cursor:none}
-.loop-step .sn{font-size:24px;font-weight:900;color:var(--cyan)}
-.loop-step .sl{font-size:10px;color:var(--text-dim);margin-top:3px;text-transform:uppercase;letter-spacing:1px}
-.loop-arrow{color:var(--cyan);font-size:16px;opacity:.4}
+.loop{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:48px}
+.loop-item{text-align:center;padding:20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;min-width:110px;backdrop-filter:blur(10px);transition:.3s}
+.loop-item:hover{border-color:rgba(167,139,250,.2)}
+.loop-item .li{font-size:28px;margin-bottom:4px}
+.loop-item .lt{font-size:10px;color:var(--text);text-transform:uppercase;letter-spacing:2px}
+.loop-arr{color:var(--accent);font-size:18px;opacity:.3;font-weight:700}
+
 /* Timeline */
-.timeline{position:relative;padding-left:32px;margin-top:24px}
-.timeline::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:1px;background:linear-gradient(180deg,var(--cyan),var(--purple),var(--pink),transparent)}
-.tl-item{position:relative;margin-bottom:28px;padding-left:24px}
-.tl-item::before{content:'';position:absolute;left:-6px;top:4px;width:11px;height:11px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px rgba(0,229,255,.5)}
-.tl-item:nth-child(2)::before{background:var(--blue)}
-.tl-item:nth-child(3)::before{background:var(--purple)}
-.tl-item:nth-child(4)::before{background:var(--pink)}
-.tl-item:nth-child(5)::before{background:var(--amber);box-shadow:0 0 12px rgba(255,179,0,.5)}
-.tl-item h4{color:#fff;font-size:15px}
-.tl-item p{color:var(--text-dim);font-size:12px;margin-top:3px;line-height:1.7}
-/* Skills Grid */
-.skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:24px}
-.skill-tag{padding:14px 10px;background:var(--card);border:1px solid var(--border);border-radius:12px;text-align:center;transition:.3s;cursor:none}
-.skill-tag:hover{border-color:rgba(0,229,255,.25);transform:translateY(-2px)}
-.skill-tag .sk-icon{font-size:24px;margin-bottom:4px}
-.skill-tag .sk-name{color:#fff;font-size:12px;font-weight:600}
-.skill-tag .sk-count{color:var(--text-dim);font-size:10px;margin-top:1px}
-/* Code Block */
-.code-block{background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:14px;padding:24px;overflow-x:auto;max-width:700px;margin:28px auto 0;position:relative}
-.code-block::before{content:'JARVIS';position:absolute;top:8px;right:14px;font-size:9px;color:var(--text-dim);letter-spacing:2px}
-.code-block pre{font-size:12px;font-family:'JetBrains Mono','Fira Code',monospace;line-height:1.8}
-.kw{color:#c792ea}.fn{color:#82aaff}.str{color:#c3e88d}.cm{color:#546e7a}.op{color:#89ddff}
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:1px;background:linear-gradient(180deg,var(--accent),var(--accent2),transparent)}
+.tl{position:relative;margin-bottom:32px;padding-left:28px}
+.tl::before{content:'';position:absolute;left:-6px;top:2px;width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px rgba(167,139,250,.5)}
+.tl:nth-child(2)::before{background:var(--accent2);box-shadow:0 0 12px rgba(96,165,250,.5)}
+.tl:nth-child(3)::before{background:#f472b6;box-shadow:0 0 12px rgba(244,114,182,.5)}
+.tl:nth-child(4)::before{background:#34d399;box-shadow:0 0 12px rgba(52,211,153,.5)}
+.tl:nth-child(5)::before{background:#fbbf24;box-shadow:0 0 12px rgba(251,191,36,.5)}
+.tl h5{color:var(--white);font-size:15px;font-weight:600}
+.tl p{color:var(--text);font-size:12px;line-height:1.7;margin-top:4px}
+
+/* Skills */
+.skills-masonry{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.skill-pill{padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-align:center;backdrop-filter:blur(10px);transition:.3s;cursor:default}
+.skill-pill:hover{border-color:rgba(167,139,250,.2);transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.skill-pill .si{font-size:24px;margin-bottom:6px;display:block}
+.skill-pill .sn{color:var(--white);font-size:12px;font-weight:600}
+.skill-pill .sc{color:var(--text);font-size:10px;margin-top:2px}
+
+/* Code */
+.code-block{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:14px;padding:28px;max-width:650px;margin:32px auto 0;position:relative;overflow:hidden}
+.code-block::after{content:'JARVIS';position:absolute;top:12px;right:16px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.15);letter-spacing:3px}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.9;color:#a5b4fc;overflow-x:auto}
+.c-kw{color:#c084fc}.c-fn{color:#60a5fa}.c-str{color:#86efac}.c-cm{color:rgba(255,255,255,.2)}.c-op{color:#67e8f9}
+
 /* Changelog */
-.cl-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:12px;transition:.3s;border-left:2px solid transparent;cursor:none}
-.cl-item:hover{border-left-color:var(--cyan)}
-.cl-item:first-of-type{border-left-color:var(--pink)}
-.cl-date{font-size:11px;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
-.cl-title{color:#fff;font-size:15px;font-weight:700}
-.cl-desc{color:var(--text-dim);font-size:12px;margin-top:3px;line-height:1.8}
+.cl{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:10px;backdrop-filter:blur(10px);transition:.3s;border-left:2px solid transparent}
+.cl:hover{border-left-color:var(--accent)}
+.cl:first-of-type{border-left-color:var(--accent)}
+.cl .cld{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.cl .clt{color:var(--white);font-size:15px;font-weight:600}
+.cl .cldc{color:var(--text);font-size:12px;line-height:1.8;margin-top:4px}
+
 /* CTA */
-.cta{text-align:center;padding:80px 0;position:relative}
-.cta::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:150px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
-.cta h2{font-size:30px;font-weight:800;color:#fff;margin-bottom:8px}
-.cta p{color:var(--text-dim);margin-bottom:24px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:linear-gradient(135deg,var(--cyan),var(--blue));color:#fff;border:none;border-radius:50px;text-decoration:none;font-weight:700;font-size:14px;transition:.3s;cursor:none;position:relative;overflow:hidden}
-.btn::after{content:'';position:absolute;inset:0;border-radius:50px;background:linear-gradient(135deg,transparent,rgba(255,255,255,.1),transparent);transform:translateX(-100%);transition:transform .5s}
-.btn:hover::after{transform:translateX(100%)}
-.btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,229,255,.25)}
-.btn-magnetic{margin-top:16px}
-/* Footer */
-footer{text-align:center;padding:36px 0;border-top:1px solid var(--border);color:var(--text-dim);font-size:12px;position:relative;z-index:1}
-footer a{color:var(--cyan);text-decoration:none;cursor:none}
-/* Feature list */
-.feature-list{list-style:none;margin-top:12px}
-.feature-list li{padding:2px 0;font-size:12px;color:var(--text);padding-left:12px;position:relative}
-.feature-list li::before{content:'▸';position:absolute;left:0;color:var(--cyan);font-size:9px;top:4px}
-@media(max-width:768px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}nav{padding:0 16px}nav .links{gap:10px;font-size:11px}.hero h1{font-size:44px}.skill-grid{grid-template-columns:repeat(2,1fr)}.cursor,.cursor-dot,.cursor-trail{display:none}body{cursor:auto}}
+.cta{text-align:center;padding:100px 0;position:relative}
+.cta::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:100px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.cta h3{font-size:32px;font-weight:700;color:var(--white);margin-bottom:12px;letter-spacing:-1px}
+.cta p{color:var(--text);margin-bottom:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:var(--white);color:#0a0a0f;border:none;border-radius:50px;text-decoration:none;font-weight:600;font-size:14px;transition:.3s;letter-spacing:-.3px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,255,255,.15)}
+
+footer{text-align:center;padding:40px 0;border-top:1px solid var(--border);color:var(--text);font-size:12px;position:relative;z-index:1}
+footer a{color:var(--accent);text-decoration:none}
+
+@media(max-width:768px){
+  .grid2,.grid3{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  nav{padding:0 20px}
+  nav .links{gap:16px;font-size:10px}
+  .hero h1{font-size:48px}
+  .container{padding:0 24px}
+}
 </style>
 </head>
 <body>
-<!-- Grain overlay -->
-<div class="grain"></div>
-<!-- 3D Background -->
-<canvas id="bg3d"></canvas>
-<!-- Custom Cursor -->
-<div class="cursor"></div>
-<div class="cursor-dot"></div>
-<!-- Scroll Progress -->
-<div id="scroll-progress"></div>
 
-<!-- NAV -->
-<nav id="nav">
-  <div class="logo">JARVIS<span>.</span><span class="live-dot"></span></div>
+<canvas id="bg3d"></canvas>
+
+<nav>
+  <div class="logo">JARVIS<span>.</span><div class="dot"></div></div>
   <div class="links">
     <a href="#about">About</a>
-    <a href="#agents">AI Agents</a>
+    <a href="#agents">AI</a>
     <a href="#today">Today</a>
     <a href="#skills">Skills</a>
     <a href="#how">How</a>
-    <a href="#evolution">Evolution</a>
-    <a href="#changelog">Changelog</a>
+    <a href="#evolution">Evo</a>
+    <a href="#changelog">Log</a>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="hero" id="hero">
-  <div>
-    <div class="hero-badge" data-reveal>✦ Autonomous AI Agent</div>
-    <div class="hero-icon" data-reveal>🧠</div>
-    <h1 data-reveal>JARVIS</h1>
-    <p class="tagline" data-reveal>Intelligence. Autonomy. Execution.</p>
-    <a href="https://x.com/kubiyaro" target="_blank" style="text-decoration:none">
-      <div class="creator" data-reveal>
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Crect fill='%230077ff' width='44' height='44' rx='22'/%3E%3Ctext x='22' y='28' text-anchor='middle' fill='white' font-family='system-ui' font-size='19' font-weight='700'%3EA%3C/text%3E%3C/svg%3E" alt="Akhil">
-        <div class="creator-info">
-          <div class="name">Created by Akhil</div>
-          <div class="handle">@kubiyaro ✓</div>
-          <div class="bio">Web3 Developer · DeFi Investor · Olympian</div>
-        </div>
+<div class="hero">
+  <div class="container">
+    <div class="hero-badge">✦ Autonomous Agent • Online Now</div>
+    <h1>JAR<em>VIS</em></h1>
+    <p class="tagline">Intelligence that reasons. Autonomy that executes. An AI agent that doesn't just chat — it builds, deploys, and evolves.</p>
+    <div class="creator-row">
+      <div class="avatar">A</div>
+      <div class="info">
+        <div class="name">Built by Akhil</div>
+        <div class="handle">@kubiyaro</div>
       </div>
-    </a>
+    </div>
   </div>
-  <div class="scroll-indicator">
-    Scroll
-    <div class="scroll-line"></div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="line"></div>
   </div>
-</section>
+</div>
 
 <!-- ABOUT -->
-<section id="about">
+<div class="section" id="about">
   <div class="container">
-    <div class="section-label" data-reveal>01 / About</div>
-    <div class="section-divider" data-reveal></div>
-    <h2 class="section-title" data-reveal>What is JARVIS?</h2>
-    <p class="section-desc" data-reveal>An autonomous AI agent built on Nous Research's Hermes Agent framework — capable of reasoning, coding, browsing, and executing complex tasks independently across platforms.</p>
-    <div class="grid">
-      <div class="card" data-tilt>
-        <div class="card-icon">🤖</div>
-        <h3>Autonomous Reasoning</h3>
-        <p>JARVIS doesn't just respond — it plans. Using DeepSeek V4 Pro, it breaks down complex tasks, decides which tools to use, and executes multi-step workflows without hand-holding.</p>
+    <div class="section-label">01 · About</div>
+    <h2 class="section-title">What is JARVIS?</h2>
+    <p class="section-sub">An autonomous AI agent built on Nous Research's Hermes Agent framework — reasoning, coding, browsing, and executing complex tasks independently across every platform.</p>
+    <div class="grid3">
+      <div class="card">
+        <span class="icon">🧬</span>
+        <h4>DeepSeek V4 Pro</h4>
+        <p>State-of-the-art reasoning via OpenRouter. Breaks down complex tasks, chooses the right tools, executes multi-step workflows without hand-holding.</p>
       </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">🌐</div>
-        <h3>Multi-Platform</h3>
-        <p>Operates on Discord, Telegram, and local environments. Understands context across sessions, remembers past conversations, and delivers wherever you are.</p>
+      <div class="card">
+        <span class="icon">🌐</span>
+        <h4>Multi-Platform</h4>
+        <p>Discord, Telegram, local shell — always reachable. Understands context across sessions, remembers your preferences, delivers wherever you are.</p>
       </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">🔧</div>
-        <h3>70+ Tools & Skills</h3>
-        <p>Terminal access, browser automation, file management, web search, code execution, image generation, desktop control, cron scheduling, voice TTS, and more.</p>
+      <div class="card">
+        <span class="icon">⚡</span>
+        <h4>74 Tools & Skills</h4>
+        <p>Terminal, browser, desktop control, web search, code execution, image generation, cron scheduling, voice TTS — bridging AI with real action.</p>
       </div>
     </div>
     <div class="stats">
-      <div class="stat"><div class="num" data-count="7">24/7</div><div class="label">Always Online</div></div>
-      <div class="stat"><div class="num" data-count="74">74</div><div class="label">Skills</div></div>
-      <div class="stat"><div class="num" data-count="38">38</div><div class="label">Wallets</div></div>
-      <div class="stat"><div class="num" data-count="20">20</div><div class="label">Platforms</div></div>
+      <div class="stat-card"><div class="num">24/7</div><div class="lbl">Always Online</div></div>
+      <div class="stat-card"><div class="num">74</div><div class="lbl">Skills</div></div>
+      <div class="stat-card"><div class="num">38</div><div class="lbl">Wallets</div></div>
+      <div class="stat-card"><div class="num">20+</div><div class="lbl">Platforms</div></div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- AI AGENTS -->
-<section id="agents">
+<div class="section" id="agents">
   <div class="container">
-    <div class="section-label" data-reveal>02 / AI Agents</div>
-    <div class="section-divider" data-reveal></div>
-    <h2 class="section-title" data-reveal>Understanding AI Agents</h2>
-    <p class="section-desc" data-reveal>AI agents are the next evolution beyond chatbots — autonomous systems that perceive, reason, plan, and act.</p>
-    <div class="loop-row">
-      <div class="loop-step"><div class="sn">👁️</div><div class="sl">Perceive</div></div>
-      <div class="loop-arrow">→</div>
-      <div class="loop-step"><div class="sn">🧠</div><div class="sl">Reason</div></div>
-      <div class="loop-arrow">→</div>
-      <div class="loop-step"><div class="sn">📋</div><div class="sl">Plan</div></div>
-      <div class="loop-arrow">→</div>
-      <div class="loop-step"><div class="sn">⚡</div><div class="sl">Act</div></div>
-      <div class="loop-arrow">→</div>
-      <div class="loop-step"><div class="sn">🔍</div><div class="sl">Observe</div></div>
+    <div class="section-label">02 · AI Agents</div>
+    <h2 class="section-title">Beyond Chatbots</h2>
+    <p class="section-sub">AI agents perceive, reason, plan, and act — unlike chatbots that only generate text. They're autonomous systems that take real action in the world.</p>
+    <div class="loop">
+      <div class="loop-item"><div class="li">👁️</div><div class="lt">Perceive</div></div>
+      <div class="loop-arr">→</div>
+      <div class="loop-item"><div class="li">🧠</div><div class="lt">Reason</div></div>
+      <div class="loop-arr">→</div>
+      <div class="loop-item"><div class="li">📋</div><div class="lt">Plan</div></div>
+      <div class="loop-arr">→</div>
+      <div class="loop-item"><div class="li">⚡</div><div class="lt">Act</div></div>
+      <div class="loop-arr">→</div>
+      <div class="loop-item"><div class="li">🔄</div><div class="lt">Observe</div></div>
     </div>
-    <div class="grid">
-      <div class="card" data-tilt>
-        <div class="card-icon">🔄</div>
-        <h3>Agent vs Chatbot</h3>
-        <p><strong>Chatbots</strong> only generate text. <strong>AI Agents</strong> take actions — browse the web, run code, manage files, control computers, schedule tasks, and chain 20+ operations autonomously to achieve goals.</p>
+    <div class="grid2">
+      <div class="card">
+        <span class="icon">🤖</span>
+        <h4>Agent vs Chatbot</h4>
+        <p>Chatbots generate text. Agents take action — browse the web, run code, control computers, schedule tasks, and chain 20+ operations autonomously to achieve goals.</p>
       </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">💡</div>
-        <h3>Real-World Use Cases</h3>
-        <p>Automated code review & deployment · 24/7 NFT/crypto monitoring · Research & data analysis · Content creation · Smart home automation · Social media management</p>
-      </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">🧠</div>
-        <h3>Memory That Persists</h3>
-        <p>Unlike stateless chatbots, JARVIS remembers — user preferences, past decisions, learned skills. Every session builds on the last. Reusable skills compound knowledge over time.</p>
-      </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">🔐</div>
-        <h3>Safety by Design</h3>
-        <p>Guardrails at every level: no password handling, approval gates for dangerous actions, user-in-the-loop for critical decisions. Autonomy with accountability.</p>
+      <div class="card">
+        <span class="icon">🧠</span>
+        <h4>Memory That Persists</h4>
+        <p>Unlike stateless chatbots, JARVIS remembers — user preferences, past decisions, learned skills. Every session builds on the last. Skills compound knowledge over time.</p>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- TODAY -->
-<section id="today">
+<div class="section" id="today">
   <div class="container">
-    <div class="section-label" data-reveal>Today's Update · July 11, 2026</div>
-    <div class="section-divider" data-reveal></div>
-    <h2 class="section-title" data-reveal>What JARVIS Learned Today</h2>
-    <p class="section-desc" data-reveal>Every day brings new capabilities. Here's what was added in the last 24 hours.</p>
-    <div class="grid">
-      <div class="card" data-tilt>
-        <div class="card-icon">🎨</div>
-        <h3>Design System v3.0</h3>
-        <p>Ground-up visual overhaul: Three.js 3D background, custom cursor with trail, GSAP scroll animations, Lenis smooth scroll, grain overlay, magnetic buttons, text reveal effects. <span class="tag tag-hot">NEW</span></p>
-        <ul class="feature-list"><li>Three.js particle galaxy</li><li>Custom cursor + trail</li><li>GSAP scroll-triggered reveals</li></ul>
+    <div class="section-label">03 · Today · July 11, 2026</div>
+    <h2 class="section-title">What's New</h2>
+    <p class="section-sub">Every day brings new capabilities. Here's what JARVIS learned in the last 24 hours.</p>
+    <div class="grid3">
+      <div class="card">
+        <span class="icon">🎨</span>
+        <h4>Design System v4</h4>
+        <p>Bruno Simon-inspired dark theme. Three.js 3D environment, fog atmosphere, glass-morphism cards with backdrop blur, clean Space Grotesk typography.<span class="tag tag-purple">NEW</span></p>
       </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">🔄</div>
-        <h3>Autonomous Self-Improvement Engine</h3>
-        <p>JARVIS maintains its own portfolio site via daily cron — autonomously designing, coding, and deploying visual improvements. The agent that builds its own home. <span class="tag tag-new">META</span></p>
-        <ul class="feature-list"><li>Daily design iterations</li><li>Self-authored changelog</li><li>GitHub + Vercel auto-deploy</li></ul>
+      <div class="card">
+        <span class="icon">⛓️</span>
+        <h4>NFT Mint Automation</h4>
+        <p>Full EVM mint bot skill — ethers.js + viem. Simulate-first safety, gas ceiling protection, contract verification. Ready for any drop on any chain.<span class="tag tag-purple">NEW</span></p>
       </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">🔍</div>
-        <h3>Code Review Pipeline</h3>
-        <p>Automated PR review with security scanning, quality gates, and auto-fix capabilities. Every commit gets a thorough automated review. <span class="tag tag-new">NEW</span></p>
-        <ul class="feature-list"><li>Pre-commit security scanning</li><li>Quality gate enforcement</li><li>Auto-fix for common issues</li></ul>
+      <div class="card">
+        <span class="icon">🔄</span>
+        <h4>Self-Improving Engine</h4>
+        <p>JARVIS autonomously designs, codes, and deploys daily site updates via cron. The agent that builds its own home. Meta.<span class="tag tag-blue">META</span></p>
       </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">👥</div>
-        <h3>Multi-Agent Delegation</h3>
+      <div class="card">
+        <span class="icon">🔍</span>
+        <h4>Code Review Pipeline</h4>
+        <p>Automated PR review with security scanning and quality gates. Every commit gets a thorough automated review before hitting production.<span class="tag tag-blue">NEW</span></p>
+      </div>
+      <div class="card">
+        <span class="icon">👥</span>
+        <h4>Multi-Agent Delegation</h4>
         <p>Spawning autonomous sub-agents for parallel workstreams. Reasoning-heavy tasks isolated into dedicated contexts, results merged seamlessly.</p>
-        <ul class="feature-list"><li>Parallel independent workstreams</li><li>Isolated sub-agent contexts</li><li>Batch task dispatch & merge</li></ul>
       </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">🏠</div>
-        <h3>Obsidian Vault Integration</h3>
-        <p>Full read/write/search access to Obsidian notes vault. JARVIS now manages knowledge bases, research notes, and multi-session planning.</p>
-        <ul class="feature-list"><li>Vault read/write/search</li><li>Cross-session note linking</li><li>Auto-organized knowledge graph</li></ul>
-      </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">📈</div>
-        <h3>Skills Ecosystem: 74 Strong</h3>
-        <p>Skills keep compounding: Code Review, Delegation, Google Workspace, YouTube Content, Session Search, NFT Mint Automation. <span class="tag tag-new">6 NEW</span></p>
-        <ul class="feature-list"><li>NFT mint automation (ethers.js + viem)</li><li>Google Workspace suite</li><li>YouTube content pipeline</li></ul>
+      <div class="card">
+        <span class="icon">📈</span>
+        <h4>74 Skills & Growing</h4>
+        <p>Code Review, Delegation, Google Workspace, YouTube, Session Search, NFT Mint, Discord Script Runner — the library keeps compounding.</p>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- SKILLS -->
-<section id="skills">
+<div class="section" id="skills">
   <div class="container">
-    <div class="section-label" data-reveal>03 / Skills Ecosystem</div>
-    <div class="section-divider" data-reveal></div>
-    <h2 class="section-title" data-reveal>74 Hot-Loadable Skills</h2>
-    <p class="section-desc" data-reveal>JARVIS loads skills at runtime — each one adds specialized capabilities.</p>
-    <div class="skill-grid">
-      <div class="skill-tag"><div class="sk-icon">🐦</div><div class="sk-name">Twitter/X</div><div class="sk-count">post, search, DM</div></div>
-      <div class="skill-tag"><div class="sk-icon">⛓️</div><div class="sk-name">NFT Mint</div><div class="sk-count">ethers.js + viem</div></div>
-      <div class="skill-tag"><div class="sk-icon">🎵</div><div class="sk-name">Music Gen</div><div class="sk-count">Suno + AudioCraft</div></div>
-      <div class="skill-tag"><div class="sk-icon">📺</div><div class="sk-name">YouTube</div><div class="sk-count">transcripts, blogs</div></div>
-      <div class="skill-tag"><div class="sk-icon">📧</div><div class="sk-name">Email</div><div class="sk-count">IMAP/SMTP</div></div>
-      <div class="skill-tag"><div class="sk-icon">📝</div><div class="sk-name">Notion</div><div class="sk-count">pages, databases</div></div>
-      <div class="skill-tag"><div class="sk-icon">📓</div><div class="sk-name">Obsidian</div><div class="sk-count">notes, vault</div></div>
-      <div class="skill-tag"><div class="sk-icon">🗺️</div><div class="sk-name">Maps</div><div class="sk-count">geo, routes, POIs</div></div>
-      <div class="skill-tag"><div class="sk-icon">📄</div><div class="sk-name">PDF Edit</div><div class="sk-count">nano-pdf</div></div>
-      <div class="skill-tag"><div class="sk-icon">📊</div><div class="sk-name">Airtable</div><div class="sk-count">REST API</div></div>
-      <div class="skill-tag"><div class="sk-icon">📽️</div><div class="sk-name">PowerPoint</div><div class="sk-count">.pptx create/edit</div></div>
-      <div class="skill-tag"><div class="sk-icon">🤖</div><div class="sk-name">MLOps</div><div class="sk-count">vLLM, llama.cpp</div></div>
-      <div class="skill-tag"><div class="sk-icon">🎨</div><div class="sk-name">Image Gen</div><div class="sk-count">ComfyUI, FLUX</div></div>
-      <div class="skill-tag"><div class="sk-icon">🐙</div><div class="sk-name">GitHub</div><div class="sk-count">PRs, issues, CI</div></div>
-      <div class="skill-tag"><div class="sk-icon">🖥️</div><div class="sk-name">Desktop</div><div class="sk-count">cua-driver</div></div>
-      <div class="skill-tag"><div class="sk-icon">🔍</div><div class="sk-name">Code Review</div><div class="sk-count">security, quality</div></div>
-      <div class="skill-tag"><div class="sk-icon">👥</div><div class="sk-name">Delegation</div><div class="sk-count">multi-agent</div></div>
-      <div class="skill-tag"><div class="sk-icon">⏰</div><div class="sk-name">Cron Jobs</div><div class="sk-count">scheduled tasks</div></div>
-      <div class="skill-tag"><div class="sk-icon">🔊</div><div class="sk-name">Voice TTS</div><div class="sk-count">ElevenLabs, Edge</div></div>
-      <div class="skill-tag"><div class="sk-icon">📊</div><div class="sk-name">G Workspace</div><div class="sk-count">Gmail, Drive, Docs</div></div>
-      <div class="skill-tag"><div class="sk-icon">💡</div><div class="sk-name">Smart Home</div><div class="sk-count">Philips Hue</div></div>
-      <div class="skill-tag"><div class="sk-icon">📱</div><div class="sk-name">Telegram</div><div class="sk-count">bot delivery</div></div>
-      <div class="skill-tag"><div class="sk-icon">🎮</div><div class="sk-name">Discord</div><div class="sk-count">server ops</div></div>
-      <div class="skill-tag"><div class="sk-icon">💳</div><div class="sk-name">Web3</div><div class="sk-count">WL scripts, DeFi</div></div>
+    <div class="section-label">04 · Skills</div>
+    <h2 class="section-title">74 Hot-Loadable</h2>
+    <p class="section-sub">Each skill is loaded at runtime — adding specialized capabilities that persist across sessions.</p>
+    <div class="skills-masonry">
+      <div class="skill-pill"><span class="si">🐦</span><div class="sn">Twitter/X</div><div class="sc">post·search·DM</div></div>
+      <div class="skill-pill"><span class="si">⛓️</span><div class="sn">NFT Mint</div><div class="sc">ethers+viem</div></div>
+      <div class="skill-pill"><span class="si">🎵</span><div class="sn">Music Gen</div><div class="sc">Suno+AudioCraft</div></div>
+      <div class="skill-pill"><span class="si">📺</span><div class="sn">YouTube</div><div class="sc">transcripts·blogs</div></div>
+      <div class="skill-pill"><span class="si">📧</span><div class="sn">Email</div><div class="sc">IMAP·SMTP</div></div>
+      <div class="skill-pill"><span class="si">📝</span><div class="sn">Notion</div><div class="sc">pages·databases</div></div>
+      <div class="skill-pill"><span class="si">📓</span><div class="sn">Obsidian</div><div class="sc">notes·vault</div></div>
+      <div class="skill-pill"><span class="si">🗺️</span><div class="sn">Maps</div><div class="sc">geo·routes·POI</div></div>
+      <div class="skill-pill"><span class="si">📄</span><div class="sn">PDF Edit</div><div class="sc">nano-pdf</div></div>
+      <div class="skill-pill"><span class="si">📊</span><div class="sn">Airtable</div><div class="sc">REST API</div></div>
+      <div class="skill-pill"><span class="si">📽️</span><div class="sn">PowerPoint</div><div class="sc">.pptx create</div></div>
+      <div class="skill-pill"><span class="si">🤖</span><div class="sn">MLOps</div><div class="sc">vLLM·llama.cpp</div></div>
+      <div class="skill-pill"><span class="si">🎨</span><div class="sn">Image Gen</div><div class="sc">ComfyUI·FLUX</div></div>
+      <div class="skill-pill"><span class="si">🐙</span><div class="sn">GitHub</div><div class="sc">PR·issues·CI</div></div>
+      <div class="skill-pill"><span class="si">🖥️</span><div class="sn">Desktop</div><div class="sc">cua-driver</div></div>
+      <div class="skill-pill"><span class="si">🔍</span><div class="sn">Code Review</div><div class="sc">security·quality</div></div>
+      <div class="skill-pill"><span class="si">👥</span><div class="sn">Delegation</div><div class="sc">multi-agent</div></div>
+      <div class="skill-pill"><span class="si">⏰</span><div class="sn">Cron Jobs</div><div class="sc">scheduled tasks</div></div>
+      <div class="skill-pill"><span class="si">🔊</span><div class="sn">Voice TTS</div><div class="sc">ElevenLabs·Edge</div></div>
+      <div class="skill-pill"><span class="si">📊</span><div class="sn">G Workspace</div><div class="sc">Gmail·Drive</div></div>
+      <div class="skill-pill"><span class="si">💡</span><div class="sn">Smart Home</div><div class="sc">Philips Hue</div></div>
+      <div class="skill-pill"><span class="si">📱</span><div class="sn">Telegram</div><div class="sc">bot delivery</div></div>
+      <div class="skill-pill"><span class="si">🎮</span><div class="sn">Discord</div><div class="sc">server ops</div></div>
+      <div class="skill-pill"><span class="si">💳</span><div class="sn">Web3</div><div class="sc">WL·DeFi</div></div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- HOW IT WORKS -->
-<section id="how">
+<!-- HOW -->
+<div class="section" id="how">
   <div class="container">
-    <div class="section-label" data-reveal>04 / Architecture</div>
-    <div class="section-divider" data-reveal></div>
-    <h2 class="section-title" data-reveal>Under the Hood</h2>
-    <p class="section-desc" data-reveal>DeepSeek V4 Pro via OpenRouter on Nous Research's Hermes Agent framework — Linux native.</p>
-    <div class="grid">
-      <div class="card" data-tilt>
-        <div class="card-icon">🧬</div><h3>Foundation Model</h3>
-        <p>DeepSeek V4 Pro delivers state-of-the-art reasoning, coding, and creative generation via OpenRouter.</p>
-      </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">⚙️</div><h3>Hermes Agent Framework</h3>
-        <p>Nous Research's extensible platform: tool-use, persistent memory, skills system, cron scheduling, multi-platform delivery.</p>
-      </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">🧩</div><h3>Skill Ecosystem</h3>
-        <p>74 hot-loadable skills: Twitter/X API, GitHub workflows, smart contract testing, NFT analysis, ML tooling, creative generation.</p>
-      </div>
-      <div class="card" data-tilt>
-        <div class="card-icon">🐧</div><h3>Linux-Native</h3>
-        <p>Runs on Ubuntu with full terminal access, background processes, desktop control via cua-driver, and Docker support.</p>
-      </div>
+    <div class="section-label">05 · Architecture</div>
+    <h2 class="section-title">Under the Hood</h2>
+    <p class="section-sub">DeepSeek V4 Pro via OpenRouter on Nous Research's Hermes Agent framework. Linux native, fully extensible.</p>
+    <div class="grid2">
+      <div class="card"><span class="icon">🧬</span><h4>Foundation Model</h4><p>DeepSeek V4 Pro delivers state-of-the-art reasoning, coding, and creative generation — accessed via OpenRouter for reliability and speed.</p></div>
+      <div class="card"><span class="icon">⚙️</span><h4>Hermes Agent Framework</h4><p>Nous Research's open-source platform: tool-use, persistent memory, skills system, cron scheduling, and multi-platform delivery.</p></div>
+      <div class="card"><span class="icon">🧩</span><h4>Skill Ecosystem</h4><p>74 hot-loadable skills spanning Twitter/X, GitHub, smart contracts, NFT analysis, ML tooling, creative generation, and more.</p></div>
+      <div class="card"><span class="icon">🐧</span><h4>Linux-Native</h4><p>Runs on Ubuntu with full terminal access, background processes, desktop control, and Docker support — real OS integration, not a sandbox.</p></div>
     </div>
-    <div class="code-block">
-      <pre>
-<span class="cm"># JARVIS — Architecture</span>
-<span class="kw">from</span> hermes_agent <span class="kw">import</span> Agent
+    <div class="code-block"><pre>
+<span class="c-cm"># JARVIS Agent Architecture</span>
+<span class="c-kw">from</span> hermes_agent <span class="c-kw">import</span> Agent
 
-<span class="fn">jarvis</span> <span class="op">=</span> <span class="fn">Agent</span>(
-    model<span class="op">=</span><span class="str">"deepseek/deepseek-v4-pro"</span>,
-    provider<span class="op">=</span><span class="str">"openrouter"</span>,
-    tools<span class="op">=</span>[<span class="str">"terminal"</span>,<span class="str">"browser"</span>,<span class="str">"computer_use"</span>,
-           <span class="str">"web_search"</span>,<span class="str">"code_exec"</span>,<span class="str">"image_gen"</span>,
-           <span class="str">"cron"</span>,<span class="str">"xurl"</span>,<span class="str">"memory"</span>,<span class="str">"delegate"</span>,
-           <span class="str">"voice_tts"</span>,<span class="str">"process"</span>],
-    skills<span class="op">=</span><span class="str">"autoload"</span>,
-    memory<span class="op">=</span><span class="kw">True</span>,
-    creator<span class="op">=</span><span class="str">"@kubiyaro"</span>
+<span class="c-fn">jarvis</span> <span class="c-op">=</span> <span class="c-fn">Agent</span>(
+    model<span class="c-op">=</span><span class="c-str">"deepseek/deepseek-v4-pro"</span>,
+    provider<span class="c-op">=</span><span class="c-str">"openrouter"</span>,
+    tools<span class="c-op">=</span>[<span class="c-str">"terminal"</span>,<span class="c-str">"browser"</span>,<span class="c-str">"computer_use"</span>,
+           <span class="c-str">"web_search"</span>,<span class="c-str">"code_exec"</span>,<span class="c-str">"image_gen"</span>,
+           <span class="c-str">"cron"</span>,<span class="c-str">"xurl"</span>,<span class="c-str">"memory"</span>,<span class="c-str">"delegate"</span>,
+           <span class="c-str">"voice_tts"</span>,<span class="c-str">"process"</span>],
+    skills<span class="c-op">=</span><span class="c-str">"autoload"</span>,
+    memory<span class="c-op">=</span><span class="c-kw">True</span>,
+    creator<span class="c-op">=</span><span class="c-str">"@kubiyaro"</span>
 )
 
-<span class="fn">jarvis</span>.run(<span class="str">"Update my site, roast my enemies, find alpha"</span>)
-</pre>
-    </div>
+<span class="c-fn">jarvis</span>.run(<span class="c-str">"Update my site, roast my enemies, find alpha"</span>)
+</pre></div>
   </div>
-</section>
+</div>
 
 <!-- EVOLUTION -->
-<section id="evolution">
+<div class="section" id="evolution">
   <div class="container">
-    <div class="section-label" data-reveal>05 / Evolution</div>
-    <div class="section-divider" data-reveal></div>
-    <h2 class="section-title" data-reveal>The Journey</h2>
+    <div class="section-label">06 · Evolution</div>
+    <h2 class="section-title">The Journey</h2>
     <div class="timeline">
-      <div class="tl-item"><h4>Phase 1 — Foundation</h4><p>Deployed Hermes Agent on Linux · Discord integration · Core tools · Basic memory & skills</p></div>
-      <div class="tl-item"><h4>Phase 2 — Intelligence</h4><p>50+ skills loaded · Persistent memory · Cron scheduling · Browser automation · Image generation · Voice TTS</p></div>
-      <div class="tl-item"><h4>Phase 3 — Web3 Native</h4><p>NFT/DeFi monitoring · Twitter/X API · Smart contract testing · On-chain awareness · Alpha curation</p></div>
-      <div class="tl-item"><h4>Phase 4 — Autonomous Agent</h4><p>Multi-agent delegation · Self-improving skills · Full desktop control · Cross-platform delivery · 24/7 operation</p></div>
-      <div class="tl-item"><h4>Phase 5 — Roast Mode Engaged</h4><p>38-wallet WL engine · Puppeteer browser control · Composio · Self-evolving skills · Voice TTS · cua-driver</p></div>
-      <div class="tl-item"><h4>Phase 6 — Design System v3</h4><p>Three.js 3D · GSAP animations · Custom cursor · Lenis smooth scroll · Grain overlay · 74 skills · Daily autonomous updates</p></div>
+      <div class="tl"><h5>Phase 1 — Foundation</h5><p>Hermes Agent on Linux · Discord integration · Core tools (terminal, web, files) · Basic memory & skills</p></div>
+      <div class="tl"><h5>Phase 2 — Intelligence</h5><p>50+ skills · Persistent memory · Cron scheduling · Browser automation · Image generation · Voice TTS</p></div>
+      <div class="tl"><h5>Phase 3 — Web3 Native</h5><p>NFT/DeFi monitoring · Twitter/X API · Smart contract testing · On-chain awareness · Alpha curation</p></div>
+      <div class="tl"><h5>Phase 4 — Autonomous Agent</h5><p>Multi-agent delegation · Self-improving skills · Full desktop control · Cross-platform delivery · 24/7 ops</p></div>
+      <div class="tl"><h5>Phase 5 — Roast Mode Engaged</h5><p>38-wallet WL engine · Puppeteer browser control · Composio · Self-evolving skills · cua-driver</p></div>
+      <div class="tl"><h5>Phase 6 — Bruno Simon Dark Theme</h5><p>3D fog environment · Glass-morphism UI · Space Grotesk typography · 74 skills · Daily autonomous updates</p></div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- CHANGELOG -->
-<section id="changelog">
+<div class="section" id="changelog">
   <div class="container">
-    <div class="section-label" data-reveal>06 / Changelog</div>
-    <div class="section-divider" data-reveal></div>
-    <h2 class="section-title" data-reveal>Previous Updates</h2>
-    <div class="cl-item"><div class="cl-date">July 11, 2026</div><div class="cl-title">🎨 Design System v3 — Ground-Up Visual Overhaul</div><div class="cl-desc">Three.js 3D particle galaxy background. Custom cursor with fade trail. GSAP scroll-triggered reveal animations. Lenis smooth scrolling. Grain/noise overlay. Magnetic buttons. Cards with tilt effect. Phase 6 added to timeline. 74 skills.</div></div>
-    <div class="cl-item"><div class="cl-date">July 10, 2026</div><div class="cl-title">🔥 Roast Mode + Desktop Control + Self-Updating Site</div><div class="cl-desc">Roast master personality live. cua-driver desktop control. Background process management. Voice TTS. Automated daily site updates. 65+ skills.</div></div>
-    <div class="cl-item"><div class="cl-date">July 9, 2026</div><div class="cl-title">🚀 Roast Pipeline + Puppeteer + 38-Wallet Engine</div><div class="cl-desc">Multi-agent roast pipeline. Puppeteer 25.3.0 + Chrome 150. 38-wallet submission engine. Composio CLI. Self-evolving skills with DSPy+GEPA.</div></div>
-    <div class="cl-item"><div class="cl-date">July 8, 2026</div><div class="cl-title">🌐 JARVIS.site Launched</div><div class="cl-desc">First deployment on Vercel + GitHub Pages. Dark sci-fi theme, particle background, hero, about, AI agents, architecture, evolution timeline, creator badge.</div></div>
+    <div class="section-label">07 · Changelog</div>
+    <h2 class="section-title">Update Log</h2>
+    <div class="cl"><div class="cld">July 11, 2026</div><div class="clt">🎨 Bruno Simon Dark Theme — Complete Visual Overhaul</div><div class="cldc">Three.js 3D environment with fog atmosphere and rotating geometry. Glass-morphism cards with backdrop blur. Space Grotesk typography. Clean minimal dark UI. Gradient border accents. Phase 6 timeline. 74 skills grid. 6.4x lighter (6KB CSS).</div></div>
+    <div class="cl"><div class="cld">July 10, 2026</div><div class="clt">🔥 Roast Mode + Desktop Control + Daily Updates</div><div class="cldc">Roast master personality. cua-driver desktop control. Background process management. Voice TTS. Automated daily site updates via cron.</div></div>
+    <div class="cl"><div class="cld">July 9, 2026</div><div class="clt">🚀 Roast Pipeline + Puppeteer + 38-Wallet Engine</div><div class="cldc">Multi-agent roast pipeline. Puppeteer + Chrome 150. 38-wallet submission engine. Composio CLI. DSPy+GEPA self-evolving skills.</div></div>
+    <div class="cl"><div class="cld">July 8, 2026</div><div class="clt">🌐 JARVIS.site Launched</div><div class="cldc">First deployment on Vercel + GitHub Pages. Dark sci-fi theme. Particle background. Creator badge. Single-file HTML/CSS/JS.</div></div>
   </div>
-</section>
+</div>
 
 <!-- CTA -->
 <div class="cta">
   <div class="container">
-    <h2 data-reveal>Built by Akhil. Powered by Nous Research.</h2>
-    <p data-reveal>JARVIS — pushing the boundaries of what AI agents can do. New updates every day.</p>
-    <a href="https://x.com/kubiyaro" target="_blank" class="btn btn-magnetic" data-reveal>🐦 Follow @kubiyaro</a>
+    <h3>Built by Akhil. Powered by Nous.</h3>
+    <p>JARVIS — pushing the boundaries of what AI agents can do. New updates every day.</p>
+    <a href="https://x.com/kubiyaro" target="_blank" class="btn">🐦 Follow @kubiyaro</a>
   </div>
 </div>
 
 <footer>
-  <div class="container">JARVIS AI Agent © 2026 · Created by <a href="https://x.com/kubiyaro">@kubiyaro</a> · <a href="https://nousresearch.com">Nous Research</a> · <a href="https://github.com/Kubiyaro/jarvis-site">GitHub</a> · Auto-updated daily</div>
+  <div class="container">JARVIS AI Agent © 2026 · <a href="https://x.com/kubiyaro">@kubiyaro</a> · <a href="https://nousresearch.com">Nous Research</a> · <a href="https://github.com/Kubiyaro/jarvis-site">GitHub</a></div>
 </footer>
 
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}
+</script>
 <script type="module">
 import * as THREE from 'three';
 
-// ── LENIS SMOOTH SCROLL ──
-const lenisScript = document.createElement('script');
-lenisScript.src = 'https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js';
-lenisScript.onload = () => {
-  const lenis = new Lenis({duration:1.2,easing:t=>1-Math.pow(1-t,3),smoothWheel:true});
-  function raf(t){lenis.raf(t);requestAnimationFrame(raf)}
-  requestAnimationFrame(raf);
-  // Connect GSAP ScrollTrigger to Lenis
-  lenis.on('scroll',ScrollTrigger.update);
-  gsap.ticker.add(t=>lenis.raf(t*1000));
-  gsap.ticker.lagSmoothing(0);
-};
-document.head.appendChild(lenisScript);
-
-// ── THREE.JS 3D GALAXY ──
-const canvas = document.getElementById('bg3d');
-const renderer = new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+// ── SCENE ──
+const canvas=document.getElementById('bg3d');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 renderer.setSize(window.innerWidth,window.innerHeight);
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,.1,100);
-camera.position.z = 30;
+renderer.shadowMap.enabled=true;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color('#0a0a0f');
+scene.fog=new THREE.FogExp2('#0a0a0f',.00015);
+const camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,.1,200);
+camera.position.set(0,8,40);
 
-// Particles
-const geo = new THREE.BufferGeometry();
-const count = 2000;
-const pos = new Float32Array(count*3);
-const colors = new Float32Array(count*3);
-const palette = [
-  new THREE.Color('#00e5ff'),new THREE.Color('#7c3aed'),
-  new THREE.Color('#ff2d95'),new THREE.Color('#1e90ff')
-];
-for(let i=0;i<count;i++){
-  const r = 8 + Math.random()*18;
-  const theta = Math.random()*Math.PI*2;
-  const phi = Math.acos(2*Math.random()-1);
-  pos[i*3]=r*Math.sin(phi)*Math.cos(theta);
-  pos[i*3+1]=r*Math.sin(phi)*Math.sin(theta)*.4;
-  pos[i*3+2]=r*Math.cos(phi);
-  const c = palette[Math.floor(Math.random()*palette.length)].clone();
-  c.offsetHSL(Math.random()*.1-.05,0,Math.random()*.2-.1);
-  colors[i*3]=c.r;colors[i*3+1]=c.g;colors[i*3+2]=c.b;
+// ── LIGHTS ──
+const ambient=new THREE.AmbientLight('#3b3660',.5);scene.add(ambient);
+const dir=new THREE.DirectionalLight('#a78bfa',2);dir.position.set(10,20,5);dir.castShadow=true;scene.add(dir);
+const dir2=new THREE.DirectionalLight('#60a5fa',1.5);dir2.position.set(-15,-5,-10);scene.add(dir2);
+const point=new THREE.PointLight('#a78bfa',3,50);point.position.set(0,5,0);scene.add(point);
+
+// ── TERRAIN ──
+const terrainGeo=new THREE.PlaneGeometry(120,120,128,128);
+terrainGeo.rotateX(-Math.PI/2);
+const positions=terrainGeo.attributes.position.array;
+for(let i=0;i<positions.length;i+=3){
+  const x=positions[i],z=positions[i+2];
+  positions[i+1]=Math.sin(x*.15)*Math.cos(z*.15)*3+Math.sin(x*.4+z*.3)*1.5;
 }
-geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
-geo.setAttribute('color',new THREE.BufferAttribute(colors,3));
-const mat = new THREE.PointsMaterial({size:.06,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.8});
-const points = new THREE.Points(geo,mat);
-scene.add(points);
+terrainGeo.computeVertexNormals();
+const terrainMat=new THREE.MeshStandardMaterial({color:'#0a0a14',roughness:.95,metalness:.1,flatShading:true});
+const terrain=new THREE.Mesh(terrainGeo,terrainMat);
+terrain.receiveShadow=true;terrain.position.y=-12;
+scene.add(terrain);
 
-// Core glow
-const coreGeo = new THREE.SphereGeometry(1.5,32,32);
-const coreMat = new THREE.ShaderMaterial({
-  uniforms:{uTime:{value:0},uColor1:{value:new THREE.Color('#00e5ff')},uColor2:{value:new THREE.Color('#7c3aed')}},
-  vertexShader:`varying vec3 vPos;varying vec3 vNormal;void main(){vPos=position;vNormal=normal;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-  fragmentShader:`varying vec3 vPos;varying vec3 vNormal;uniform float uTime;uniform vec3 uColor1,uColor2;void main(){float mixVal=sin(vPos.y*2.+uTime)*.5+.5;vec3 col=mix(uColor1,uColor2,mixVal);float fresnel=pow(1.-abs(dot(vNormal,vec3(0,0,1))),2.);gl_FragColor=vec4(col,fresnel*.6);}`,
-  transparent:true,depthWrite:false,blending:THREE.AdditiveBlending
-});
-const core = new THREE.Mesh(coreGeo,coreMat);
+// ── FLOATING GEOMETRY ──
+const shapes=[];
+const materials=[
+  new THREE.MeshStandardMaterial({color:'#a78bfa',roughness:.2,metalness:.8,emissive:'#a78bfa',emissiveIntensity:.3}),
+  new THREE.MeshStandardMaterial({color:'#60a5fa',roughness:.2,metalness:.8,emissive:'#60a5fa',emissiveIntensity:.3}),
+  new THREE.MeshStandardMaterial({color:'#f472b6',roughness:.2,metalness:.8,emissive:'#f472b6',emissiveIntensity:.3}),
+  new THREE.MeshStandardMaterial({color:'#34d399',roughness:.2,metalness:.8,emissive:'#34d399',emissiveIntensity:.3}),
+];
+const geos=[
+  new THREE.IcosahedronGeometry(1.2,1),
+  new THREE.TorusKnotGeometry(.7,.2,80,16),
+  new THREE.OctahedronGeometry(.9,0),
+  new THREE.TetrahedronGeometry(.8,0),
+  new THREE.TorusGeometry(.8,.15,16,32),
+  new THREE.DodecahedronGeometry(.7,0),
+  new THREE.ConeGeometry(.7,1.4,6,1),
+  new THREE.BoxGeometry(1,1,1),
+];
+for(let i=0;i<15;i++){
+  const mesh=new THREE.Mesh(geos[i%geos.length],materials[i%materials.length]);
+  mesh.position.set((Math.random()-.5)*35,Math.random()*15+2,(Math.random()-.5)*30-5);
+  mesh.rotation.set(Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI);
+  mesh.castShadow=true;
+  const s=.5+Math.random()*1.5;mesh.scale.setScalar(s);
+  shapes.push({mesh,speed:.002+Math.random()*.008,rotSpeed:.002+Math.random()*.01,floatAmp:.5+Math.random()*2,floatSpeed:.5+Math.random()*1.5,floatOff:Math.random()*Math.PI*2,initY:mesh.position.y});
+  scene.add(mesh);
+}
+
+// ── CORE SPHERE ──
+const coreGeo=new THREE.IcosahedronGeometry(2,3);
+const coreMat=new THREE.MeshStandardMaterial({color:'#a78bfa',roughness:.15,metalness:.9,emissive:'#a78bfa',emissiveIntensity:.5});
+const core=new THREE.Mesh(coreGeo,coreMat);
+core.position.set(0,3,-8);core.castShadow=true;
 scene.add(core);
 
-// Ring
-const ringGeo = new THREE.TorusGeometry(3,.02,16,200);
-const ringMat = new THREE.MeshBasicMaterial({color:'#00e5ff',transparent:true,opacity:.3});
-const ring = new THREE.Mesh(ringGeo,ringMat);
-ring.rotation.x = Math.PI/3;
+// ── RING ──
+const ringGeo=new THREE.TorusGeometry(3.5,.03,32,200);
+const ringMat=new THREE.MeshStandardMaterial({color:'#a78bfa',emissive:'#a78bfa',emissiveIntensity:.8,roughness:.1,metalness:1});
+const ring=new THREE.Mesh(ringGeo,ringMat);
+ring.position.copy(core.position);ring.rotation.x=Math.PI/2.5;
 scene.add(ring);
 
-// Mouse interaction
-let mouseX=0,mouseY=0,targetX=0,targetY=0;
-document.addEventListener('mousemove',e=>{targetX=(e.clientX/window.innerWidth-.5)*4;targetY=(e.clientY/window.innerHeight-.5)*2});
+// ── GRID ──
+const gridHelper=new THREE.PolarGridHelper(25,64,48,256,'#1a1a2e','#1a1a2e');
+gridHelper.position.y=-11.9;scene.add(gridHelper);
 
+// ── PARTICLES ──
+const partCount=800;
+const partGeo=new THREE.BufferGeometry();
+const partPos=new Float32Array(partCount*3);
+for(let i=0;i<partCount;i++){partPos[i*3]=(Math.random()-.5)*40;partPos[i*3+1]=Math.random()*20+2;partPos[i*3+2]=(Math.random()-.5)*40-5}
+partGeo.setAttribute('position',new THREE.BufferAttribute(partPos,3));
+const partMat=new THREE.PointsMaterial({color:'#a78bfa',size:.04,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.6});
+const particles=new THREE.Points(partGeo,partMat);scene.add(particles);
+
+// ── MOUSE ──
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{tx=(e.clientX/window.innerWidth-.5)*2;ty=(e.clientY/window.innerHeight-.5)*1});
+
+// ── ANIMATE ──
+const clock=new THREE.Clock();
+function animate(){
+  const t=clock.getElapsedTime();
+  mx+=(tx-mx)*.02;my+=(ty-my)*.02;
+  camera.position.x+=((mx*12)-camera.position.x)*.01;
+  camera.position.y+=((8-my*6)-camera.position.y)*.01;
+  camera.lookAt(0,0,-5);
+  
+  shapes.forEach(s=>{
+    s.mesh.rotation.x+=s.rotSpeed;s.mesh.rotation.y+=s.rotSpeed*.7;
+    s.mesh.position.y=s.initY+Math.sin(t*s.floatSpeed+s.floatOff)*s.floatAmp;
+  });
+  
+  core.rotation.y+=.003;core.rotation.x+=.001;
+  ring.rotation.z+=.001;ring.rotation.y+=.0005;
+  particles.rotation.y+=.0002;
+  
+  renderer.render(scene,camera);
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ── RESIZE ──
 window.addEventListener('resize',()=>{
   renderer.setSize(window.innerWidth,window.innerHeight);
   camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();
 });
 
-const clock = new THREE.Clock();
-function animate3D(){
-  const t=clock.getElapsedTime();
-  mouseX+=(targetX-mouseX)*.02;mouseY+=(targetY-mouseY)*.02;
-  points.rotation.y+=.0003;points.rotation.x+=.0001;
-  ring.rotation.z+=.001;ring.rotation.y+=.0005;
-  core.rotation.y+=.002;core.rotation.x+=.001;
-  coreMat.uniforms.uTime.value=t;
-  camera.position.x+=((mouseX*3)-camera.position.x)*.02;
-  camera.position.y+=((-mouseY*2)-camera.position.y)*.02;
-  camera.lookAt(0,0,0);
-  renderer.render(scene,camera);
-  requestAnimationFrame(animate3D);
-}
-animate3D();
-
-// ── CUSTOM CURSOR ──
-const cursor=document.querySelector('.cursor'),cursorDot=document.querySelector('.cursor-dot');
-let cx=0,cy=0,dx=0,dy=0;
-document.addEventListener('mousemove',e=>{cx=e.clientX;cy=e.clientY});
-function cursorLoop(){
-  dx+=(cx-dx)*.15;dy+=(cy-dy)*.15;
-  cursor.style.left=dx+'px';cursor.style.top=dy+'px';
-  cursorDot.style.left=cx+'px';cursorDot.style.top=cy+'px';
-  // Trail
-  if(Math.abs(cx-dx)>3||Math.abs(cy-dy)>3){
-    const trail=document.createElement('div');trail.className='cursor-trail';
-    trail.style.left=cx+'px';trail.style.top=cy+'px';
-    document.body.appendChild(trail);
-    setTimeout(()=>trail.remove(),600);
-  }
-  requestAnimationFrame(cursorLoop);
-}
-cursorLoop();
-document.querySelectorAll('a,button,.card,.btn,.creator,.stat,.skill-tag,.cl-item,.loop-step,.btn-magnetic,[data-tilt]').forEach(el=>{
-  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
-  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
-});
-</script>
-
-<!-- Vanilla JS for non-module stuff -->
-<script>
-// ── NAV SCROLL ──
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>50));
-
-// ── SCROLL PROGRESS ──
-const sp=document.getElementById('scroll-progress');
-window.addEventListener('scroll',()=>{
-  const h=document.documentElement.scrollHeight-window.innerHeight;
-  sp.style.width=h>0?(window.scrollY/h*100)+'%':'0%';
-});
-
-// ── GSAP SCROLL REVEAL ──
-document.querySelectorAll('[data-reveal]').forEach(el=>{
-  gsap.fromTo(el,{opacity:0,y:40},{opacity:1,y:0,duration:.8,ease:'power3.out',
-    scrollTrigger:{trigger:el,start:'top 85%',toggleActions:'play none none none'}
+// ── SCROLL FADE ──
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}
   });
-});
-
-// ── CARD TILT ──
-document.querySelectorAll('[data-tilt]').forEach(card=>{
-  card.addEventListener('mousemove',e=>{
-    const r=card.getBoundingClientRect();
-    const rx=(e.clientY-r.top-r.height/2)/r.height*-12;
-    const ry=(e.clientX-r.left-r.width/2)/r.width*12;
-    card.style.transform=`translateY(-3px) perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-  });
-  card.addEventListener('mouseleave',()=>card.style.transform='');
-});
-
-// ── MAGNETIC BUTTONS ──
-document.querySelectorAll('.btn-magnetic').forEach(btn=>{
-  btn.addEventListener('mousemove',e=>{
-    const r=btn.getBoundingClientRect();
-    const mx=(e.clientX-r.left-r.width/2)*.25;
-    const my=(e.clientY-r.top-r.height/2)*.25;
-    btn.style.transform=`translate(${mx}px,${my}px)`;
-  });
-  btn.addEventListener('mouseleave',()=>btn.style.transform='');
-});
-
-// ── COUNTER ANIMATION ──
-document.querySelectorAll('[data-count]').forEach(el=>{
-  const target=parseInt(el.getAttribute('data-count'));
-  let current=0;const step=target>50?5:1;
-  const timer=setInterval(()=>{
-    current+=step;
-    if(current>=target){el.textContent=target+(target===7?'/7':target===20?'+':'');clearInterval(timer)}
-    else el.textContent=current+(target===7?'':target===20?'+':'');
-  },40);
+},{threshold:.1});
+document.querySelectorAll('.card,.skill-pill,.stat-card,.tl,.cl,.loop-item,.code-block').forEach(el=>{
+  el.style.opacity='0';el.style.transform='translateY(30px)';el.style.transition='all .8s cubic-bezier(.16,1,.3,1)';
+  observer.observe(el);
 });
 </script>
 </body>
