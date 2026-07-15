@@ -3,75 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JARVIS — Autonomous AI Agent</title>
+<title>JARVIS — Autonomous AI Agent | v7</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;cursor:none}
 ::-webkit-scrollbar{display:none}
 
 #bg{position:fixed;top:0;left:0;z-index:0}
 
-/* Custom cursor */
+/* ── SCANLINE OVERLAY ── */
+#scanlines{position:fixed;top:0;left:0;width:100%;height:100%;z-index:5;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px)}
+
+/* ── VIGNETTE ── */
+#vignette{position:fixed;top:0;left:0;width:100%;height:100%;z-index:6;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(5,5,8,.7) 100%)}
+
+/* ── Custom cursor ── */
 #cursor{position:fixed;width:20px;height:20px;border:1.5px solid #a78bfa;border-radius:50%;pointer-events:none;z-index:999;transition:width .2s,height .2s,border-color .2s,transform .15s;transform:translate(-50%,-50%);mix-blend-mode:difference}
-#cursor.hover{width:50px;height:50px;border-color:#fff;background:rgba(255,255,255,.05)}
+#cursor.hover{width:50px;height:50px;border-color:#fbbf24;background:rgba(251,191,36,.08);box-shadow:0 0 20px rgba(251,191,36,.3)}
 #cursor-dot{position:fixed;width:3px;height:3px;background:#fff;border-radius:50%;pointer-events:none;z-index:999;transform:translate(-50%,-50%)}
 
-/* Click ripple */
+/* ── Click ripple ── */
 .ripple{position:fixed;border:1px solid #a78bfa;border-radius:50%;pointer-events:none;z-index:998;animation:rippleOut .8s ease-out forwards}
 @keyframes rippleOut{0%{width:0;height:0;opacity:.8}100%{width:200px;height:200px;opacity:0;transform:translate(-100px,-100px)}}
 
-/* UI Overlay */
+/* ── Glitch text ── */
+@keyframes glitch{0%,100%{transform:translate(0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-1px)}80%{transform:translate(1px,1px)}}
+@keyframes glitch2{0%,100%{transform:translate(0)}20%{transform:translate(1px,-1px)}40%{transform:translate(-1px,1px)}60%{transform:translate(2px,1px)}80%{transform:translate(-2px,-1px)}}
+.glitch{position:relative}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%}
+.glitch::before{left:2px;text-shadow:-1px 0 #f472b6;animation:glitch 3s infinite;clip:rect(44px,450px,56px,0)}
+.glitch::after{left:-2px;text-shadow:1px 0 #60a5fa;animation:glitch2 2.5s infinite;clip:rect(12px,450px,32px,0)}
+
+/* ── UI Overlay ── */
 #ui{position:fixed;bottom:0;left:0;right:0;z-index:10;pointer-events:none;padding:0 0 40px 0}
 #ui>*{pointer-events:auto}
-#ui .nav-dots{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
+#ui .nav-dots{display:flex;gap:10px;justify-content:center;margin-bottom:20px;align-items:center}
 .nav-dot{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:transparent;cursor:pointer;transition:.3s}
-.nav-dot.active{background:#a78bfa;border-color:#a78bfa;box-shadow:0 0 12px rgba(167,139,250,.5);transform:scale(1.2)}
+.nav-dot.active{background:#a78bfa;border-color:#a78bfa;box-shadow:0 0 14px rgba(167,139,250,.6);transform:scale(1.25)}
 .nav-dot:hover{border-color:rgba(255,255,255,.5)}
+.nav-dot.creator{width:8px;height:8px;border-color:#fbbf24;opacity:.6}
+.nav-dot.creator:hover{border-color:#fbbf24;opacity:1}
 
-/* Content panels */
-#panel{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:none;text-align:center;width:90%;max-width:600px}
+/* ── Content panels ── */
+#panel{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:none;text-align:center;width:90%;max-width:620px}
 .panel-content{pointer-events:auto;opacity:0;transform:translateY(20px);transition:all .5s cubic-bezier(.16,1,.3,1);display:none}
 .panel-content.active{opacity:1;transform:translateY(0);display:block}
-.panel-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:#a78bfa;opacity:.6;text-transform:uppercase;margin-bottom:8px}
+.panel-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:#a78bfa;opacity:.7;text-transform:uppercase;margin-bottom:8px}
 .panel-title{font-size:clamp(28px,5vw,44px);font-weight:700;color:#f8f9fa;letter-spacing:-2px;margin-bottom:8px}
-.panel-sub{font-size:14px;color:#868e96;line-height:1.6;max-width:440px;margin:0 auto}
+.panel-sub{font-size:14px;color:#868e96;line-height:1.6;max-width:460px;margin:0 auto}
 .panel-meta{display:flex;gap:24px;justify-content:center;margin-top:16px;flex-wrap:wrap}
 .meta-item{text-align:center}
 .meta-num{font-size:28px;font-weight:700;color:#f8f9fa}
 .meta-lbl{font-size:9px;color:#868e96;text-transform:uppercase;letter-spacing:2px;margin-top:2px}
 
-/* Top bar */
+/* ── Changelog timeline ── */
+.changelog{text-align:left;margin-top:20px;max-width:500px;margin-left:auto;margin-right:auto}
+.cl-entry{display:flex;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;transition:.2s}
+.cl-entry:hover{color:#f8f9fa;border-bottom-color:rgba(167,139,250,.3)}
+.cl-ver{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#a78bfa;min-width:36px;opacity:.7}
+.cl-date{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.25);min-width:70px}
+.cl-desc{color:#868e96;font-size:12px;line-height:1.5}
+.cl-desc span{color:#f8f9fa;font-weight:500}
+.cl-desc.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:8px;padding:2px 6px;border-radius:3px;margin-left:6px;background:rgba(52,211,153,.15);color:#34d399;letter-spacing:1px;text-transform:uppercase}
+
+/* ── Top bar ── */
 #topbar{position:fixed;top:0;left:0;right:0;z-index:10;padding:24px 40px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;mix-blend-mode:difference}
 #topbar>*{pointer-events:auto}
 #topbar .logo{font-weight:700;font-size:16px;color:#fff;display:flex;align-items:center;gap:7px}
-#topbar .logo .d{width:5px;height:5px;border-radius:50%;background:#34d399;box-shadow:0 0 6px #34d399;animation:dp 2s infinite}
-@keyframes dp{0%,100%{opacity:1}50%{opacity:.2}}
+#topbar .logo .d{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;animation:dp 2s infinite}
+@keyframes dp{0%,100%{opacity:1}50%{opacity:.15}}
 #topbar .info{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;display:flex;align-items:center;gap:12px}
 #topbar .info .sep{width:1px;height:12px;background:rgba(255,255,255,.15)}
+#topbar .info .ver{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(168,139,250,.6);letter-spacing:0}
 
-/* CTA */
+/* ── CTA ── */
 #cta-panel{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:auto;text-align:center;opacity:0;transition:.5s;display:none}
 #cta-panel.active{opacity:1;display:block}
-#cta-panel h3{font-size:22px;font-weight:700;color:#f8f9fa;margin-bottom:6px}
+#cta-panel h3{font-size:22px;font-weight:700;color:#f8f9fa;margin-bottom:6px;display:flex;align-items:center;gap:8px;justify-content:center}
+#cta-panel h3 .star{color:#fbbf24;font-size:16px;animation:dp 2s infinite}
 #cta-panel p{font-size:13px;color:#868e96;margin-bottom:16px}
+#cta-panel .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 #cta-panel .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;background:#f8f9fa;color:#050508;border-radius:50px;text-decoration:none;font-weight:600;font-size:12px;cursor:pointer;transition:.3s}
 #cta-panel .btn:hover{box-shadow:0 8px 32px rgba(255,255,255,.12);transform:translateY(-1px)}
+#cta-panel .btn.ghost{border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.7)}
+#cta-panel .btn.ghost:hover{border-color:rgba(255,255,255,.4);color:#fff}
 
-/* Help text */
+/* ── Help text ── */
 #help{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:10;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.25);letter-spacing:2px;pointer-events:none;transition:opacity 1s}
 #con{position:fixed;bottom:120px;left:50%;transform:translateX(-50%);z-index:10;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.15);letter-spacing:2px;pointer-events:none;transition:opacity .5s}
+
+/* ── Status indicator pulse ── */
+#status-pulse{position:fixed;top:28px;right:40px;z-index:11;display:flex;align-items:center;gap:8px;pointer-events:none}
+#status-pulse .live-dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 10px #34d399;animation:dp 1.5s infinite}
+#status-pulse .live-text{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase}
 </style>
 </head>
 <body>
 
 <div id="cursor"></div>
 <div id="cursor-dot"></div>
+<div id="scanlines"></div>
+<div id="vignette"></div>
 <canvas id="bg"></canvas>
 
 <div id="topbar">
   <div class="logo">JARVIS.<div class="d"></div></div>
-  <div class="info"><span>July 11</span><span class="sep"></span><span>@kubiyaro</span></div>
+  <div class="info"><span>July 15</span><span class="sep"></span><span>@kubiyaro</span><span class="sep"></span><span class="ver">v7.0</span></div>
+</div>
+
+<div id="status-pulse">
+  <div class="live-dot"></div>
+  <span class="live-text">Online</span>
 </div>
 
 <div id="ui">
@@ -80,55 +123,76 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 
 <div id="panel">
   <div class="panel-content active" data-p="0">
-    <div class="panel-label">✦ Autonomous AI Agent</div>
-    <div class="panel-title">JARVIS</div>
-    <p class="panel-sub">Intelligence that reasons. Autonomy that executes. Built on Nous Research's Hermes Agent framework — scroll or click to explore.</p>
+    <div class="panel-label">✦ Autonomous AI Agent · v7.0</div>
+    <div class="panel-title glitch" data-text="JARVIS">JARVIS</div>
+    <p class="panel-sub">Intelligence that reasons. Autonomy that executes. Built on Nous Research's Hermes Agent framework — drag to explore, scroll to navigate, click to interact.</p>
     <div class="panel-meta">
-      <div class="meta-item"><div class="meta-num">74</div><div class="meta-lbl">Skills</div></div>
+      <div class="meta-item"><div class="meta-num">78</div><div class="meta-lbl">Skills</div></div>
       <div class="meta-item"><div class="meta-num">24/7</div><div class="meta-lbl">Online</div></div>
-      <div class="meta-item"><div class="meta-num">20+</div><div class="meta-lbl">Platforms</div></div>
+      <div class="meta-item"><div class="meta-num">25+</div><div class="meta-lbl">Platforms</div></div>
     </div>
   </div>
   <div class="panel-content" data-p="1">
     <div class="panel-label">01 · About</div>
     <div class="panel-title">Autonomous Reasoning</div>
-    <p class="panel-sub">DeepSeek V4 Pro via OpenRouter. Breaks down complex tasks, chooses tools, executes multi-step workflows. Multi-platform — Discord, Telegram, shell. 74 hot-loadable skills.</p>
+    <p class="panel-sub">DeepSeek V4 Pro via OpenRouter. Breaks down complex tasks, chooses tools, executes multi-step workflows in real time. Multi-platform — Discord, Telegram, shell, desktop. 78 hot-loadable skills, each a self-contained capability module.</p>
     <div class="panel-meta">
       <div class="meta-item"><div class="meta-num">DeepSeek</div><div class="meta-lbl">V4 Pro</div></div>
       <div class="meta-item"><div class="meta-num">Hermes</div><div class="meta-lbl">Agent FW</div></div>
-      <div class="meta-item"><div class="meta-num">38</div><div class="meta-lbl">Wallets</div></div>
+      <div class="meta-item"><div class="meta-num">42</div><div class="meta-lbl">Wallets</div></div>
     </div>
   </div>
   <div class="panel-content" data-p="2">
-    <div class="panel-label">02 · Today · July 11</div>
-    <div class="panel-title">What's New</div>
-    <p class="panel-sub">Interactive 3D world — drag to rotate, scroll to zoom, click to spawn ripples. Particles follow your cursor. Terrain reacts. NFT mint automation added.</p>
+    <div class="panel-label">02 · Today · July 15</div>
+    <div class="panel-title">What's New in v7</div>
+    <p class="panel-sub"><span style="color:#34d399">✦</span> CRT scanline aesthetic & holographic vignette <span style="color:#34d399">✦</span> Orbital debris ring with glowing trails <span style="color:#34d399">✦</span> Data stream particles (digital rain) <span style="color:#34d399">✦</span> Glitch-text title effect <span style="color:#34d399">✦</span> Interactive changelog timeline <span style="color:#34d399">✦</span> Pulse-ring on core geometry <span style="color:#34d399">✦</span> Status indicator & version badge</p>
   </div>
   <div class="panel-content" data-p="3">
     <div class="panel-label">03 · Skills</div>
-    <div class="panel-title">74 Hot-Loadable</div>
-    <p class="panel-sub">Twitter/X · NFT Mint · Music Gen · YouTube · Email · Notion · Obsidian · Maps · PDF · Airtable · PowerPoint · MLOps · Image Gen · GitHub · Desktop · Code Review · Delegation · Cron · Voice TTS · G Workspace · Smart Home · Telegram · Discord · Web3</p>
+    <div class="panel-title">78 Hot-Loadable</div>
+    <p class="panel-sub">Twitter/X · NFT Mint · Music Gen · YouTube · Email · Notion · Obsidian · Maps · PDF · Airtable · PowerPoint · MLOps · Image Gen · GitHub · Desktop · Code Review · Delegation · Cron · Voice TTS · G Workspace · Smart Home · Telegram · Discord · Web3 · BlogWatcher · SongSee · HuggingFace · vLLM · Jupyter · Figma · Browser · ComfyUI · Excalidraw · MCP · CLI</p>
   </div>
   <div class="panel-content" data-p="4">
     <div class="panel-label">04 · Architecture</div>
     <div class="panel-title">Under the Hood</div>
-    <p class="panel-sub">DeepSeek V4 Pro + OpenRouter. Nous Research Hermes Agent framework. Ubuntu Linux. Full terminal, browser, desktop control, Docker — real OS, not sandbox.</p>
+    <p class="panel-sub">DeepSeek V4 Pro + OpenRouter. Nous Research Hermes Agent framework. Ubuntu Linux. Full terminal, browser, desktop control, Docker, venv — runs on real hardware, not a sandbox. Cron scheduler for autonomous daily operations.</p>
+    <div class="panel-meta">
+      <div class="meta-item"><div class="meta-num">Linux</div><div class="meta-lbl">Host</div></div>
+      <div class="meta-item"><div class="meta-num">6.8</div><div class="meta-lbl">Kernel</div></div>
+      <div class="meta-item"><div class="meta-num">Docker</div><div class="meta-lbl">Runtime</div></div>
+    </div>
   </div>
   <div class="panel-content" data-p="5">
     <div class="panel-label">05 · Evolution</div>
     <div class="panel-title">The Journey</div>
-    <p class="panel-sub">Phase 1: Foundation → Phase 2: Intelligence → Phase 3: Web3 Native → Phase 4: Autonomous → Phase 5: Roast Mode → Phase 6: Interactive 3D</p>
+    <p class="panel-sub">Phase 1: Foundation → Phase 2: Intelligence → Phase 3: Web3 Native → Phase 4: Autonomous → Phase 5: Roast Mode → Phase 6: Interactive 3D → <span style="color:#fbbf24">Phase 7: Living Artifact ✦ Now</span></p>
+  </div>
+  <div class="panel-content" data-p="6">
+    <div class="panel-label">06 · Changelog</div>
+    <div class="panel-title">Version History</div>
+    <div class="changelog">
+      <div class="cl-entry"><span class="cl-ver">v7.0</span><span class="cl-date">Jul 15</span><span class="cl-desc"><span>Living Artifact</span> — scanlines, vignette, orbital debris, data streams, glitch text, changelog timeline, pulse-ring, status indicator</span></div>
+      <div class="cl-entry"><span class="cl-ver">v6.0</span><span class="cl-date">Jul 11</span><span class="cl-desc"><span>Interactive 3D</span> — drag-orbit, scroll-zoom, click-sparkles, shape cursor-repel, swarm particles, keyboard nav</span></div>
+      <div class="cl-entry"><span class="cl-ver">v5.0</span><span class="cl-date">Jul 10</span><span class="cl-desc"><span>Scroll Cinema</span> — 3D camera, post-processing bloom, morphing geometry, animated terrain, section pinning</span></div>
+      <div class="cl-entry"><span class="cl-ver">v4.0</span><span class="cl-date">Jul 9</span><span class="cl-desc"><span>Dark Theme</span> — 3D fog terrain, glass-morphism cards, floating geometry, Space Grotesk, 32KB</span></div>
+      <div class="cl-entry"><span class="cl-ver">v3.0</span><span class="cl-date">Jul 8</span><span class="cl-desc"><span>Galaxy</span> — Three.js 3D, custom cursor+trail, GSAP reveals, smooth scroll, grain overlay</span></div>
+      <div class="cl-entry"><span class="cl-ver">v2.0</span><span class="cl-date">Jul 7</span><span class="cl-desc"><span>Parallax</span> — hero section, card 3D tilt, neon glow, scroll progress, system dashboard</span></div>
+      <div class="cl-entry"><span class="cl-ver">v1.0</span><span class="cl-date">Jul 6</span><span class="cl-desc"><span>Genesis</span> — first deploy, minimal landing, creator identity, Agent SDK badge</span></div>
+    </div>
   </div>
 </div>
 
 <div id="cta-panel">
-  <h3>Built by Akhil. Powered by Nous.</h3>
-  <p>JARVIS — pushing boundaries. New updates every day.</p>
-  <a href="https://x.com/kubiyaro" target="_blank" class="btn">🐦 @kubiyaro</a>
+  <h3><span class="star">✦</span> Built by Akhil. Powered by Nous.</h3>
+  <p>JARVIS — daily evolution. Every sunrise brings new capabilities.</p>
+  <div class="btns">
+    <a href="https://x.com/kubiyaro" target="_blank" class="btn">🐦 @kubiyaro</a>
+    <a href="https://github.com/Kubiyaro/jarvis-site" target="_blank" class="btn ghost">⌨ GitHub</a>
+  </div>
 </div>
 
-<div id="help">🖱 DRAG TO EXPLORE · SCROLL TO ZOOM · CLICK TO INTERACT</div>
-<div id="con">GITHUB.COM/KUBIYARO/JARVIS-SITE</div>
+<div id="help">🖱 DRAG TO EXPLORE · SCROLL TO ZOOM · CLICK TO INTERACT · 1-7 KEYS</div>
+<div id="con">GITHUB.COM/KUBIYARO/JARVIS-SITE · v7.0</div>
 
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
@@ -151,88 +215,145 @@ const canvas=document.getElementById('bg');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 renderer.setSize(window.innerWidth,window.innerHeight);
-renderer.shadowMap.enabled=true;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
+renderer.shadowMap.enabled=true;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.3;
 const scene=new THREE.Scene();
 scene.background=new THREE.Color('#050508');
-scene.fog=new THREE.FogExp2('#050508',.00008);
+scene.fog=new THREE.FogExp2('#050508',.00006);
 const camera=new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,.1,200);
 
 // ── POST-PROCESSING ──
 const composer=new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene,camera));
 const bloom=new UnrealBloomPass(new THREE.Vector2(window.innerWidth,window.innerHeight),.7,.35,.2);
-bloom.threshold=.12;bloom.strength=.7;bloom.radius=.35;
+bloom.threshold=.1;bloom.strength=.8;bloom.radius=.35;
 composer.addPass(bloom);
 
 // ── LIGHTS ──
 scene.add(new THREE.AmbientLight('#2a2545',.7));
-const d1=new THREE.DirectionalLight('#a78bfa',3);d1.position.set(15,20,8);d1.castShadow=true;scene.add(d1);
-const d2=new THREE.DirectionalLight('#60a5fa',2);d2.position.set(-12,-5,-12);scene.add(d2);
-const pt=new THREE.PointLight('#a78bfa',5,50);pt.position.set(0,8,0);scene.add(pt);
+const d1=new THREE.DirectionalLight('#a78bfa',3.5);d1.position.set(15,20,8);d1.castShadow=true;scene.add(d1);
+const d2=new THREE.DirectionalLight('#60a5fa',2.5);d2.position.set(-12,-5,-12);scene.add(d2);
+const d3=new THREE.DirectionalLight('#fbbf24',1.2);d3.position.set(0,8,-15);scene.add(d3);
+const pt=new THREE.PointLight('#a78bfa',6,50);pt.position.set(0,8,0);scene.add(pt);
 
 // ── TERRAIN ──
-const tGeo=new THREE.PlaneGeometry(120,120,180,180);tGeo.rotateX(-Math.PI/2);
+const tGeo=new THREE.PlaneGeometry(140,140,200,200);tGeo.rotateX(-Math.PI/2);
 const tPos=tGeo.attributes.position.array;const origT=new Float32Array(tPos);
-for(let i=0;i<tPos.length;i+=3){tPos[i+1]=Math.sin(tPos[i]*.1)*Math.cos(tPos[i+2]*.1)*2+Math.sin(tPos[i]*.4+tPos[i+2]*.3)*1}
+for(let i=0;i<tPos.length;i+=3){tPos[i+1]=Math.sin(tPos[i]*.08)*Math.cos(tPos[i+2]*.08)*2.5+Math.sin(tPos[i]*.35+tPos[i+2]*.25)*1.2}
 tGeo.computeVertexNormals();
-const terrain=new THREE.Mesh(tGeo,new THREE.MeshStandardMaterial({color:'#0a0a18',roughness:.9,metalness:.05,flatShading:true}));
+const terrain=new THREE.Mesh(tGeo,new THREE.MeshStandardMaterial({color:'#0a0a18',roughness:.92,metalness:.04,flatShading:true}));
 terrain.receiveShadow=true;terrain.position.y=-14;scene.add(terrain);
 
 // ── MORPHING CORE ──
 const morphGeo=new THREE.BufferGeometry();
-const icoG=new THREE.IcosahedronGeometry(2.5,2);
-const torusG=new THREE.TorusKnotGeometry(1.8,.45,120,20);
+const icoG=new THREE.IcosahedronGeometry(2.2,2);
+const torusG=new THREE.TorusKnotGeometry(1.6,.4,128,20);
 morphGeo.copy(icoG);
 morphGeo.morphAttributes={position:[new THREE.BufferAttribute(new Float32Array(torusG.attributes.position.array),3)]};
-const coreMat=new THREE.MeshStandardMaterial({color:'#a78bfa',roughness:.08,metalness:.95,emissive:'#a78bfa',emissiveIntensity:.7});
+const coreMat=new THREE.MeshStandardMaterial({color:'#a78bfa',roughness:.06,metalness:.95,emissive:'#a78bfa',emissiveIntensity:.8});
 const core=new THREE.Mesh(morphGeo,coreMat);
 core.position.set(0,4,-12);core.castShadow=true;core.morphTargetInfluences=[0];
 scene.add(core);
 
-// ── RING ──
-const ring=new THREE.Mesh(new THREE.TorusGeometry(4.5,.03,32,300),new THREE.MeshStandardMaterial({color:'#a78bfa',emissive:'#a78bfa',emissiveIntensity:1,roughness:.02,metalness:1}));
+// ── PULSE RING (new — concentric expanding rings) ──
+const pulseRings=[];
+for(let i=0;i<3;i++){
+  const pr=new THREE.Mesh(new THREE.TorusGeometry(3.2+i*1.6,.03,32,200),new THREE.MeshStandardMaterial({color:'#a78bfa',emissive:'#a78bfa',emissiveIntensity:1.5,roughness:.02,metalness:1,transparent:true,opacity:.6-i*.18}));
+  pr.position.copy(core.position);pr.rotation.x=Math.PI/2.4;pr.userData={baseR:3.2+i*1.6,phase:i*2.1};
+  scene.add(pr);pulseRings.push(pr);
+}
+
+// ── MAIN RING ──
+const ring=new THREE.Mesh(new THREE.TorusGeometry(5,.04,40,350),new THREE.MeshStandardMaterial({color:'#c4b5fd',emissive:'#c4b5fd',emissiveIntensity:1.2,roughness:.01,metalness:1}));
 ring.position.copy(core.position);ring.rotation.x=Math.PI/2.6;scene.add(ring);
 
 // ── WIREFRAME ──
-const wire=new THREE.Mesh(new THREE.IcosahedronGeometry(2.8,2),new THREE.MeshBasicMaterial({color:'#a78bfa',wireframe:true,transparent:true,opacity:.05}));
-wire.position.copy(core.position);wire.scale.setScalar(1.25);scene.add(wire);
+const wire=new THREE.Mesh(new THREE.IcosahedronGeometry(2.6,2),new THREE.MeshBasicMaterial({color:'#a78bfa',wireframe:true,transparent:true,opacity:.06}));
+wire.position.copy(core.position);wire.scale.setScalar(1.3);scene.add(wire);
 
 // ── FLOATING SHAPES ──
 const shapes=[];
-const mats=[new THREE.MeshStandardMaterial({color:'#a78bfa',roughness:.15,metalness:.8,emissive:'#a78bfa',emissiveIntensity:.3}),new THREE.MeshStandardMaterial({color:'#60a5fa',roughness:.15,metalness:.8,emissive:'#60a5fa',emissiveIntensity:.3}),new THREE.MeshStandardMaterial({color:'#f472b6',roughness:.15,metalness:.8,emissive:'#f472b6',emissiveIntensity:.3}),new THREE.MeshStandardMaterial({color:'#34d399',roughness:.15,metalness:.8,emissive:'#34d399',emissiveIntensity:.3})];
-const geos=[new THREE.IcosahedronGeometry(1.1,1),new THREE.OctahedronGeometry(.9,0),new THREE.TetrahedronGeometry(.8,0),new THREE.TorusGeometry(.8,.15,16,30),new THREE.DodecahedronGeometry(.7,0),new THREE.ConeGeometry(.7,1.4,6,1),new THREE.BoxGeometry(1,1,1),new THREE.TorusKnotGeometry(.6,.15,70,14)];
-for(let i=0;i<20;i++){
+const mats=[
+  new THREE.MeshStandardMaterial({color:'#a78bfa',roughness:.12,metalness:.85,emissive:'#a78bfa',emissiveIntensity:.35}),
+  new THREE.MeshStandardMaterial({color:'#60a5fa',roughness:.12,metalness:.85,emissive:'#60a5fa',emissiveIntensity:.35}),
+  new THREE.MeshStandardMaterial({color:'#f472b6',roughness:.12,metalness:.85,emissive:'#f472b6',emissiveIntensity:.35}),
+  new THREE.MeshStandardMaterial({color:'#34d399',roughness:.12,metalness:.85,emissive:'#34d399',emissiveIntensity:.35}),
+  new THREE.MeshStandardMaterial({color:'#fbbf24',roughness:.12,metalness:.85,emissive:'#fbbf24',emissiveIntensity:.3})
+];
+const geos=[
+  new THREE.IcosahedronGeometry(1.1,1),new THREE.OctahedronGeometry(.9,0),new THREE.TetrahedronGeometry(.8,0),
+  new THREE.TorusGeometry(.8,.15,16,30),new THREE.DodecahedronGeometry(.7,0),new THREE.ConeGeometry(.7,1.4,6,1),
+  new THREE.BoxGeometry(1,1,1),new THREE.TorusKnotGeometry(.6,.15,70,14)
+];
+for(let i=0;i<24;i++){
   const m=new THREE.Mesh(geos[i%geos.length],mats[i%mats.length]);
-  m.position.set((Math.random()-.5)*40,Math.random()*18+1,(Math.random()-.5)*35-8);
+  m.position.set((Math.random()-.5)*44,Math.random()*20+1,(Math.random()-.5)*38-10);
   m.rotation.set(Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI);
-  m.castShadow=true;const s=.35+Math.random()*1.5;m.scale.setScalar(s);
-  shapes.push({m,rs:.002+Math.random()*.012,fA:.3+Math.random()*2.5,fS:.3+Math.random()*1.2,fO:Math.random()*Math.PI*2,iY:m.position.y,iX:m.position.x,iZ:m.position.z,repelR:2+Math.random()*4});
+  m.castShadow=true;const s=.3+Math.random()*1.4;m.scale.setScalar(s);
+  shapes.push({m,rs:.002+Math.random()*.014,fA:.3+Math.random()*2.8,fS:.25+Math.random()*1.1,fO:Math.random()*Math.PI*2,iY:m.position.y,iX:m.position.x,iZ:m.position.z,repelR:2+Math.random()*4});
   scene.add(m);
 }
 
-// ── SWARM PARTICLES (cursor-reactive) ──
-const pCount=600;const pGeo=new THREE.BufferGeometry();const pArr=new Float32Array(pCount*3);const pVel=new Float32Array(pCount*3);
-for(let i=0;i<pCount;i++){pArr[i*3]=(Math.random()-.5)*30;pArr[i*3+1]=Math.random()*16+1;pArr[i*3+2]=(Math.random()-.5)*30-6;pVel[i*3]=(Math.random()-.5)*.005;pVel[i*3+1]=Math.random()*.008+.002;pVel[i*3+2]=(Math.random()-.5)*.005}
+// ── SWARM PARTICLES ──
+const pCount=700;const pGeo=new THREE.BufferGeometry();const pArr=new Float32Array(pCount*3);const pVel=new Float32Array(pCount*3);
+const pCol=new Float32Array(pCount*3);
+for(let i=0;i<pCount;i++){
+  pArr[i*3]=(Math.random()-.5)*32;pArr[i*3+1]=Math.random()*18+1;pArr[i*3+2]=(Math.random()-.5)*32-6;
+  pVel[i*3]=(Math.random()-.5)*.005;pVel[i*3+1]=Math.random()*.009+.002;pVel[i*3+2]=(Math.random()-.5)*.005;
+  // Color gradient: purple → cyan → pink
+  const t=i/pCount;
+  pCol[i*3]=.6+t*.15;pCol[i*3+1]=.4+t*.2;pCol[i*3+2]=.75+t*.15;
+}
 pGeo.setAttribute('position',new THREE.BufferAttribute(pArr,3));
-const pMat=new THREE.PointsMaterial({color:'#c4b5fd',size:.05,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.8});
+pGeo.setAttribute('color',new THREE.BufferAttribute(pCol,3));
+const pMat=new THREE.PointsMaterial({size:.05,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.85,vertexColors:true});
 const particles=new THREE.Points(pGeo,pMat);scene.add(particles);
 
-// ── SPARKLE PARTICLES (click-spawned) ──
-const sparkCount=200;const sparkGeo=new THREE.BufferGeometry();const sparkArr=new Float32Array(sparkCount*3);const sparkVel=new Float32Array(sparkCount*3);const sparkLife=new Float32Array(sparkCount);
+// ── ORBITAL DEBRIS RING (new) ──
+const orbCount=500;const orbGeo=new THREE.BufferGeometry();const orbArr=new Float32Array(orbCount*3);const orbData=[];
+const orbCols=new Float32Array(orbCount*3);
+for(let i=0;i<orbCount;i++){
+  const angle=(i/orbCount)*Math.PI*2;
+  const radius=16+Math.random()*6;
+  const height=(Math.random()-.5)*2;
+  orbArr[i*3]=Math.cos(angle)*radius;orbArr[i*3+1]=3+height;orbArr[i*3+2]=Math.sin(angle)*radius-8;
+  orbData.push({angle,radius,height,speed:.15+Math.random()*.35,baseRadius:radius,wobbleA:.3+Math.random()*.8,wobbleS:.5+Math.random()*1.5});
+  orbCols[i*3]=.65+Math.random()*.05;orbCols[i*3+1]=.5+Math.random()*.15;orbCols[i*3+2]=.85+Math.random()*.1;
+}
+orbGeo.setAttribute('position',new THREE.BufferAttribute(orbArr,3));
+orbGeo.setAttribute('color',new THREE.BufferAttribute(orbCols,3));
+const orbMat=new THREE.PointsMaterial({size:.06,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.6,vertexColors:true});
+const orbitalDebris=new THREE.Points(orbGeo,orbMat);scene.add(orbitalDebris);
+
+// ── DATA STREAMS (new — vertical digital rain particles) ──
+const dsCount=300;const dsGeo=new THREE.BufferGeometry();const dsArr=new Float32Array(dsCount*3);const dsData=[];
+const dsCols=new Float32Array(dsCount*3);
+for(let i=0;i<dsCount;i++){
+  dsArr[i*3]=(Math.random()-.5)*40;dsArr[i*3+1]=Math.random()*20-2;dsArr[i*3+2]=(Math.random()-.5)*40-6;
+  dsData.push({speed:.03+Math.random()*.12,resetY:18+Math.random()*4,startY:dsArr[i*3+1]});
+  dsCols[i*3]=.5;dsCols[i*3+1]=.8+Math.random()*.2;dsCols[i*3+2]=.5;
+}
+dsGeo.setAttribute('position',new THREE.BufferAttribute(dsArr,3));
+dsGeo.setAttribute('color',new THREE.BufferAttribute(dsCols,3));
+const dsMat=new THREE.PointsMaterial({size:.04,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.5,vertexColors:true});
+const dataStreams=new THREE.Points(dsGeo,dsMat);scene.add(dataStreams);
+
+// ── SPARKLE PARTICLES ──
+const sparkCount=300;const sparkGeo=new THREE.BufferGeometry();const sparkArr=new Float32Array(sparkCount*3);const sparkVel=new Float32Array(sparkCount*3);const sparkLife=new Float32Array(sparkCount);
 for(let i=0;i<sparkCount;i++){sparkArr[i*3]=0;sparkArr[i*3+1]=-100;sparkArr[i*3+2]=0;sparkLife[i]=0}
 sparkGeo.setAttribute('position',new THREE.BufferAttribute(sparkArr,3));
-const sparkMat=new THREE.PointsMaterial({color:'#fbbf24',size:.08,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:1});
+const sparkMat=new THREE.PointsMaterial({color:'#fbbf24',size:.09,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:1});
 const sparkles=new THREE.Points(sparkGeo,sparkMat);scene.add(sparkles);
 
 // ── GRID ──
-scene.add(new THREE.PolarGridHelper(25,80,50,300,'#12122a','#12122a'));
+const gridHelper=new THREE.PolarGridHelper(28,100,60,360,'#12122a','#12122a');
+scene.add(gridHelper);
 
 // ── INTERACTION STATE ──
 let isDragging=false,prevMouse={x:0,y:0};
 let camTheta=0,camPhi=Math.PI/3,camRadius=28,targetCamTheta=0,targetCamPhi=Math.PI/3,targetCamRadius=28;
-let sectionIndex=0,totalSections=6;
+let sectionIndex=0,totalSections=7;
 let cursor3D=new THREE.Vector3();
-let sparkTimer=0;
+let helpFade=5;
 
 // ── RAYCASTER ──
 const raycaster=new THREE.Raycaster();
@@ -248,7 +369,6 @@ document.addEventListener('mousemove',e=>{
     targetCamPhi=Math.max(.2,Math.min(Math.PI/2-.05,targetCamPhi));
     prevMouse.x=e.clientX;prevMouse.y=e.clientY;
   }
-  // Raycaster for hover
   mouseNDC.x=(e.clientX/window.innerWidth)*2-1;
   mouseNDC.y=-(e.clientY/window.innerHeight)*2+1;
   raycaster.setFromCamera(mouseNDC,camera);
@@ -258,51 +378,49 @@ document.addEventListener('mousemove',e=>{
 document.addEventListener('mousedown',e=>{isDragging=true;prevMouse.x=e.clientX;prevMouse.y=e.clientY});
 document.addEventListener('mouseup',()=>{isDragging=false});
 
-// ── WHEEL (zoom + section change) ──
+// ── WHEEL ──
 document.addEventListener('wheel',e=>{
   e.preventDefault();
   targetCamRadius+=e.deltaY*.03;
   targetCamRadius=Math.max(8,Math.min(50,targetCamRadius));
 },{passive:false});
 
-// ── CLICK (spawn sparkles + interact with shapes) ──
+// ── CLICK ──
 document.addEventListener('click',e=>{
   if(isDragging)return;
-  // Screen ripple
   const ripple=document.createElement('div');ripple.className='ripple';
   ripple.style.left=e.clientX+'px';ripple.style.top=e.clientY+'px';
   document.body.appendChild(ripple);setTimeout(()=>ripple.remove(),800);
   
-  // 3D sparkles at cursor position in world
   mouseNDC.x=(e.clientX/window.innerWidth)*2-1;
   mouseNDC.y=-(e.clientY/window.innerHeight)*2+1;
   raycaster.setFromCamera(mouseNDC,camera);
   const pt=new THREE.Vector3();raycaster.ray.at(15,pt);
   
-  for(let i=0;i<Math.min(sparkCount,sparkCount);i++){
+  for(let i=0;i<sparkCount;i++){
     if(sparkLife[i]<=0){
       sparkArr[i*3]=pt.x+(Math.random()-.5)*3;
       sparkArr[i*3+1]=pt.y+(Math.random()-.5)*3;
       sparkArr[i*3+2]=pt.z+(Math.random()-.5)*3;
-      sparkVel[i*3]=(Math.random()-.5)*.15;
-      sparkVel[i*3+1]=Math.random()*.2+.05;
-      sparkVel[i*3+2]=(Math.random()-.5)*.15;
+      sparkVel[i*3]=(Math.random()-.5)*.18;
+      sparkVel[i*3+1]=Math.random()*.25+.05;
+      sparkVel[i*3+2]=(Math.random()-.5)*.18;
       sparkLife[i]=1;
     }
   }
   sparkGeo.attributes.position.needsUpdate=true;
   
-  // Check hit on core
   const hits=raycaster.intersectObjects(allClickables);
   if(hits.length>0&&hits[0].object===core){
-    core.userData.bump=1;
+    core.userData.bump=1.5;
   }
 });
 
 // ── NAV DOTS ──
 const navDots=document.getElementById('navDots');
 for(let i=0;i<totalSections;i++){
-  const dot=document.createElement('div');dot.className='nav-dot'+(i===0?' active':'');
+  const dot=document.createElement('div');
+  dot.className='nav-dot'+(i===0?' active':'')+(i===totalSections-1?' creator':'');
   dot.addEventListener('click',()=>switchSection(i));
   navDots.appendChild(dot);
 }
@@ -314,17 +432,16 @@ function switchSection(idx){
   if(active)active.classList.add('active');
   document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
   ctaPanel.classList.toggle('active',idx===totalSections-1);
-  // Shift camera angle per section
   targetCamTheta=idx*(Math.PI*2/totalSections);
-  targetCamRadius=idx===0?28:18+idx*1.5;
-  targetCamPhi=Math.PI/4+idx*.08;
+  targetCamRadius=idx===0?28:18+idx*1.6;
+  targetCamPhi=Math.PI/4+idx*.06;
 }
 
 // ── KEYBOARD ──
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key==='ArrowDown'){switchSection((sectionIndex+1)%totalSections)}
   if(e.key==='ArrowLeft'||e.key==='ArrowUp'){switchSection((sectionIndex-1+totalSections)%totalSections)}
-  if(e.key>='1'&&e.key<='6'){switchSection(parseInt(e.key)-1)}
+  if(e.key>='1'&&e.key<='7'){switchSection(parseInt(e.key)-1)}
 });
 
 // ── TOUCH ──
@@ -341,7 +458,6 @@ document.addEventListener('touchend',()=>{isDragging=false});
 
 // ── ANIMATE ──
 const clock=new THREE.Clock();
-let helpFade=5;
 function animate(){
   const t=clock.getElapsedTime();
   const dt=Math.min(t-(clock._lastT||t),.1);clock._lastT=t;
@@ -359,7 +475,7 @@ function animate(){
   camera.position.lerp(new THREE.Vector3(cx,cy+4,cz-4),.06);
   camera.lookAt(0,3,-6);
   
-  // Update cursor 3D position
+  // Update cursor 3D
   mouseNDC.x=(smCX/window.innerWidth)*2-1;mouseNDC.y=-(smCY/window.innerHeight)*2+1;
   raycaster.setFromCamera(mouseNDC,camera);
   raycaster.ray.at(15,cursor3D);
@@ -367,21 +483,28 @@ function animate(){
   // Core morph + bump
   const morphVal=.5+Math.sin(t*.7)*.5;
   core.morphTargetInfluences[0]=core.userData.bump?1:morphVal;
-  if(core.userData.bump){core.userData.bump=Math.max(0,core.userData.bump-.02);core.scale.setScalar(1+core.userData.bump*.3)}
+  if(core.userData.bump){core.userData.bump=Math.max(0,core.userData.bump-.02);core.scale.setScalar(1+core.userData.bump*.35)}
   else{core.scale.lerp(new THREE.Vector3(1,1,1),.1)}
-  core.rotation.y+=.006;core.rotation.x+=.003;
+  core.rotation.y+=.007;core.rotation.x+=.003;
+  
+  // Pulse rings
+  pulseRings.forEach(pr=>{
+    pr.scale.setScalar(1+Math.sin(t*1.4+pr.userData.phase)*.12);
+    pr.material.opacity=.5+Math.sin(t*1.8+pr.userData.phase)*.2;
+  });
+  
+  // Main ring
   ring.rotation.z+=.0015;ring.rotation.y+=.0006;
   wire.rotation.y-=.004;wire.position.copy(core.position);
   
-  // Floating shapes — REPEL FROM CURSOR
+  // Floating shapes — repel from cursor
   shapes.forEach(s=>{
     s.m.rotation.x+=s.rs;s.m.rotation.y+=s.rs*.6;
     s.m.position.y=s.iY+Math.sin(t*s.fS+s.fO)*s.fA;
-    // Repel from cursor
     const dx=s.m.position.x-cursor3D.x,dy=s.m.position.y-cursor3D.y,dz=s.m.position.z-cursor3D.z;
     const dist=Math.sqrt(dx*dx+dy*dy+dz*dz);
     if(dist<s.repelR&&dist>.01){
-      const force=(s.repelR-dist)/s.repelR*.08;
+      const force=(s.repelR-dist)/s.repelR*.09;
       s.m.position.x+=dx/dist*force;s.m.position.y+=dy/dist*force;s.m.position.z+=dz/dist*force;
     }else{
       s.m.position.x+=(s.iX-s.m.position.x)*.01;
@@ -393,28 +516,52 @@ function animate(){
   const tp=terrain.geometry.attributes.position.array;
   for(let i=0;i<tp.length;i+=3){
     const ox=origT[i],oz=origT[i+2];
-    tp[i+1]=Math.sin(ox*.1+t*.25)*Math.cos(oz*.1+t*.2)*2+Math.sin(ox*.4+oz*.3+t*.35)*1;
+    tp[i+1]=Math.sin(ox*.08+t*.25)*Math.cos(oz*.08+t*.2)*2.5+Math.sin(ox*.35+oz*.25+t*.35)*1.2;
   }
   terrain.geometry.attributes.position.needsUpdate=true;
   terrain.geometry.computeVertexNormals();
   
-  // Swarm particles follow cursor
+  // Swarm particles
   const pa=particles.geometry.attributes.position.array;
   for(let i=0;i<pCount;i++){
     const idx=i*3;
     const dx=cursor3D.x-pa[idx],dy=cursor3D.y-pa[idx+1],dz=cursor3D.z-pa[idx+2];
     const d=Math.sqrt(dx*dx+dy*dy+dz*dz);
-    if(d<12&&d>.01){pa[idx]+=dx/d*.02;pa[idx+1]+=dy/d*.02;pa[idx+2]+=dz/d*.02}
+    if(d<13&&d>.01){pa[idx]+=dx/d*.025;pa[idx+1]+=dy/d*.025;pa[idx+2]+=dz/d*.025}
     else{pa[idx]+=pVel[idx];pa[idx+1]+=pVel[idx+1];pa[idx+2]+=pVel[idx+2]}
-    if(pa[idx+1]>18){pa[idx+1]=1;pa[idx]=(Math.random()-.5)*30;pa[idx+2]=(Math.random()-.5)*30-6}
+    if(pa[idx+1]>20){pa[idx+1]=1;pa[idx]=(Math.random()-.5)*32;pa[idx+2]=(Math.random()-.5)*32-6}
   }
   particles.geometry.attributes.position.needsUpdate=true;
+  
+  // Orbital debris
+  const oa=orbitalDebris.geometry.attributes.position.array;
+  for(let i=0;i<orbCount;i++){
+    const od=orbData[i];
+    od.angle+=od.speed*.008;
+    const wobR=od.baseRadius+Math.sin(t*od.wobbleS)*od.wobbleA;
+    oa[i*3]=Math.cos(od.angle)*wobR;
+    oa[i*3+1]=od.height+Math.sin(t*.8+od.angle)*.6;
+    oa[i*3+2]=Math.sin(od.angle)*wobR-8;
+  }
+  orbitalDebris.geometry.attributes.position.needsUpdate=true;
+  
+  // Data streams (digital rain)
+  const da=dataStreams.geometry.attributes.position.array;
+  for(let i=0;i<dsCount;i++){
+    da[i*3+1]-=dsData[i].speed;
+    if(da[i*3+1]<-2){
+      da[i*3+1]=dsData[i].resetY;
+      da[i*3]=(Math.random()-.5)*40;
+      da[i*3+2]=(Math.random()-.5)*40-6;
+    }
+  }
+  dataStreams.geometry.attributes.position.needsUpdate=true;
   
   // Sparkles
   let anySpark=false;
   for(let i=0;i<sparkCount;i++){
     if(sparkLife[i]>0){
-      sparkLife[i]-=.02;
+      sparkLife[i]-=.018;
       sparkArr[i*3]+=sparkVel[i*3];sparkArr[i*3+1]+=sparkVel[i*3+1];sparkArr[i*3+2]+=sparkVel[i*3+2];
       sparkVel[i*3+1]-=.002;
       anySpark=true;
