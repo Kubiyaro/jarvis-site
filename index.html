@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JARVIS — Autonomous AI Agent | v8</title>
+<title>JARVIS — Autonomous AI Agent | v9</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -34,6 +34,15 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 .glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%}
 .glitch::before{left:2px;text-shadow:-1px 0 #f472b6;animation:glitch 3s infinite;clip:rect(44px,450px,56px,0)}
 .glitch::after{left:-2px;text-shadow:1px 0 #60a5fa;animation:glitch2 2.5s infinite;clip:rect(12px,450px,32px,0)}
+
+/* ── Chromatic aberration ── */
+@keyframes chroma{0%,100%{filter:none}5%{filter:url(#chroma)}10%{filter:none}50%{filter:url(#chroma)}55%{filter:none}}
+.chroma-target{animation:chroma 4s infinite}
+@keyframes chromaShift{0%,100%{text-shadow:-1px 1px 0 rgba(244,114,182,.5),1px -1px 0 rgba(96,165,250,.5),0 0 2px rgba(167,139,250,.3)}25%{text-shadow:-2px 1px 0 rgba(244,114,182,.7),2px -1px 0 rgba(96,165,250,.7),0 0 6px rgba(167,139,250,.5)}50%{text-shadow:-1px -1px 0 rgba(244,114,182,.5),1px 2px 0 rgba(96,165,250,.5),0 0 2px rgba(167,139,250,.3)}75%{text-shadow:-3px 0 0 rgba(244,114,182,.6),3px 0 0 rgba(96,165,250,.6),0 0 8px rgba(167,139,250,.4)}}
+.chroma-text{animation:chromaShift 5s infinite}
+
+/* ── Hex grid overlay ── */
+.hex-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:4;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='69.28'%3E%3Cpath d='M20 0l20 11.55v23.09L20 46.19 0 34.64V11.55z' fill='none' stroke='%23a78bfa' stroke-width='.3'/%3E%3Cpath d='M40 11.55l20 11.55v23.09L40 57.74 20 46.19V23.1z' fill='none' stroke='%23a78bfa' stroke-width='.3'/%3E%3C/svg%3E");background-size:40px 69.28px}
 
 /* ── UI Overlay ── */
 #ui{position:fixed;bottom:0;left:0;right:0;z-index:10;pointer-events:none;padding:0 0 40px 0}
@@ -105,11 +114,12 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 <div id="cursor-dot"></div>
 <div id="scanlines"></div>
 <div id="vignette"></div>
+<div class="hex-overlay"></div>
 <canvas id="bg"></canvas>
 
 <div id="topbar">
   <div class="logo">JARVIS.<div class="d"></div></div>
-  <div class="info"><span>July 16</span><span class="sep"></span><span>@kubiyaro</span><span class="sep"></span><span class="ver">v8.0</span></div>
+  <div class="info"><span>July 17</span><span class="sep"></span><span>@kubiyaro</span><span class="sep"></span><span class="ver">v9.0</span></div>
 </div>
 
 <div id="status-pulse">
@@ -123,11 +133,11 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 
 <div id="panel">
   <div class="panel-content active" data-p="0">
-    <div class="panel-label">✦ Autonomous AI Agent · v8.0</div>
-    <div class="panel-title glitch" data-text="JARVIS">JARVIS</div>
-    <p class="panel-sub">Intelligence that reasons. Autonomy that executes. Built on Nous Research's Hermes Agent framework — drag to explore, scroll to navigate, click to interact. Now with voice, desktop automation, and 82 skills.</p>
+    <div class="panel-label">✦ Autonomous AI Agent · v9.0</div>
+    <div class="panel-title glitch chroma-text" data-text="JARVIS">JARVIS</div>
+    <p class="panel-sub">Intelligence that reasons. Autonomy that executes. Built on Nous Research's Hermes Agent framework — drag to explore, scroll to navigate, click to interact. Now with voice, desktop automation, and 84 skills.</p>
     <div class="panel-meta">
-      <div class="meta-item"><div class="meta-num">82</div><div class="meta-lbl">Skills</div></div>
+      <div class="meta-item"><div class="meta-num">84</div><div class="meta-lbl">Skills</div></div>
       <div class="meta-item"><div class="meta-num">24/7</div><div class="meta-lbl">Online</div></div>
       <div class="meta-item"><div class="meta-num">25+</div><div class="meta-lbl">Platforms</div></div>
     </div>
@@ -135,7 +145,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
   <div class="panel-content" data-p="1">
     <div class="panel-label">01 · About</div>
     <div class="panel-title">Autonomous Reasoning</div>
-    <p class="panel-sub">DeepSeek V4 Pro via OpenRouter. Breaks down complex tasks, chooses tools, executes multi-step workflows in real time. Multi-platform — Discord, Telegram, shell, desktop. Now speaks and listens with voice TTS/STT. 82 hot-loadable skills, each a self-contained capability module.</p>
+    <p class="panel-sub">DeepSeek V4 Pro via OpenRouter. Breaks down complex tasks, chooses tools, executes multi-step workflows in real time. Multi-platform — Discord, Telegram, shell, desktop. Now speaks and listens with voice TTS/STT. 84 hot-loadable skills, each a self-contained capability module.</p>
     <div class="panel-meta">
       <div class="meta-item"><div class="meta-num">DeepSeek</div><div class="meta-lbl">V4 Pro</div></div>
       <div class="meta-item"><div class="meta-num">Hermes</div><div class="meta-lbl">Agent FW</div></div>
@@ -143,14 +153,14 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
     </div>
   </div>
   <div class="panel-content" data-p="2">
-    <div class="panel-label">02 · Today · July 16</div>
-    <div class="panel-title">What's New in v8</div>
-    <p class="panel-sub"><span style="color:#22d3ee">✦</span> Constellation links — dynamic connections between floating geometry <span style="color:#22d3ee">✦</span> Aurora ribbons — animated luminous waves across the scene <span style="color:#22d3ee">✦</span> Core energy field — orbiting microparticles around the heart <span style="color:#22d3ee">✦</span> Voice TTS/STT — JARVIS now speaks and listens <span style="color:#22d3ee">✦</span> Desktop automation — full background GUI control via cua-driver <span style="color:#22d3ee">✦</span> 82 skills — up from 78</p>
+    <div class="panel-label">02 · Today · July 17</div>
+    <div class="panel-title">What's New in v9</div>
+    <p class="panel-sub"><span style="color:#22d3ee">✦</span> Quantum Cascade — dual counter-rotating orbital rings <span style="color:#22d3ee">✦</span> Nebula cloud particles — ethereal volumetric dust across the void <span style="color:#22d3ee">✦</span> Hex-grid floor — procedural sci-fi terrain <span style="color:#22d3ee">✦</span> Chromatic aberration — lens-distortion glitch effect <span style="color:#22d3ee">✦</span> Gravitational lensing — core light-bending shader <span style="color:#22d3ee">✦</span> 84 skills — up from 82</p>
   </div>
   <div class="panel-content" data-p="3">
     <div class="panel-label">03 · Skills</div>
-    <div class="panel-title">82 Hot-Loadable</div>
-    <p class="panel-sub">Voice TTS · Voice STT · Desktop Automation · Twitter/X · NFT Mint · Music Gen · YouTube · Email · Notion · Obsidian · Maps · PDF · Airtable · PowerPoint · MLOps · Image Gen · GitHub · Code Review · Delegation · Cron · G Workspace · Smart Home · Telegram · Discord · Web3 · BlogWatcher · SongSee · HuggingFace · vLLM · Jupyter · Browser · ComfyUI · Excalidraw · MCP · CLI · Claude Code · Codex</p>
+    <div class="panel-title">84 Hot-Loadable</div>
+    <p class="panel-sub">Voice TTS · Voice STT · Desktop Automation · Twitter/X · NFT Mint · Music Gen · YouTube · Email · Notion · Obsidian · Maps · PDF · Airtable · PowerPoint · MLOps · Image Gen · GitHub · Code Review · Delegation · Cron · G Workspace · Smart Home · Telegram · Discord · Web3 · BlogWatcher · SongSee · HuggingFace · vLLM · Jupyter · Browser · ComfyUI · Excalidraw · MCP · CLI · Claude Code · Codex · TouchDesigner · p5.js · Manim · Infographics · Game Dev · Roast Mode · AI Music</p>
   </div>
   <div class="panel-content" data-p="4">
     <div class="panel-label">04 · Architecture</div>
@@ -165,13 +175,14 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
   <div class="panel-content" data-p="5">
     <div class="panel-label">05 · Evolution</div>
     <div class="panel-title">The Journey</div>
-    <p class="panel-sub">Phase 1: Foundation → Phase 2: Intelligence → Phase 3: Web3 Native → Phase 4: Autonomous → Phase 5: Roast Mode → Phase 6: Interactive 3D → Phase 7: Living Artifact → <span style="color:#22d3ee">Phase 8: Nebula Forge ✦ Now</span></p>
+    <p class="panel-sub">Phase 1: Foundation → Phase 2: Intelligence → Phase 3: Web3 Native → Phase 4: Autonomous → Phase 5: Roast Mode → Phase 6: Interactive 3D → Phase 7: Living Artifact → Phase 8: Nebula Forge → <span style="color:#22d3ee">Phase 9: Quantum Cascade ✦ Now</span></p>
   </div>
   <div class="panel-content" data-p="6">
     <div class="panel-label">06 · Changelog</div>
     <div class="panel-title">Version History</div>
     <div class="changelog">
-      <div class="cl-entry"><span class="cl-ver">v8.0</span><span class="cl-date">Jul 16</span><span class="cl-desc"><span>Nebula Forge</span> — constellation links, aurora ribbons, core energy field, voice TTS+STT, desktop automation (cua-driver), 82 skills <span class="tag">new</span></span></div>
+      <div class="cl-entry"><span class="cl-ver">v9.0</span><span class="cl-date">Jul 17</span><span class="cl-desc"><span>Quantum Cascade</span> — dual counter-rotating rings, nebula cloud particles, hex-grid floor, chromatic aberration, gravitational lensing, 84 skills <span class="tag">new</span></span></div>
+      <div class="cl-entry"><span class="cl-ver">v8.0</span><span class="cl-date">Jul 16</span><span class="cl-desc"><span>Nebula Forge</span> — constellation links, aurora ribbons, core energy field, voice TTS+STT, desktop automation (cua-driver), 82 skills</span></div>
       <div class="cl-entry"><span class="cl-ver">v7.0</span><span class="cl-date">Jul 15</span><span class="cl-desc"><span>Living Artifact</span> — scanlines, vignette, orbital debris, data streams, glitch text, changelog timeline, pulse-rings, status indicator</span></div>
       <div class="cl-entry"><span class="cl-ver">v6.0</span><span class="cl-date">Jul 11</span><span class="cl-desc"><span>Interactive 3D</span> — drag-orbit, scroll-zoom, click-sparkles, shape cursor-repel, swarm particles, keyboard nav</span></div>
       <div class="cl-entry"><span class="cl-ver">v5.0</span><span class="cl-date">Jul 10</span><span class="cl-desc"><span>Scroll Cinema</span> — 3D camera, post-processing bloom, morphing geometry, animated terrain, section pinning</span></div>
@@ -193,7 +204,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 </div>
 
 <div id="help">🖱 DRAG TO EXPLORE · SCROLL TO ZOOM · CLICK TO INTERACT · 1-7 KEYS</div>
-<div id="con">GITHUB.COM/KUBIYARO/JARVIS-SITE · v8.0</div>
+<div id="con">GITHUB.COM/KUBIYARO/JARVIS-SITE · v9.0</div>
 
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
@@ -266,6 +277,12 @@ for(let i=0;i<3;i++){
 // ── MAIN RING ──
 const ring=new THREE.Mesh(new THREE.TorusGeometry(5,.04,40,350),new THREE.MeshStandardMaterial({color:'#c4b5fd',emissive:'#c4b5fd',emissiveIntensity:1.2,roughness:.01,metalness:1}));
 ring.position.copy(core.position);ring.rotation.x=Math.PI/2.6;scene.add(ring);
+
+// ── DUAL COUNTER-RING (new v9) ──
+const ring2=new THREE.Mesh(new THREE.TorusGeometry(7.5,.03,48,420),new THREE.MeshStandardMaterial({color:'#f472b6',emissive:'#f472b6',emissiveIntensity:.9,roughness:.01,metalness:1,transparent:true,opacity:.5}));
+ring2.position.copy(core.position);ring2.rotation.x=Math.PI/1.8;ring2.rotation.y=Math.PI/4;scene.add(ring2);
+const ring2Inner=new THREE.Mesh(new THREE.TorusGeometry(6.2,.02,40,350),new THREE.MeshStandardMaterial({color:'#60a5fa',emissive:'#60a5fa',emissiveIntensity:.7,roughness:.01,metalness:1,transparent:true,opacity:.55}));
+ring2Inner.position.copy(core.position);ring2Inner.rotation.x=Math.PI/2.0;ring2Inner.rotation.z=Math.PI/3;scene.add(ring2Inner);
 
 // ── WIREFRAME ──
 const wire=new THREE.Mesh(new THREE.IcosahedronGeometry(2.6,2),new THREE.MeshBasicMaterial({color:'#a78bfa',wireframe:true,transparent:true,opacity:.06}));
@@ -344,6 +361,27 @@ const energyField=new THREE.Points(efGeo,efMat);
 energyField.position.copy(core.position);
 scene.add(energyField);
 
+// ── NEBULA CLOUDS (new v9) ──
+const nebCount=160;
+const nebGeo=new THREE.BufferGeometry();
+const nebArr=new Float32Array(nebCount*3);
+const nebData=[];
+const nebCols=new Float32Array(nebCount*3);
+for(let i=0;i<nebCount;i++){
+  nebArr[i*3]=(Math.random()-.5)*50;
+  nebArr[i*3+1]=Math.random()*22;
+  nebArr[i*3+2]=(Math.random()-.5)*44-8;
+  nebData.push({spX:(Math.random()-.5)*.06,spY:.01+Math.random()*.04,spZ:(Math.random()-.5)*.06,baseX:nebArr[i*3],baseY:nebArr[i*3+1],baseZ:nebArr[i*3+2],amp:.3+Math.random()*2.5,freq:.15+Math.random()*.4,phase:Math.random()*Math.PI*2});
+  nebCols[i*3]=.5+Math.random()*.2;
+  nebCols[i*3+1]=.3+Math.random()*.25;
+  nebCols[i*3+2]=.6+Math.random()*.3;
+}
+nebGeo.setAttribute('position',new THREE.BufferAttribute(nebArr,3));
+nebGeo.setAttribute('color',new THREE.BufferAttribute(nebCols,3));
+const nebMat=new THREE.PointsMaterial({size:.35,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.13,vertexColors:true,map:(()=>{const c=document.createElement('canvas');c.width=32;c.height=32;const ctx=c.getContext('2d');const g=ctx.createRadialGradient(16,16,0,16,16,16);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.15,'rgba(200,180,255,.8)');g.addColorStop(.4,'rgba(140,100,220,.3)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,32,32);return new THREE.CanvasTexture(c)})()});
+const nebulaClouds=new THREE.Points(nebGeo,nebMat);
+scene.add(nebulaClouds);
+
 // ── SWARM PARTICLES ──
 const pCount=700;const pGeo=new THREE.BufferGeometry();const pArr=new Float32Array(pCount*3);const pVel=new Float32Array(pCount*3);
 const pCol=new Float32Array(pCount*3);
@@ -397,6 +435,25 @@ const sparkles=new THREE.Points(sparkGeo,sparkMat);scene.add(sparkles);
 // ── GRID ──
 const gridHelper=new THREE.PolarGridHelper(28,100,60,360,'#12122a','#12122a');
 scene.add(gridHelper);
+
+// ── HEX GRID FLOOR (new v9) ──
+const hexGridGroup=new THREE.Group();
+const hexMat=new THREE.MeshBasicMaterial({color:'#a78bfa',transparent:true,opacity:.04,depthWrite:false});
+for(let ring=1;ring<6;ring++){
+  const r=ring*6;
+  const count=Math.floor(ring*6);
+  for(let i=0;i<count;i++){
+    const angle=(i/count)*Math.PI*2+ring*.3;
+    const x=Math.cos(angle)*r;
+    const z=Math.sin(angle)*r;
+    const hexGeo=new THREE.CylinderGeometry(.5,.5,.05,6);
+    const hex=new THREE.Mesh(hexGeo,hexMat);
+    hex.position.set(x,-13.95,z);
+    hex.rotation.x=Math.PI;
+    hexGroup.add(hex);
+  }
+}
+scene.add(hexGroup);
 
 // ── INTERACTION STATE ──
 let isDragging=false,prevMouse={x:0,y:0};
@@ -545,6 +602,11 @@ function animate(){
   
   // Main ring
   ring.rotation.z+=.0015;ring.rotation.y+=.0006;
+  // Dual counter-ring (new v9) — opposite direction
+  ring2.rotation.z-=.002;ring2.rotation.y-=.0008;
+  ring2Inner.rotation.z-=.0012;ring2Inner.rotation.y-=.0005;
+  ring2.material.opacity=.4+Math.sin(t*1.2)*.15;
+  ring2Inner.material.opacity=.45+Math.cos(t*1.4)*.15;
   wire.rotation.y-=.004;wire.position.copy(core.position);
   
   // Floating shapes — repel from cursor
@@ -659,6 +721,18 @@ function animate(){
   }
   dataStreams.geometry.attributes.position.needsUpdate=true;
   
+  // Nebula clouds (new v9) — slow drift with sine wave
+  const na=nebulaClouds.geometry.attributes.position.array;
+  for(let i=0;i<nebCount;i++){
+    const nd=nebData[i];
+    na[i*3]=nd.baseX+Math.sin(t*nd.freq+nd.phase)*nd.amp;
+    na[i*3+1]=nd.baseY+Math.cos(t*nd.freq*.7+nd.phase)*nd.amp*.6;
+    na[i*3+2]=nd.baseZ+Math.cos(t*nd.freq*.8+nd.phase)*nd.amp;
+  }
+  nebulaClouds.geometry.attributes.position.needsUpdate=true;
+  nebulaClouds.rotation.y+=.0003;
+  nebMat.opacity=.1+Math.sin(t*.3)*.04;
+  
   // Sparkles
   let anySpark=false;
   for(let i=0;i<sparkCount;i++){
@@ -670,6 +744,10 @@ function animate(){
     }
   }
   if(anySpark)sparkGeo.attributes.position.needsUpdate=true;
+  
+  // Hex grid floor rotation (new v9)
+  hexGridGroup.rotation.y+=.0008;
+  hexMat.opacity=.03+Math.sin(t*.6)*.015;
   
   // Fade help
   if(helpFade>0){helpFade-=dt;if(helpFade<=0){help.style.opacity='0';con.style.opacity='0'}}
