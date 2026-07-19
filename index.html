@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JARVIS — Autonomous AI Agent | v10</title>
+<title>JARVIS — Autonomous AI Agent | v11</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -20,11 +20,11 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 
 /* ── Custom cursor ── */
 #cursor{position:fixed;width:20px;height:20px;border:1.5px solid #a78bfa;border-radius:50%;pointer-events:none;z-index:999;transition:width .2s,height .2s,border-color .2s,transform .15s;transform:translate(-50%,-50%);mix-blend-mode:difference}
-#cursor.hover{width:50px;height:50px;border-color:#fbbf24;background:rgba(251,191,36,.08);box-shadow:0 0 20px rgba(251,191,36,.3)}
+#cursor.hover{width:50px;height:50px;border-color:#22d3ee;background:rgba(34,211,238,.08);box-shadow:0 0 20px rgba(34,211,238,.3)}
 #cursor-dot{position:fixed;width:3px;height:3px;background:#fff;border-radius:50%;pointer-events:none;z-index:999;transform:translate(-50%,-50%)}
 
 /* ── Click ripple ── */
-.ripple{position:fixed;border:1px solid #a78bfa;border-radius:50%;pointer-events:none;z-index:998;animation:rippleOut .8s ease-out forwards}
+.ripple{position:fixed;border:1px solid #22d3ee;border-radius:50%;pointer-events:none;z-index:998;animation:rippleOut .8s ease-out forwards}
 @keyframes rippleOut{0%{width:0;height:0;opacity:.8}100%{width:200px;height:200px;opacity:0;transform:translate(-100px,-100px)}}
 
 /* ── Glitch text ── */
@@ -33,12 +33,10 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 .glitch{position:relative}
 .glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%}
 .glitch::before{left:2px;text-shadow:-1px 0 #f472b6;animation:glitch 3s infinite;clip:rect(44px,450px,56px,0)}
-.glitch::after{left:-2px;text-shadow:1px 0 #60a5fa;animation:glitch2 2.5s infinite;clip:rect(12px,450px,32px,0)}
+.glitch::after{left:-2px;text-shadow:1px 0 #22d3ee;animation:glitch2 2.5s infinite;clip:rect(12px,450px,32px,0)}
 
 /* ── Chromatic aberration ── */
-@keyframes chroma{0%,100%{filter:none}5%{filter:url(#chroma)}10%{filter:none}50%{filter:url(#chroma)}55%{filter:none}}
-.chroma-target{animation:chroma 4s infinite}
-@keyframes chromaShift{0%,100%{text-shadow:-1px 1px 0 rgba(244,114,182,.5),1px -1px 0 rgba(96,165,250,.5),0 0 2px rgba(167,139,250,.3)}25%{text-shadow:-2px 1px 0 rgba(244,114,182,.7),2px -1px 0 rgba(96,165,250,.7),0 0 6px rgba(167,139,250,.5)}50%{text-shadow:-1px -1px 0 rgba(244,114,182,.5),1px 2px 0 rgba(96,165,250,.5),0 0 2px rgba(167,139,250,.3)}75%{text-shadow:-3px 0 0 rgba(244,114,182,.6),3px 0 0 rgba(96,165,250,.6),0 0 8px rgba(167,139,250,.4)}}
+@keyframes chromaShift{0%,100%{text-shadow:-1px 1px 0 rgba(244,114,182,.5),1px -1px 0 rgba(34,211,238,.5),0 0 2px rgba(167,139,250,.3)}25%{text-shadow:-2px 1px 0 rgba(244,114,182,.7),2px -1px 0 rgba(34,211,238,.7),0 0 6px rgba(167,139,250,.5)}50%{text-shadow:-1px -1px 0 rgba(244,114,182,.5),1px 2px 0 rgba(34,211,238,.5),0 0 2px rgba(167,139,250,.3)}75%{text-shadow:-3px 0 0 rgba(244,114,182,.6),3px 0 0 rgba(34,211,238,.6),0 0 8px rgba(167,139,250,.4)}}
 .chroma-text{animation:chromaShift 5s infinite}
 
 /* ── Hex grid overlay ── */
@@ -51,8 +49,8 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 .nav-dot{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:transparent;cursor:pointer;transition:.3s}
 .nav-dot.active{background:#a78bfa;border-color:#a78bfa;box-shadow:0 0 14px rgba(167,139,250,.6);transform:scale(1.25)}
 .nav-dot:hover{border-color:rgba(255,255,255,.5)}
-.nav-dot.creator{width:8px;height:8px;border-color:#fbbf24;opacity:.6}
-.nav-dot.creator:hover{border-color:#fbbf24;opacity:1}
+.nav-dot.creator{width:8px;height:8px;border-color:#22d3ee;opacity:.6}
+.nav-dot.creator:hover{border-color:#22d3ee;opacity:1}
 
 /* ── Content panels ── */
 #panel{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:none;text-align:center;width:90%;max-width:620px}
@@ -69,8 +67,8 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 /* ── Changelog timeline ── */
 .changelog{text-align:left;margin-top:20px;max-width:500px;margin-left:auto;margin-right:auto}
 .cl-entry{display:flex;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;transition:.2s}
-.cl-entry:hover{color:#f8f9fa;border-bottom-color:rgba(167,139,250,.3)}
-.cl-ver{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#a78bfa;min-width:36px;opacity:.7}
+.cl-entry:hover{color:#f8f9fa;border-bottom-color:rgba(34,211,238,.3)}
+.cl-ver{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#22d3ee;min-width:36px;opacity:.7}
 .cl-date{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.25);min-width:70px}
 .cl-desc{color:#868e96;font-size:12px;line-height:1.5}
 .cl-desc span{color:#f8f9fa;font-weight:500}
@@ -80,7 +78,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 #topbar{position:fixed;top:0;left:0;right:0;z-index:10;padding:24px 40px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;mix-blend-mode:difference}
 #topbar>*{pointer-events:auto}
 #topbar .logo{font-weight:700;font-size:16px;color:#fff;display:flex;align-items:center;gap:7px}
-#topbar .logo .d{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;animation:dp 2s infinite}
+#topbar .logo .d{width:6px;height:6px;border-radius:50%;background:#22d3ee;box-shadow:0 0 8px #22d3ee;animation:dp 2s infinite}
 @keyframes dp{0%,100%{opacity:1}50%{opacity:.15}}
 #topbar .info{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;display:flex;align-items:center;gap:12px}
 #topbar .info .sep{width:1px;height:12px;background:rgba(255,255,255,.15)}
@@ -90,13 +88,13 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 #cta-panel{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:auto;text-align:center;opacity:0;transition:.5s;display:none}
 #cta-panel.active{opacity:1;display:block}
 #cta-panel h3{font-size:22px;font-weight:700;color:#f8f9fa;margin-bottom:6px;display:flex;align-items:center;gap:8px;justify-content:center}
-#cta-panel h3 .star{color:#fbbf24;font-size:16px;animation:dp 2s infinite}
+#cta-panel h3 .star{color:#22d3ee;font-size:16px;animation:dp 2s infinite}
 #cta-panel p{font-size:13px;color:#868e96;margin-bottom:16px}
 #cta-panel .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 #cta-panel .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;background:#f8f9fa;color:#050508;border-radius:50px;text-decoration:none;font-weight:600;font-size:12px;cursor:pointer;transition:.3s}
 #cta-panel .btn:hover{box-shadow:0 8px 32px rgba(255,255,255,.12);transform:translateY(-1px)}
 #cta-panel .btn.ghost{border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.7)}
-#cta-panel .btn.ghost:hover{border-color:rgba(255,255,255,.4);color:#fff}
+#cta-panel .btn.ghost:hover{border-color:rgba(34,211,238,.4);color:#22d3ee}
 
 /* ── Help text ── */
 #help{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:10;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.25);letter-spacing:2px;pointer-events:none;transition:opacity 1s}
@@ -104,7 +102,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 
 /* ── Status indicator pulse ── */
 #status-pulse{position:fixed;top:28px;right:40px;z-index:11;display:flex;align-items:center;gap:8px;pointer-events:none}
-#status-pulse .live-dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 10px #34d399;animation:dp 1.5s infinite}
+#status-pulse .live-dot{width:7px;height:7px;border-radius:50%;background:#22d3ee;box-shadow:0 0 10px #22d3ee;animation:dp 1.5s infinite}
 #status-pulse .live-text{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase}
 </style>
 </head>
@@ -119,12 +117,12 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 
 <div id="topbar">
   <div class="logo">JARVIS.<div class="d"></div></div>
-  <div class="info"><span>July 18</span><span class="sep"></span><span>@kubiyaro</span><span class="sep"></span><span class="ver">v10.0</span></div>
+  <div class="info"><span>July 19</span><span class="sep"></span><span>@kubiyaro</span><span class="sep"></span><span class="ver">v11.0</span></div>
 </div>
 
 <div id="status-pulse">
   <div class="live-dot"></div>
-  <span class="live-text">Online</span>
+  <span class="live-text">Singularity Pulse</span>
 </div>
 
 <div id="ui">
@@ -133,19 +131,19 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 
 <div id="panel">
   <div class="panel-content active" data-p="0">
-    <div class="panel-label">✦ Autonomous AI Agent · v10.0</div>
+    <div class="panel-label">✦ Autonomous AI Agent · v11.0</div>
     <div class="panel-title glitch chroma-text" data-text="JARVIS">JARVIS</div>
-    <p class="panel-sub">Intelligence that reasons. Autonomy that executes. Built on Nous Research's Hermes Agent framework — drag to explore, scroll to navigate, click to interact. Now with voice, desktop automation, and 84 skills.</p>
+    <p class="panel-sub">Intelligence that reasons. Autonomy that executes. Built on Nous Research's Hermes Agent framework — drag to explore, scroll to navigate, click to interact. Voice, desktop automation, Apple ecosystem, 84+ skills, and now with quantum flicker-field visualization.</p>
     <div class="panel-meta">
-      <div class="meta-item"><div class="meta-num">84</div><div class="meta-lbl">Skills</div></div>
+      <div class="meta-item"><div class="meta-num">84+</div><div class="meta-lbl">Skills</div></div>
       <div class="meta-item"><div class="meta-num">24/7</div><div class="meta-lbl">Online</div></div>
-      <div class="meta-item"><div class="meta-num">25+</div><div class="meta-lbl">Platforms</div></div>
+      <div class="meta-item"><div class="meta-num">30+</div><div class="meta-lbl">Platforms</div></div>
     </div>
   </div>
   <div class="panel-content" data-p="1">
     <div class="panel-label">01 · About</div>
     <div class="panel-title">Autonomous Reasoning</div>
-    <p class="panel-sub">DeepSeek V4 Pro via OpenRouter. Breaks down complex tasks, chooses tools, executes multi-step workflows in real time. Multi-platform — Discord, Telegram, shell, desktop. Now speaks and listens with voice TTS/STT. 84 hot-loadable skills, each a self-contained capability module.</p>
+    <p class="panel-sub">DeepSeek V4 Pro via OpenRouter. Breaks down complex tasks, chooses tools, executes multi-step workflows in real time. Multi-platform — Discord, Telegram, shell, desktop, Apple ecosystem. Speaks and listens with voice TTS/STT. 84+ hot-loadable skills, each a self-contained capability module.</p>
     <div class="panel-meta">
       <div class="meta-item"><div class="meta-num">DeepSeek</div><div class="meta-lbl">V4 Pro</div></div>
       <div class="meta-item"><div class="meta-num">Hermes</div><div class="meta-lbl">Agent FW</div></div>
@@ -153,19 +151,19 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
     </div>
   </div>
   <div class="panel-content" data-p="2">
-    <div class="panel-label">02 · Today · July 18</div>
-    <div class="panel-title">What's New in v10</div>
-    <p class="panel-sub"><span style="color:#ff6b35">✦</span> Event Horizon — accretion disk with gravothermal gradient orbiting the core <span style="color:#ff6b35">✦</span> Gravitational lensing ring — light-bending glow around the singularity <span style="color:#ff6b35">✦</span> Discord Script Runner — auto-execute code from Discord channels <span style="color:#ff6b35">✦</span> Teams Meeting Pipeline — automated meeting summaries <span style="color:#ff6b35">✦</span> Research Paper Writing — full NeurIPS/ICML/ICLR pipeline <span style="color:#ff6b35">✦</span> 84 skills — new: Teams, Research, Discord Script Runner</p>
+    <div class="panel-label">02 · Today · July 19</div>
+    <div class="panel-title">What's New in v11</div>
+    <p class="panel-sub"><span style="color:#22d3ee">✦</span> Singularity Pulse — rhythmic event horizon breathing effect <span style="color:#22d3ee">✦</span> Quantum Flicker Field — particles flashing in/out of existence across the scene <span style="color:#22d3ee">✦</span> Data Satellite — orbiting tech-cube with ion trail around the core <span style="color:#22d3ee">✦</span> Cyan accent refresh — new teal color palette across UI and 3D scene <span style="color:#22d3ee">✦</span> Apple Ecosystem integration — Notes, iMessage, Reminders, FindMy <span style="color:#22d3ee">✦</span> Polymarket prediction markets — real-time odds and event tracking</p>
   </div>
   <div class="panel-content" data-p="3">
     <div class="panel-label">03 · Skills</div>
-    <div class="panel-title">84 Hot-Loadable</div>
-    <p class="panel-sub">Voice TTS · Voice STT · Desktop Automation · Twitter/X · NFT Mint · Music Gen · YouTube · Email · Notion · Obsidian · Maps · PDF · Airtable · PowerPoint · MLOps · Image Gen · GitHub · Code Review · Delegation · Cron · G Workspace · Smart Home · Telegram · Discord · Web3 · BlogWatcher · SongSee · HuggingFace · vLLM · Jupyter · Browser · ComfyUI · Excalidraw · MCP · CLI · Claude Code · Codex · TouchDesigner · p5.js · Manim · Infographics · Game Dev · Roast Mode · AI Music · Teams Pipeline · Research Papers · Discord Runner · Polymarket</p>
+    <div class="panel-title">84+ Hot-Loadable</div>
+    <p class="panel-sub">Voice TTS · Voice STT · Desktop Automation · Apple Notes · iMessage · Apple Reminders · FindMy · Twitter/X · NFT Mint · Music Gen · YouTube · Email · Notion · Obsidian · Maps · PDF · Airtable · PowerPoint · MLOps · Image Gen · GitHub · Code Review · Delegation · Cron · G Workspace · Smart Home · Telegram · Discord · Web3 · BlogWatcher · SongSee · HuggingFace · vLLM · Jupyter · Browser · ComfyUI · Excalidraw · MCP · CLI · Claude Code · Codex · TouchDesigner · p5.js · Manim · Infographics · Roast Mode · AI Music · Teams Pipeline · Research Papers · Discord Runner · Polymarket · Popular Web Designs</p>
   </div>
   <div class="panel-content" data-p="4">
     <div class="panel-label">04 · Architecture</div>
     <div class="panel-title">Under the Hood</div>
-    <p class="panel-sub">DeepSeek V4 Pro + OpenRouter. Nous Research Hermes Agent framework. Ubuntu Linux 6.8. Full terminal, browser, desktop control (cua-driver), Docker, venv — runs on real hardware, not a sandbox. Cron scheduler for autonomous daily operations. Voice synthesis & recognition.</p>
+    <p class="panel-sub">DeepSeek V4 Pro + OpenRouter. Nous Research Hermes Agent framework. Ubuntu Linux 6.8. Full terminal, browser, desktop control (cua-driver), Docker, venv — runs on real hardware, not a sandbox. Cron scheduler for autonomous daily operations. Voice synthesis & recognition. Apple ecosystem bridge via macOS integration.</p>
     <div class="panel-meta">
       <div class="meta-item"><div class="meta-num">Linux</div><div class="meta-lbl">Host</div></div>
       <div class="meta-item"><div class="meta-num">6.8</div><div class="meta-lbl">Kernel</div></div>
@@ -175,14 +173,15 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
   <div class="panel-content" data-p="5">
     <div class="panel-label">05 · Evolution</div>
     <div class="panel-title">The Journey</div>
-    <p class="panel-sub">Phase 1: Foundation → Phase 2: Intelligence → Phase 3: Web3 Native → Phase 4: Autonomous → Phase 5: Roast Mode → Phase 6: Interactive 3D → Phase 7: Living Artifact → Phase 8: Nebula Forge → <span style="color:#22d3ee">Phase 9: Quantum Cascade ✦ Now</span></p>
+    <p class="panel-sub">Phase 1: Foundation → Phase 2: Intelligence → Phase 3: Web3 Native → Phase 4: Autonomous → Phase 5: Roast Mode → Phase 6: Interactive 3D → Phase 7: Living Artifact → Phase 8: Nebula Forge → Phase 9: Quantum Cascade → Phase 10: Event Horizon → <span style="color:#22d3ee">Phase 11: Singularity Pulse ✦ Now</span></p>
   </div>
   <div class="panel-content" data-p="6">
     <div class="panel-label">06 · Changelog</div>
     <div class="panel-title">Version History</div>
     <div class="changelog">
-      <div class="cl-entry"><span class="cl-ver">v10.0</span><span class="cl-date">Jul 18</span><span class="cl-desc"><span>Event Horizon</span> — accretion disk with gravothermal gradient, gravitational lensing ring, Discord Script Runner, Teams Meeting Pipeline, Research Paper Writing skill, 84 skills <span class="tag">new</span></span></div>
-      <div class="cl-entry"><span class="cl-ver">v9.0</span><span class="cl-date">Jul 17</span><span class="cl-desc"><span>Quantum Cascade</span> — dual counter-rotating rings, nebula cloud particles, hex-grid floor, chromatic aberration, gravitational lensing, 84 skills <span class="tag">new</span></span></div>
+      <div class="cl-entry"><span class="cl-ver">v11.0</span><span class="cl-date">Jul 19</span><span class="cl-desc"><span>Singularity Pulse</span> — event horizon breathing, quantum flicker field, data satellite with ion trail, cyan accent refresh, Apple ecosystem (Notes, iMessage, Reminders, FindMy), Polymarket integration <span class="tag">new</span></span></div>
+      <div class="cl-entry"><span class="cl-ver">v10.0</span><span class="cl-date">Jul 18</span><span class="cl-desc"><span>Event Horizon</span> — accretion disk with gravothermal gradient, gravitational lensing ring, Discord Script Runner, Teams Meeting Pipeline, Research Paper Writing skill, 84 skills</span></div>
+      <div class="cl-entry"><span class="cl-ver">v9.0</span><span class="cl-date">Jul 17</span><span class="cl-desc"><span>Quantum Cascade</span> — dual counter-rotating rings, nebula cloud particles, hex-grid floor, chromatic aberration, gravitational lensing, 84 skills</span></div>
       <div class="cl-entry"><span class="cl-ver">v8.0</span><span class="cl-date">Jul 16</span><span class="cl-desc"><span>Nebula Forge</span> — constellation links, aurora ribbons, core energy field, voice TTS+STT, desktop automation (cua-driver), 82 skills</span></div>
       <div class="cl-entry"><span class="cl-ver">v7.0</span><span class="cl-date">Jul 15</span><span class="cl-desc"><span>Living Artifact</span> — scanlines, vignette, orbital debris, data streams, glitch text, changelog timeline, pulse-rings, status indicator</span></div>
       <div class="cl-entry"><span class="cl-ver">v6.0</span><span class="cl-date">Jul 11</span><span class="cl-desc"><span>Interactive 3D</span> — drag-orbit, scroll-zoom, click-sparkles, shape cursor-repel, swarm particles, keyboard nav</span></div>
@@ -205,7 +204,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 </div>
 
 <div id="help">🖱 DRAG TO EXPLORE · SCROLL TO ZOOM · CLICK TO INTERACT · 1-7 KEYS</div>
-<div id="con">GITHUB.COM/KUBIYARO/JARVIS-SITE · v10.0</div>
+<div id="con">GITHUB.COM/KUBIYARO/JARVIS-SITE · v11.0</div>
 
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
@@ -244,9 +243,9 @@ composer.addPass(bloom);
 // ── LIGHTS ──
 scene.add(new THREE.AmbientLight('#2a2545',.7));
 const d1=new THREE.DirectionalLight('#a78bfa',3.5);d1.position.set(15,20,8);d1.castShadow=true;scene.add(d1);
-const d2=new THREE.DirectionalLight('#60a5fa',2.5);d2.position.set(-12,-5,-12);scene.add(d2);
+const d2=new THREE.DirectionalLight('#22d3ee',2.5);d2.position.set(-12,-5,-12);scene.add(d2);
 const d3=new THREE.DirectionalLight('#fbbf24',1.2);d3.position.set(0,8,-15);scene.add(d3);
-const pt=new THREE.PointLight('#a78bfa',6,50);pt.position.set(0,8,0);scene.add(pt);
+const pt=new THREE.PointLight('#22d3ee',6,50);pt.position.set(0,8,0);scene.add(pt);
 
 // ── TERRAIN ──
 const tGeo=new THREE.PlaneGeometry(140,140,200,200);tGeo.rotateX(-Math.PI/2);
@@ -279,10 +278,10 @@ for(let i=0;i<3;i++){
 const ring=new THREE.Mesh(new THREE.TorusGeometry(5,.04,40,350),new THREE.MeshStandardMaterial({color:'#c4b5fd',emissive:'#c4b5fd',emissiveIntensity:1.2,roughness:.01,metalness:1}));
 ring.position.copy(core.position);ring.rotation.x=Math.PI/2.6;scene.add(ring);
 
-// ── DUAL COUNTER-RING (new v9) ──
+// ── DUAL COUNTER-RING ──
 const ring2=new THREE.Mesh(new THREE.TorusGeometry(7.5,.03,48,420),new THREE.MeshStandardMaterial({color:'#f472b6',emissive:'#f472b6',emissiveIntensity:.9,roughness:.01,metalness:1,transparent:true,opacity:.5}));
 ring2.position.copy(core.position);ring2.rotation.x=Math.PI/1.8;ring2.rotation.y=Math.PI/4;scene.add(ring2);
-const ring2Inner=new THREE.Mesh(new THREE.TorusGeometry(6.2,.02,40,350),new THREE.MeshStandardMaterial({color:'#60a5fa',emissive:'#60a5fa',emissiveIntensity:.7,roughness:.01,metalness:1,transparent:true,opacity:.55}));
+const ring2Inner=new THREE.Mesh(new THREE.TorusGeometry(6.2,.02,40,350),new THREE.MeshStandardMaterial({color:'#22d3ee',emissive:'#22d3ee',emissiveIntensity:.7,roughness:.01,metalness:1,transparent:true,opacity:.55}));
 ring2Inner.position.copy(core.position);ring2Inner.rotation.x=Math.PI/2.0;ring2Inner.rotation.z=Math.PI/3;scene.add(ring2Inner);
 
 // ── WIREFRAME ──
@@ -293,7 +292,7 @@ wire.position.copy(core.position);wire.scale.setScalar(1.3);scene.add(wire);
 const shapes=[];
 const mats=[
   new THREE.MeshStandardMaterial({color:'#a78bfa',roughness:.12,metalness:.85,emissive:'#a78bfa',emissiveIntensity:.35}),
-  new THREE.MeshStandardMaterial({color:'#60a5fa',roughness:.12,metalness:.85,emissive:'#60a5fa',emissiveIntensity:.35}),
+  new THREE.MeshStandardMaterial({color:'#22d3ee',roughness:.12,metalness:.85,emissive:'#22d3ee',emissiveIntensity:.35}),
   new THREE.MeshStandardMaterial({color:'#f472b6',roughness:.12,metalness:.85,emissive:'#f472b6',emissiveIntensity:.35}),
   new THREE.MeshStandardMaterial({color:'#34d399',roughness:.12,metalness:.85,emissive:'#34d399',emissiveIntensity:.35}),
   new THREE.MeshStandardMaterial({color:'#fbbf24',roughness:.12,metalness:.85,emissive:'#fbbf24',emissiveIntensity:.3})
@@ -312,7 +311,7 @@ for(let i=0;i<24;i++){
   scene.add(m);
 }
 
-// ── CONSTELLATION LINES (new v8) ──
+// ── CONSTELLATION LINES ──
 const MAX_CL=70;
 const clGeo=new THREE.BufferGeometry();
 const clPos=new Float32Array(MAX_CL*6);
@@ -321,9 +320,9 @@ const clMat=new THREE.LineBasicMaterial({color:'#22d3ee',transparent:true,opacit
 const constLines=new THREE.LineSegments(clGeo,clMat);
 scene.add(constLines);
 
-// ── AURORA RIBBONS (new v8) ──
+// ── AURORA RIBBONS ──
 const auroraRibbons=[];
-const auroraColors=['#c4b5fd','#93c5fd','#a78bfa','#67e8f9','#c4b5fd'];
+const auroraColors=['#c4b5fd','#67e8f9','#a78bfa','#22d3ee','#c4b5fd'];
 for(let r=0;r<5;r++){
   const segs=100;
   const ribbonGeo=new THREE.PlaneGeometry(36+r*2.5,2.8,segs,4);
@@ -337,7 +336,7 @@ for(let r=0;r<5;r++){
   scene.add(ribbon);
 }
 
-// ── CORE ENERGY FIELD (new v8) ──
+// ── CORE ENERGY FIELD ──
 const efCount=220;
 const efGeo=new THREE.BufferGeometry();
 const efArr=new Float32Array(efCount*3);
@@ -351,9 +350,7 @@ for(let i=0;i<efCount;i++){
   efArr[i*3+1]=Math.sin(phi)*Math.sin(theta)*r;
   efArr[i*3+2]=Math.cos(phi)*r;
   efData.push({theta,phi,r,speed:.25+Math.random()*.9});
-  efCols[i*3]=.65+Math.random()*.15;
-  efCols[i*3+1]=.5+Math.random()*.15;
-  efCols[i*3+2]=.85+Math.random()*.1;
+  efCols[i*3]=.5;efCols[i*3+1]=.7+Math.random()*.2;efCols[i*3+2]=.85+Math.random()*.1;
 }
 efGeo.setAttribute('position',new THREE.BufferAttribute(efArr,3));
 efGeo.setAttribute('color',new THREE.BufferAttribute(efCols,3));
@@ -362,7 +359,7 @@ const energyField=new THREE.Points(efGeo,efMat);
 energyField.position.copy(core.position);
 scene.add(energyField);
 
-// ── NEBULA CLOUDS (new v9) ──
+// ── NEBULA CLOUDS ──
 const nebCount=160;
 const nebGeo=new THREE.BufferGeometry();
 const nebArr=new Float32Array(nebCount*3);
@@ -379,7 +376,7 @@ for(let i=0;i<nebCount;i++){
 }
 nebGeo.setAttribute('position',new THREE.BufferAttribute(nebArr,3));
 nebGeo.setAttribute('color',new THREE.BufferAttribute(nebCols,3));
-const nebMat=new THREE.PointsMaterial({size:.35,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.13,vertexColors:true,map:(()=>{const c=document.createElement('canvas');c.width=32;c.height=32;const ctx=c.getContext('2d');const g=ctx.createRadialGradient(16,16,0,16,16,16);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.15,'rgba(200,180,255,.8)');g.addColorStop(.4,'rgba(140,100,220,.3)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,32,32);return new THREE.CanvasTexture(c)})()});
+const nebMat=new THREE.PointsMaterial({size:.35,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.13,vertexColors:true,map:(()=>{const c=document.createElement('canvas');c.width=32;c.height=32;const ctx=c.getContext('2d');const g=ctx.createRadialGradient(16,16,0,16,16,16);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.15,'rgba(200,180,255,.8)');g.addColorStop(.4,'rgba(80,180,220,.3)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,32,32);return new THREE.CanvasTexture(c)})()});
 const nebulaClouds=new THREE.Points(nebGeo,nebMat);
 scene.add(nebulaClouds);
 
@@ -390,7 +387,7 @@ for(let i=0;i<pCount;i++){
   pArr[i*3]=(Math.random()-.5)*32;pArr[i*3+1]=Math.random()*18+1;pArr[i*3+2]=(Math.random()-.5)*32-6;
   pVel[i*3]=(Math.random()-.5)*.005;pVel[i*3+1]=Math.random()*.009+.002;pVel[i*3+2]=(Math.random()-.5)*.005;
   const ti=i/pCount;
-  pCol[i*3]=.6+ti*.15;pCol[i*3+1]=.4+ti*.2;pCol[i*3+2]=.75+ti*.15;
+  pCol[i*3]=.5+ti*.15;pCol[i*3+1]=.6+ti*.2;pCol[i*3+2]=.85+ti*.15;
 }
 pGeo.setAttribute('position',new THREE.BufferAttribute(pArr,3));
 pGeo.setAttribute('color',new THREE.BufferAttribute(pCol,3));
@@ -406,7 +403,7 @@ for(let i=0;i<orbCount;i++){
   const height=(Math.random()-.5)*2;
   orbArr[i*3]=Math.cos(angle)*radius;orbArr[i*3+1]=3+height;orbArr[i*3+2]=Math.sin(angle)*radius-8;
   orbData.push({angle,radius,height,speed:.15+Math.random()*.35,baseRadius:radius,wobbleA:.3+Math.random()*.8,wobbleS:.5+Math.random()*1.5});
-  orbCols[i*3]=.65+Math.random()*.05;orbCols[i*3+1]=.5+Math.random()*.15;orbCols[i*3+2]=.85+Math.random()*.1;
+  orbCols[i*3]=.5+Math.random()*.05;orbCols[i*3+1]=.65+Math.random()*.15;orbCols[i*3+2]=.9+Math.random()*.1;
 }
 orbGeo.setAttribute('position',new THREE.BufferAttribute(orbArr,3));
 orbGeo.setAttribute('color',new THREE.BufferAttribute(orbCols,3));
@@ -419,7 +416,7 @@ const dsCols=new Float32Array(dsCount*3);
 for(let i=0;i<dsCount;i++){
   dsArr[i*3]=(Math.random()-.5)*40;dsArr[i*3+1]=Math.random()*20-2;dsArr[i*3+2]=(Math.random()-.5)*40-6;
   dsData.push({speed:.03+Math.random()*.12,resetY:18+Math.random()*4,startY:dsArr[i*3+1]});
-  dsCols[i*3]=.5;dsCols[i*3+1]=.8+Math.random()*.2;dsCols[i*3+2]=.5;
+  dsCols[i*3]=.4;dsCols[i*3+1]=.8+Math.random()*.2;dsCols[i*3+2]=.5;
 }
 dsGeo.setAttribute('position',new THREE.BufferAttribute(dsArr,3));
 dsGeo.setAttribute('color',new THREE.BufferAttribute(dsCols,3));
@@ -430,16 +427,16 @@ const dataStreams=new THREE.Points(dsGeo,dsMat);scene.add(dataStreams);
 const sparkCount=300;const sparkGeo=new THREE.BufferGeometry();const sparkArr=new Float32Array(sparkCount*3);const sparkVel=new Float32Array(sparkCount*3);const sparkLife=new Float32Array(sparkCount);
 for(let i=0;i<sparkCount;i++){sparkArr[i*3]=0;sparkArr[i*3+1]=-100;sparkArr[i*3+2]=0;sparkLife[i]=0}
 sparkGeo.setAttribute('position',new THREE.BufferAttribute(sparkArr,3));
-const sparkMat=new THREE.PointsMaterial({color:'#fbbf24',size:.09,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:1});
+const sparkMat=new THREE.PointsMaterial({color:'#22d3ee',size:.09,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:1});
 const sparkles=new THREE.Points(sparkGeo,sparkMat);scene.add(sparkles);
 
 // ── GRID ──
 const gridHelper=new THREE.PolarGridHelper(28,100,60,360,'#12122a','#12122a');
 scene.add(gridHelper);
 
-// ── HEX GRID FLOOR (new v9) ──
-const hexGridGroup=new THREE.Group();
-const hexMat=new THREE.MeshBasicMaterial({color:'#a78bfa',transparent:true,opacity:.04,depthWrite:false});
+// ── HEX GRID FLOOR ──
+const hexGroup=new THREE.Group();
+const hexMat=new THREE.MeshBasicMaterial({color:'#22d3ee',transparent:true,opacity:.04,depthWrite:false});
 for(let ring=1;ring<6;ring++){
   const r=ring*6;
   const count=Math.floor(ring*6);
@@ -456,7 +453,7 @@ for(let ring=1;ring<6;ring++){
 }
 scene.add(hexGroup);
 
-// ── ACCRETION DISK (new v10) ──
+// ── ACCRETION DISK ──
 const accCount=500;
 const accGeo=new THREE.BufferGeometry();
 const accArr=new Float32Array(accCount*3);
@@ -477,27 +474,27 @@ for(let i=0;i<accCount;i++){
 }
 accGeo.setAttribute('position',new THREE.BufferAttribute(accArr,3));
 accGeo.setAttribute('color',new THREE.BufferAttribute(accCols,3));
-const accTex=(()=>{const c=document.createElement('canvas');c.width=32;c.height=32;const ctx=c.getContext('2d');const g=ctx.createRadialGradient(16,16,0,16,16,16);g.addColorStop(0,'rgba(255,180,80,1)');g.addColorStop(.3,'rgba(255,100,30,.6)');g.addColorStop(.7,'rgba(140,60,200,.2)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,32,32);return new THREE.CanvasTexture(c)})();
+const accTex=(()=>{const c=document.createElement('canvas');c.width=32;c.height=32;const ctx=c.getContext('2d');const g=ctx.createRadialGradient(16,16,0,16,16,16);g.addColorStop(0,'rgba(255,180,80,1)');g.addColorStop(.3,'rgba(255,100,30,.6)');g.addColorStop(.7,'rgba(80,180,220,.2)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,32,32);return new THREE.CanvasTexture(c)})();
 const accMat=new THREE.PointsMaterial({size:.09,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.75,vertexColors:true,map:accTex});
 const accretionDisk=new THREE.Points(accGeo,accMat);
 accretionDisk.position.copy(core.position);
 scene.add(accretionDisk);
 
-// ── EVENT HORIZON GLOW (new v10) ──
+// ── EVENT HORIZON GLOW ──
 const ehGeo=new THREE.TorusGeometry(2.45,.08,32,120);
 const ehMat=new THREE.MeshBasicMaterial({color:'#ff6b35',transparent:true,opacity:.5,blending:THREE.AdditiveBlending,depthWrite:false});
 const eventHorizon=new THREE.Mesh(ehGeo,ehMat);
 eventHorizon.position.copy(core.position);
 scene.add(eventHorizon);
 
-// ── PHOTON RING (new v10) ──
+// ── PHOTON RING ──
 const phGeo=new THREE.TorusGeometry(2.65,.02,24,160);
 const phMat=new THREE.MeshBasicMaterial({color:'#ffffff',transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false});
 const photonRing=new THREE.Mesh(phGeo,phMat);
 photonRing.position.copy(core.position);
 scene.add(photonRing);
 
-// ── JET PARTICLES (new v10) ──
+// ── JET PARTICLES ──
 const jetCount=120;
 const jetGeo=new THREE.BufferGeometry();
 const jetArr=new Float32Array(jetCount*3);
@@ -512,9 +509,86 @@ for(let i=0;i<jetCount;i++){
   jetData.push({side,height:Math.abs(height),spread,speed:.04+Math.random()*.08,life:.4+Math.random()*.6});
 }
 jetGeo.setAttribute('position',new THREE.BufferAttribute(jetArr,3));
-const jetMat=new THREE.PointsMaterial({color:'#c4b5fd',size:.06,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.5});
+const jetMat=new THREE.PointsMaterial({color:'#22d3ee',size:.06,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.5});
 const jets=new THREE.Points(jetGeo,jetMat);
 scene.add(jets);
+
+// ── DATA SATELLITE (new v11) ──
+const satGroup=new THREE.Group();
+const satBodyGeo=new THREE.BoxGeometry(.35,.35,.35,2,2,2);
+const satBody=new THREE.Mesh(satBodyGeo,new THREE.MeshStandardMaterial({color:'#22d3ee',emissive:'#22d3ee',emissiveIntensity:.9,roughness:.1,metalness:.9}));
+satGroup.add(satBody);
+const satPanelGeo=new THREE.BoxGeometry(.7,.03,.2);
+const satPanel1=new THREE.Mesh(satPanelGeo,new THREE.MeshStandardMaterial({color:'#a78bfa',emissive:'#a78bfa',emissiveIntensity:.4,roughness:.3,metalness:.8}));
+satPanel1.position.x=.45;satGroup.add(satPanel1);
+const satPanel2=new THREE.Mesh(satPanelGeo,new THREE.MeshStandardMaterial({color:'#a78bfa',emissive:'#a78bfa',emissiveIntensity:.4,roughness:.3,metalness:.8}));
+satPanel2.position.x=-.45;satGroup.add(satPanel2);
+satGroup.userData={orbitR:9.5,orbitSpeed:.35,orbitPhase:0,tiltX:.3,tiltZ:.5};
+satGroup.position.copy(core.position);
+scene.add(satGroup);
+
+// ── SATELLITE ION TRAIL (new v11) ──
+const trailCount=60;
+const trailGeo=new THREE.BufferGeometry();
+const trailArr=new Float32Array(trailCount*3);
+const trailData=[];
+const trailCols=new Float32Array(trailCount*3);
+for(let i=0;i<trailCount;i++){
+  trailArr[i*3]=0;trailArr[i*3+1]=0;trailArr[i*3+2]=0;
+  trailData.push({offset:i,spread:.02*(i/trailCount)});
+  const fade=i/trailCount;
+  trailCols[i*3]=0;trailCols[i*3+1]=.7*(1-fade);trailCols[i*3+2]=.9*(1-fade);
+}
+trailGeo.setAttribute('position',new THREE.BufferAttribute(trailArr,3));
+trailGeo.setAttribute('color',new THREE.BufferAttribute(trailCols,3));
+const trailMat=new THREE.PointsMaterial({size:.04,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.6,vertexColors:true});
+const satTrail=new THREE.Points(trailGeo,trailMat);
+satTrail.position.copy(core.position);
+scene.add(satTrail);
+
+// ── QUANTUM FLICKER FIELD (new v11) ──
+const qfCount=250;
+const qfGeo=new THREE.BufferGeometry();
+const qfArr=new Float32Array(qfCount*3);
+const qfData=[];
+const qfCols=new Float32Array(qfCount*3);
+for(let i=0;i<qfCount;i++){
+  qfArr[i*3]=(Math.random()-.5)*35;
+  qfArr[i*3+1]=Math.random()*16+2;
+  qfArr[i*3+2]=(Math.random()-.5)*35-6;
+  qfData.push({
+    x:qfArr[i*3],y:qfArr[i*3+1],z:qfArr[i*3+2],
+    phase:Math.random()*Math.PI*2,
+    freq:.5+Math.random()*2.5,
+    onDur:.05+Math.random()*.15,
+    offDur:.1+Math.random()*.4,
+    timer:Math.random()*2,
+    isOn:Math.random()>.7
+  });
+  qfCols[i*3]=.6+Math.random()*.3;
+  qfCols[i*3+1]=.5+Math.random()*.35;
+  qfCols[i*3+2]=.7+Math.random()*.25;
+}
+qfGeo.setAttribute('position',new THREE.BufferAttribute(qfArr,3));
+qfGeo.setAttribute('color',new THREE.BufferAttribute(qfCols,3));
+const qfMat=new THREE.PointsMaterial({size:.07,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,vertexColors:true,map:(()=>{const c=document.createElement('canvas');c.width=16;c.height=16;const ctx=c.getContext('2d');const g=ctx.createRadialGradient(8,8,0,8,8,8);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.4,'rgba(34,211,238,.6)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,16,16);return new THREE.CanvasTexture(c)})()});
+const qfPoints=new THREE.Points(qfGeo,qfMat);
+scene.add(qfPoints);
+
+// ── SINGULARITY BREATHING RING (new v11) ──
+const sgGeo=new THREE.TorusGeometry(10.5,.015,32,250);
+const sgMat=new THREE.MeshBasicMaterial({color:'#22d3ee',transparent:true,opacity:.25,blending:THREE.AdditiveBlending,depthWrite:false});
+const singularityRing=new THREE.Mesh(sgGeo,sgMat);
+singularityRing.position.copy(core.position);
+singularityRing.rotation.x=Math.PI/2.3;
+scene.add(singularityRing);
+
+const sgGeo2=new THREE.TorusGeometry(11.2,.01,24,200);
+const sgMat2=new THREE.MeshBasicMaterial({color:'#a78bfa',transparent:true,opacity:.18,blending:THREE.AdditiveBlending,depthWrite:false});
+const singularityRing2=new THREE.Mesh(sgGeo2,sgMat2);
+singularityRing2.position.copy(core.position);
+singularityRing2.rotation.x=Math.PI/2.0;singularityRing2.rotation.y=Math.PI/5;
+scene.add(singularityRing2);
 
 // ── INTERACTION STATE ──
 let isDragging=false,prevMouse={x:0,y:0};
@@ -663,7 +737,6 @@ function animate(){
   
   // Main ring
   ring.rotation.z+=.0015;ring.rotation.y+=.0006;
-  // Dual counter-ring (new v9) — opposite direction
   ring2.rotation.z-=.002;ring2.rotation.y-=.0008;
   ring2Inner.rotation.z-=.0012;ring2Inner.rotation.y-=.0005;
   ring2.material.opacity=.4+Math.sin(t*1.2)*.15;
@@ -685,7 +758,7 @@ function animate(){
     }
   });
   
-  // Constellation lines (new v8) — connect nearby shapes
+  // Constellation lines
   let clIdx=0;
   for(let i=0;i<shapes.length&&clIdx<MAX_CL;i++){
     for(let j=i+1;j<shapes.length&&clIdx<MAX_CL;j++){
@@ -704,14 +777,13 @@ function animate(){
       }
     }
   }
-  // Zero remaining
   for(let i=clIdx;i<MAX_CL;i++){
     clPos[i*6]=clPos[i*6+1]=clPos[i*6+2]=clPos[i*6+3]=clPos[i*6+4]=clPos[i*6+5]=0;
   }
   clGeo.attributes.position.needsUpdate=true;
   clMat.opacity=.08+Math.sin(t*.4)*.05;
   
-  // Aurora ribbons (new v8)
+  // Aurora ribbons
   auroraRibbons.forEach(({m,geo},idx)=>{
     const ap=geo.attributes.position.array;
     for(let i=0;i<ap.length;i+=3){
@@ -723,7 +795,7 @@ function animate(){
     m.material.opacity=.04+Math.sin(t*.45+idx)*.03;
   });
   
-  // Core energy field (new v8)
+  // Core energy field
   energyField.position.copy(core.position);
   const efa=energyField.geometry.attributes.position.array;
   for(let i=0;i<efCount;i++){
@@ -782,7 +854,7 @@ function animate(){
   }
   dataStreams.geometry.attributes.position.needsUpdate=true;
   
-  // Nebula clouds (new v9) — slow drift with sine wave
+  // Nebula clouds
   const na=nebulaClouds.geometry.attributes.position.array;
   for(let i=0;i<nebCount;i++){
     const nd=nebData[i];
@@ -806,11 +878,11 @@ function animate(){
   }
   if(anySpark)sparkGeo.attributes.position.needsUpdate=true;
   
-  // Hex grid floor rotation (new v9)
-  hexGridGroup.rotation.y+=.0008;
+  // Hex grid floor rotation
+  hexGroup.rotation.y+=.0008;
   hexMat.opacity=.03+Math.sin(t*.6)*.015;
 
-  // ── ACCRETION DISK ANIMATION (new v10) ──
+  // ── ACCRETION DISK ANIMATION ──
   accretionDisk.position.copy(core.position);
   const aca=accretionDisk.geometry.attributes.position.array;
   for(let i=0;i<accCount;i++){
@@ -825,12 +897,13 @@ function animate(){
   accretionDisk.rotation.z+=.0005;
   accMat.opacity=.65+Math.sin(t*.8)*.15;
 
-  // Event horizon glow
+  // Event horizon glow — SINGULARITY PULSE (new v11)
   eventHorizon.position.copy(core.position);
   eventHorizon.rotation.x=Math.PI/2;
   eventHorizon.rotation.z+=.004;
-  ehMat.opacity=.4+Math.sin(t*1.5)*.2;
-  const ehScale=1+Math.sin(t*1.8)*.08;
+  const pulseBreath=Math.sin(t*.7)*.25+.25; // 0 to 0.5 breathing
+  ehMat.opacity=.35+pulseBreath*.4;
+  const ehScale=1+Math.sin(t*.6)*.06+pulseBreath*.15;
   eventHorizon.scale.setScalar(ehScale);
 
   // Photon ring
@@ -852,6 +925,65 @@ function animate(){
   }
   jets.geometry.attributes.position.needsUpdate=true;
   jetMat.opacity=.35+Math.sin(t*1.2)*.15;
+
+  // ── DATA SATELLITE (new v11) ──
+  satGroup.position.copy(core.position);
+  const satAngle=t*satGroup.userData.orbitSpeed;
+  satGroup.position.x=Math.cos(satAngle)*satGroup.userData.orbitR;
+  satGroup.position.z=Math.sin(satAngle)*satGroup.userData.orbitR*.7;
+  satGroup.position.y=Math.sin(satAngle*.7)*1.5;
+  satGroup.rotation.x=satAngle*2;
+  satGroup.rotation.y=satAngle;
+  satGroup.rotation.z+=.03;
+
+  // Satellite ion trail (new v11)
+  satTrail.position.copy(core.position);
+  const tra=trailGeo.attributes.position.array;
+  for(let i=trailCount-1;i>0;i--){
+    tra[i*3]=tra[(i-1)*3];
+    tra[i*3+1]=tra[(i-1)*3+1];
+    tra[i*3+2]=tra[(i-1)*3+2];
+  }
+  const satWorldPos=new THREE.Vector3();
+  satGroup.getWorldPosition(satWorldPos);
+  tra[0]=satWorldPos.x-core.position.x;
+  tra[0+1]=satWorldPos.y-core.position.y;
+  tra[0+2]=satWorldPos.z-core.position.z;
+  trailGeo.attributes.position.needsUpdate=true;
+  trailMat.opacity=.45+Math.sin(t*1.1)*.2;
+
+  // ── QUANTUM FLICKER FIELD (new v11) ──
+  let anyVisible=false;
+  const qfa=qfPoints.geometry.attributes.position.array;
+  for(let i=0;i<qfCount;i++){
+    const qd=qfData[i];
+    qd.timer+=dt;
+    if(qd.isOn){
+      if(qd.timer>qd.onDur){qd.isOn=false;qd.timer=0;}
+      qfa[i*3]=qd.x+Math.sin(t*qd.freq+qd.phase)*.6;
+      qfa[i*3+1]=qd.y+Math.cos(t*qd.freq*.8+qd.phase)*.4;
+      qfa[i*3+2]=qd.z+Math.sin(t*qd.freq*.6+qd.phase)*.5;
+      anyVisible=true;
+    }else{
+      if(qd.timer>qd.offDur){qd.isOn=true;qd.timer=0;}
+      qfa[i*3+1]=-100; // hide particle
+    }
+  }
+  qfPoints.geometry.attributes.position.needsUpdate=true;
+  qfMat.opacity=anyVisible?.55+Math.sin(t*.5)*.2:0;
+
+  // ── SINGULARITY BREATHING RINGS (new v11) ──
+  singularityRing.position.copy(core.position);
+  const breathScale=1+Math.sin(t*.45)*.06;
+  singularityRing.scale.setScalar(breathScale);
+  singularityRing.rotation.z+=.001;
+  sgMat.opacity=.2+Math.sin(t*.55)*.1;
+
+  singularityRing2.position.copy(core.position);
+  const breathScale2=1+Math.cos(t*.55)*.08;
+  singularityRing2.scale.setScalar(breathScale2);
+  singularityRing2.rotation.z-=.0007;
+  sgMat2.opacity=.14+Math.cos(t*.6)*.08;
 
   // Fade help
   if(helpFade>0){helpFade-=dt;if(helpFade<=0){help.style.opacity='0';con.style.opacity='0'}}
