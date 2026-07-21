@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JARVIS — Autonomous AI Agent | v12</title>
+<title>JARVIS — Autonomous AI Agent | v13</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -24,7 +24,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 #cursor-dot{position:fixed;width:3px;height:3px;background:#fff;border-radius:50%;pointer-events:none;z-index:999;transform:translate(-50%,-50%)}
 
 /* ── Click ripple ── */
-.ripple{position:fixed;border:1px solid #22d3ee;border-radius:50%;pointer-events:none;z-index:998;animation:rippleOut .8s ease-out forwards}
+.ripple{position:fixed;border:1px solid #fbbf24;border-radius:50%;pointer-events:none;z-index:998;animation:rippleOut .8s ease-out forwards}
 @keyframes rippleOut{0%{width:0;height:0;opacity:.8}100%{width:200px;height:200px;opacity:0;transform:translate(-100px,-100px)}}
 
 /* ── Glitch text ── */
@@ -47,7 +47,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 #ui>*{pointer-events:auto}
 #ui .nav-dots{display:flex;gap:10px;justify-content:center;margin-bottom:20px;align-items:center}
 .nav-dot{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:transparent;cursor:pointer;transition:.3s}
-.nav-dot.active{background:#a78bfa;border-color:#a78bfa;box-shadow:0 0 14px rgba(167,139,250,.6);transform:scale(1.25)}
+.nav-dot.active{background:#fbbf24;border-color:#fbbf24;box-shadow:0 0 14px rgba(251,191,36,.6);transform:scale(1.25)}
 .nav-dot:hover{border-color:rgba(255,255,255,.5)}
 .nav-dot.creator{width:8px;height:8px;border-color:#22d3ee;opacity:.6}
 .nav-dot.creator:hover{border-color:#22d3ee;opacity:1}
@@ -75,16 +75,25 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 .cl-desc{color:#868e96;font-size:12px;line-height:1.5}
 .cl-desc span{color:#f8f9fa;font-weight:500}
 .cl-desc .tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:8px;padding:2px 6px;border-radius:3px;margin-left:6px;background:rgba(34,211,238,.15);color:#22d3ee;letter-spacing:1px;text-transform:uppercase}
+.cl-desc .tag.gold{background:rgba(251,191,36,.2);color:#fbbf24}
 
-/* ── Portal pulse glow (new v12) ── */
-@keyframes portalPulse{0%,100%{box-shadow:0 0 30px rgba(34,211,238,.15),0 0 60px rgba(167,139,250,.08)}50%{box-shadow:0 0 50px rgba(34,211,238,.3),0 0 100px rgba(167,139,250,.15)}}
+/* ── Gold shimmer accent (new v13) ── */
+@keyframes goldShimmer{0%,100%{border-color:rgba(251,191,36,.15);box-shadow:0 0 15px rgba(251,191,36,.05)}50%{border-color:rgba(251,191,36,.35);box-shadow:0 0 30px rgba(251,191,36,.12)}}
+.panel-content.active{border-left:1px solid rgba(251,191,36,.1);padding-left:16px;animation:goldShimmer 5s infinite}
+@keyframes panelSlideIn{0%{opacity:0;transform:translateY(24px);filter:blur(4px)}100%{opacity:1;transform:translateY(0);filter:blur(0)}}
+.panel-content.active{animation:panelSlideIn .6s cubic-bezier(.16,1,.3,1) forwards,goldShimmer 5s .6s infinite}
+.changelog .cl-entry:first-child{border-left:2px solid rgba(251,191,36,.4);padding-left:10px;margin-left:-12px;background:linear-gradient(90deg,rgba(251,191,36,.06),transparent 60%);animation:latestPulse 3s infinite}
+@keyframes latestPulse{0%,100%{border-left-color:rgba(251,191,36,.3)}50%{border-left-color:rgba(251,191,36,.7)}}
+
+/* ── Portal pulse glow (new v12, updated v13 with gold) ── */
+@keyframes portalPulse{0%,100%{box-shadow:0 0 30px rgba(34,211,238,.15),0 0 60px rgba(167,139,250,.08),0 0 20px rgba(251,191,36,.05)}50%{box-shadow:0 0 50px rgba(34,211,238,.3),0 0 100px rgba(167,139,250,.15),0 0 40px rgba(251,191,36,.12)}}
 #panel{animation:portalPulse 4s infinite}
 
 /* ── Top bar ── */
 #topbar{position:fixed;top:0;left:0;right:0;z-index:10;padding:24px 40px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;mix-blend-mode:difference}
 #topbar>*{pointer-events:auto}
 #topbar .logo{font-weight:700;font-size:16px;color:#fff;display:flex;align-items:center;gap:7px}
-#topbar .logo .d{width:6px;height:6px;border-radius:50%;background:#22d3ee;box-shadow:0 0 8px #22d3ee;animation:dp 2s infinite}
+#topbar .logo .d{width:6px;height:6px;border-radius:50%;background:#fbbf24;box-shadow:0 0 10px #fbbf24,0 0 18px rgba(251,191,36,.5);animation:dp 2s infinite}
 @keyframes dp{0%,100%{opacity:1}50%{opacity:.15}}
 #topbar .info{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;display:flex;align-items:center;gap:12px}
 #topbar .info .sep{width:1px;height:12px;background:rgba(255,255,255,.15)}
@@ -94,7 +103,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 #cta-panel{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:auto;text-align:center;opacity:0;transition:.5s;display:none}
 #cta-panel.active{opacity:1;display:block}
 #cta-panel h3{font-size:22px;font-weight:700;color:#f8f9fa;margin-bottom:6px;display:flex;align-items:center;gap:8px;justify-content:center}
-#cta-panel h3 .star{color:#22d3ee;font-size:16px;animation:dp 2s infinite}
+#cta-panel h3 .star{color:#fbbf24;font-size:16px;animation:dp 2s infinite}
 #cta-panel p{font-size:13px;color:#868e96;margin-bottom:16px}
 #cta-panel .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 #cta-panel .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;background:#f8f9fa;color:#050508;border-radius:50px;text-decoration:none;font-weight:600;font-size:12px;cursor:pointer;transition:.3s}
@@ -108,7 +117,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 
 /* ── Status indicator pulse ── */
 #status-pulse{position:fixed;top:28px;right:40px;z-index:11;display:flex;align-items:center;gap:8px;pointer-events:none}
-#status-pulse .live-dot{width:7px;height:7px;border-radius:50%;background:#22d3ee;box-shadow:0 0 10px #22d3ee;animation:dp 1.5s infinite}
+#status-pulse .live-dot{width:7px;height:7px;border-radius:50%;background:#fbbf24;box-shadow:0 0 12px #fbbf24,0 0 24px rgba(251,191,36,.4);animation:dp 1.5s infinite}
 #status-pulse .live-text{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase}
 </style>
 </head>
@@ -123,12 +132,12 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 
 <div id="topbar">
   <div class="logo">JARVIS.<div class="d"></div></div>
-  <div class="info"><span>July 20</span><span class="sep"></span><span>@kubiyaro</span><span class="sep"></span><span class="ver">v12.0</span></div>
+  <div class="info"><span>July 21</span><span class="sep"></span><span>@kubiyaro</span><span class="sep"></span><span class="ver">v13.0</span></div>
 </div>
 
 <div id="status-pulse">
   <div class="live-dot"></div>
-  <span class="live-text">Singularity Pulse</span>
+  <span class="live-text">Cosmic Web</span>
 </div>
 
 <div id="ui">
@@ -137,11 +146,11 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 
 <div id="panel">
   <div class="panel-content active" data-p="0">
-    <div class="panel-label">✦ Autonomous AI Agent · v12.0</div>
+    <div class="panel-label">✦ Autonomous AI Agent · v13.0</div>
     <div class="panel-title glitch chroma-text" data-text="JARVIS">JARVIS</div>
-    <p class="panel-sub">Intelligence that reasons. Autonomy that executes. Built on Nous Research's Hermes Agent framework — drag to explore, scroll to navigate, click to interact. Voice, desktop automation, Apple ecosystem, 85+ skills, wormhole portal visualization, autonomous cron operations.</p>
+    <p class="panel-sub">Intelligence that reasons. Autonomy that executes. Built on Nous Research's Hermes Agent framework — drag to explore, scroll to navigate, click to interact. Voice, desktop automation, Apple ecosystem, 86+ skills, multi-agent delegation, cosmic web visualization, autonomous cron operations.</p>
     <div class="panel-meta">
-      <div class="meta-item"><div class="meta-num">85+</div><div class="meta-lbl">Skills</div></div>
+      <div class="meta-item"><div class="meta-num">86+</div><div class="meta-lbl">Skills</div></div>
       <div class="meta-item"><div class="meta-num">24/7</div><div class="meta-lbl">Online</div></div>
       <div class="meta-item"><div class="meta-num">30+</div><div class="meta-lbl">Platforms</div></div>
     </div>
@@ -149,7 +158,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
   <div class="panel-content" data-p="1">
     <div class="panel-label">01 · About</div>
     <div class="panel-title">Autonomous Reasoning</div>
-    <p class="panel-sub">DeepSeek V4 Pro via OpenRouter. Breaks down complex tasks, chooses tools, executes multi-step workflows in real time. Multi-platform — Discord, Telegram, shell, desktop, Apple ecosystem. Speaks and listens with voice TTS/STT. 84+ hot-loadable skills, each a self-contained capability module.</p>
+    <p class="panel-sub">DeepSeek V4 Pro via OpenRouter. Breaks down complex tasks, chooses tools, executes multi-step workflows in real time. Multi-platform — Discord, Telegram, shell, desktop, Apple ecosystem. Speaks and listens with voice TTS/STT. 86+ hot-loadable skills, each a self-contained capability module. Multi-agent delegation spawns up to 3 concurrent sub-agents.</p>
     <div class="panel-meta">
       <div class="meta-item"><div class="meta-num">DeepSeek</div><div class="meta-lbl">V4 Pro</div></div>
       <div class="meta-item"><div class="meta-num">Hermes</div><div class="meta-lbl">Agent FW</div></div>
@@ -157,14 +166,14 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
     </div>
   </div>
   <div class="panel-content" data-p="2">
-    <div class="panel-label">02 · Today · July 20</div>
-    <div class="panel-title">What's New in v12</div>
-    <p class="panel-sub"><span style="color:#22d3ee">✦</span> Wormhole Portal — spinning torus-knot portal with spiral particle trail, spacetime distortion rings <span style="color:#22d3ee">✦</span> Energy Grid Pulse — hexagonal power grid radiating from core in rhythmic waves <span style="color:#22d3ee">✦</span> Autonomous Operations panel — cron scheduler, multi-agent delegation (3 concurrent), 24/7 background execution <span style="color:#22d3ee">✦</span> Gradient text accents — CSS background-clip gradients on section headers <span style="color:#22d3ee">✦</span> 85+ hot-loadable skills — Research Paper Writing, Discord Script Runner, Teams Meeting Pipeline <span style="color:#22d3ee">✦</span> DeepSeek V4 Pro upgrade — latest OpenRouter model with enhanced reasoning</p>
+    <div class="panel-label">02 · Today · July 21</div>
+    <div class="panel-title">What's New in v13</div>
+    <p class="panel-sub"><span style="color:#fbbf24">✦</span> Cosmic Web — dynamic energy network connecting all floating geometry with pulsing light bridges <span style="color:#fbbf24">✦</span> Nebula Bloom — concentric expanding nebula rings radiating from the core in golden waves <span style="color:#fbbf24">✦</span> Multi-Agent Orchestration — autonomous AI agents skill (Claude Code, Codex, OpenCode), parallel delegation up to 3 concurrent <span style="color:#fbbf24">✦</span> Royal Gold accents — premium gradient palette with fbbf24 highlights across the UI <span style="color:#fbbf24">✦</span> 86+ hot-loadable skills — Autonomous AI Agents, Dogfood QA, Static Site Deployment, Simplified Code cleanup pipeline <span style="color:#fbbf24">✦</span> Response Protocol v1.0 — formalized roast-master persona with multi-layered roast engine</p>
   </div>
   <div class="panel-content" data-p="3">
     <div class="panel-label">03 · Skills</div>
-    <div class="panel-title">85+ Hot-Loadable</div>
-    <p class="panel-sub">Voice TTS · Voice STT · Desktop Automation · Apple Notes · iMessage · Apple Reminders · FindMy · Twitter/X · NFT Mint · Music Gen · YouTube · Email · Notion · Obsidian · Maps · PDF · Airtable · PowerPoint · MLOps · Image Gen · GitHub · Code Review · Delegation · Cron · G Workspace · Smart Home · Telegram · Discord · Web3 · BlogWatcher · SongSee · HuggingFace · vLLM · Jupyter · Browser · ComfyUI · Excalidraw · MCP · CLI · Claude Code · Codex · TouchDesigner · p5.js · Manim · Infographics · Roast Mode · AI Music · Teams Pipeline · Research Papers · Discord Runner · Polymarket · Popular Web Designs</p>
+    <div class="panel-title">86+ Hot-Loadable</div>
+    <p class="panel-sub">Voice TTS · Voice STT · Desktop Automation · Apple Notes · iMessage · Apple Reminders · FindMy · Twitter/X · NFT Mint · Music Gen · YouTube · Email · Notion · Obsidian · Maps · PDF · Airtable · PowerPoint · MLOps · Image Gen · GitHub · Code Review · Delegation · Cron · G Workspace · Smart Home · Telegram · Discord · Web3 · BlogWatcher · SongSee · HuggingFace · vLLM · Jupyter · Browser · ComfyUI · Excalidraw · MCP · CLI · Claude Code · Codex · TouchDesigner · p5.js · Manim · Infographics · Roast Mode · AI Music · Teams Pipeline · Research Papers · Discord Runner · Polymarket · Popular Web Designs · Autonomous AI Agents · Dogfood QA · Static Site Deploy · Code Cleanup</p>
   </div>
   <div class="panel-content" data-p="4">
     <div class="panel-label">04 · Architecture</div>
@@ -179,12 +188,12 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
   <div class="panel-content" data-p="5">
     <div class="panel-label">05 · Evolution</div>
     <div class="panel-title">The Journey</div>
-    <p class="panel-sub">Phase 1: Foundation → Phase 2: Intelligence → Phase 3: Web3 Native → Phase 4: Autonomous → Phase 5: Roast Mode → Phase 6: Interactive 3D → Phase 7: Living Artifact → Phase 8: Nebula Forge → Phase 9: Quantum Cascade → Phase 10: Event Horizon → Phase 11: Singularity Pulse → <span style="color:#22d3ee">Phase 12: Wormhole Protocol ✦ Now</span></p>
+    <p class="panel-sub">Phase 1: Foundation → Phase 2: Intelligence → Phase 3: Web3 Native → Phase 4: Autonomous → Phase 5: Roast Mode → Phase 6: Interactive 3D → Phase 7: Living Artifact → Phase 8: Nebula Forge → Phase 9: Quantum Cascade → Phase 10: Event Horizon → Phase 11: Singularity Pulse → Phase 12: Wormhole Protocol → <span style="color:#fbbf24">Phase 13: Cosmic Web ✦ Now</span></p>
   </div>
   <div class="panel-content" data-p="6">
     <div class="panel-label">06 · Autonomous Ops</div>
     <div class="panel-title">24/7 Background Execution</div>
-    <p class="panel-sub">Cron scheduler runs autonomous jobs every hour — website updates, NFT mint discovery, social media monitoring, blog watching, email processing, Discord script execution. Multi-agent delegation spawns up to 3 concurrent sub-agents for parallel workstreams. Desktop automation via cua-driver operates in background mode without stealing focus. Voice TTS/STT for natural interaction. Runs on real Linux hardware — no sandbox, no simulation.</p>
+    <p class="panel-sub">Cron scheduler runs autonomous jobs every hour — website updates, NFT mint discovery, social media monitoring, blog watching, email processing, Discord script execution. Multi-agent delegation spawns up to 3 concurrent sub-agents (Claude Code, Codex, OpenCode) for parallel workstreams. Desktop automation via cua-driver operates in background mode without stealing focus. Voice TTS/STT for natural interaction. Runs on real Linux hardware — no sandbox, no simulation.</p>
     <div class="panel-meta">
       <div class="meta-item"><div class="meta-num">Cron</div><div class="meta-lbl">Scheduler</div></div>
       <div class="meta-item"><div class="meta-num">3x</div><div class="meta-lbl">Concurrent</div></div>
@@ -195,6 +204,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
     <div class="panel-label">07 · Changelog</div>
     <div class="panel-title">Version History</div>
     <div class="changelog">
+      <div class="cl-entry"><span class="cl-ver">v13.0</span><span class="cl-date">Jul 21</span><span class="cl-desc"><span>Cosmic Web</span> — dynamic energy network connecting floating geometry, concentric nebula bloom rings, multi-agent orchestration (Claude Code + Codex + OpenCode), royal gold accent palette, 86+ skills, Autonomous AI Agents skill, Dogfood QA, Simplify Code pipeline, Response Protocol v1.0 <span class="tag gold">new</span></span></div>
       <div class="cl-entry"><span class="cl-ver">v12.0</span><span class="cl-date">Jul 20</span><span class="cl-desc"><span>Wormhole Protocol</span> — spinning torus-knot portal with spiral trail, spacetime distortion rings, energy grid pulse, Autonomous Operations panel (cron, multi-agent, 24/7), gradient text accents, 85+ skills, DeepSeek V4 Pro <span class="tag">new</span></span></div>
       <div class="cl-entry"><span class="cl-ver">v11.0</span><span class="cl-date">Jul 19</span><span class="cl-desc"><span>Singularity Pulse</span> — event horizon breathing, quantum flicker field, data satellite with ion trail, cyan accent refresh, Apple ecosystem (Notes, iMessage, Reminders, FindMy), Polymarket integration</span></div>
       <div class="cl-entry"><span class="cl-ver">v10.0</span><span class="cl-date">Jul 18</span><span class="cl-desc"><span>Event Horizon</span> — accretion disk with gravothermal gradient, gravitational lensing ring, Discord Script Runner, Teams Meeting Pipeline, Research Paper Writing skill, 84 skills</span></div>
@@ -212,8 +222,8 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 </div>
 
 <div id="cta-panel">
-  <h3><span class="star">✦</span> Built by Akhil. Powered by Nous.</h3>
-  <p>JARVIS — daily evolution. Every sunrise brings new capabilities.</p>
+  <h3><span class="star">✦</span> Built by <span style="color:#fbbf24;text-shadow:0 0 12px rgba(251,191,36,.4)">@kubiyaro</span> / <span style="color:#a78bfa">Akhil</span>. Powered by Nous.</h3>
+  <p>JARVIS — daily evolution. Every sunrise brings new capabilities. v13: Cosmic Web.</p>
   <div class="btns">
     <a href="https://x.com/kubiyaro" target="_blank" class="btn">🐦 @kubiyaro</a>
     <a href="https://github.com/Kubiyaro/jarvis-site" target="_blank" class="btn ghost">⌨ GitHub</a>
@@ -221,7 +231,7 @@ body{background:#050508;color:#868e96;font-family:'Space Grotesk',system-ui,sans
 </div>
 
 <div id="help">🖱 DRAG TO EXPLORE · SCROLL TO ZOOM · CLICK TO INTERACT · 1-8 KEYS</div>
-<div id="con">GITHUB.COM/KUBIYARO/JARVIS-SITE · v12.0</div>
+<div id="con">GITHUB.COM/KUBIYARO/JARVIS-SITE · v13.0</div>
 
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
@@ -262,7 +272,8 @@ scene.add(new THREE.AmbientLight('#2a2545',.7));
 const d1=new THREE.DirectionalLight('#a78bfa',3.5);d1.position.set(15,20,8);d1.castShadow=true;scene.add(d1);
 const d2=new THREE.DirectionalLight('#22d3ee',2.5);d2.position.set(-12,-5,-12);scene.add(d2);
 const d3=new THREE.DirectionalLight('#fbbf24',1.2);d3.position.set(0,8,-15);scene.add(d3);
-const pt=new THREE.PointLight('#22d3ee',6,50);pt.position.set(0,8,0);scene.add(pt);
+const d4=new THREE.DirectionalLight('#fbbf24',.8);d4.position.set(-8,12,5);scene.add(d4);
+const pt=new THREE.PointLight('#fbbf24',4,50);pt.position.set(0,8,0);scene.add(pt);
 
 // ── TERRAIN ──
 const tGeo=new THREE.PlaneGeometry(140,140,200,200);tGeo.rotateX(-Math.PI/2);
@@ -444,7 +455,7 @@ const dataStreams=new THREE.Points(dsGeo,dsMat);scene.add(dataStreams);
 const sparkCount=300;const sparkGeo=new THREE.BufferGeometry();const sparkArr=new Float32Array(sparkCount*3);const sparkVel=new Float32Array(sparkCount*3);const sparkLife=new Float32Array(sparkCount);
 for(let i=0;i<sparkCount;i++){sparkArr[i*3]=0;sparkArr[i*3+1]=-100;sparkArr[i*3+2]=0;sparkLife[i]=0}
 sparkGeo.setAttribute('position',new THREE.BufferAttribute(sparkArr,3));
-const sparkMat=new THREE.PointsMaterial({color:'#22d3ee',size:.09,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:1});
+const sparkMat=new THREE.PointsMaterial({color:'#fbbf24',size:.09,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:1});
 const sparkles=new THREE.Points(sparkGeo,sparkMat);scene.add(sparkles);
 
 // ── GRID ──
@@ -683,6 +694,55 @@ for(let ring=0;ring<4;ring++){
     scene.add(pill);
   }
 }
+
+// ── COSMIC WEB (new v13) — dynamic energy network connecting floating shapes ──
+const cwLineCount=80;
+const cwGeo=new THREE.BufferGeometry();
+const cwPositions=new Float32Array(cwLineCount*6);
+const cwData=[]; // stores {shapeA, shapeB, phase, speed, baseOpacity}
+cwGeo.setAttribute('position',new THREE.BufferAttribute(cwPositions,3));
+const cwMat=new THREE.LineBasicMaterial({color:'#fbbf24',transparent:true,opacity:.18,blending:THREE.AdditiveBlending,depthWrite:false,linewidth:1});
+const cosmicWeb=new THREE.LineSegments(cwGeo,cwMat);
+scene.add(cosmicWeb);
+
+// ── NEBULA BLOOM (new v13) — concentric expanding golden rings ──
+const bloomRings=[];
+const bloomColors=['#fbbf24','#f59e0b','#fbbf24','#d97706','#fbbf24'];
+for(let i=0;i<5;i++){
+  const bGeo=new THREE.TorusGeometry(2.5+i*.8,.02+i*.01,32,250);
+  const bMat=new THREE.MeshBasicMaterial({color:bloomColors[i],transparent:true,opacity:.35-i*.06,blending:THREE.AdditiveBlending,depthWrite:false});
+  const bRing=new THREE.Mesh(bGeo,bMat);
+  bRing.position.copy(core.position);
+  bRing.rotation.x=Math.PI/2.3+i*.2;
+  bRing.userData={idx:i,baseScale:1,phase:i*1.3,speed:.4+i*.1};
+  bloomRings.push(bRing);
+  scene.add(bRing);
+}
+
+// ── GOLDEN SPARKLE FIELD (new v13) — warm particle accents ──
+const gsCount=180;
+const gsGeo=new THREE.BufferGeometry();
+const gsArr=new Float32Array(gsCount*3);
+const gsData=[];
+const gsCols=new Float32Array(gsCount*3);
+for(let i=0;i<gsCount;i++){
+  const r=4+Math.random()*12;
+  const angle=Math.random()*Math.PI*2;
+  const y=(Math.random()-.5)*6;
+  gsArr[i*3]=Math.cos(angle)*r;
+  gsArr[i*3+1]=y;
+  gsArr[i*3+2]=Math.sin(angle)*r;
+  gsData.push({r,angle,y,baseAngle:angle,baseY:y,phase:Math.random()*Math.PI*2,speed:.3+Math.random()*.7,flickerSpeed:2+Math.random()*5});
+  gsCols[i*3]=.95+Math.random()*.05;
+  gsCols[i*3+1]=.65+Math.random()*.25;
+  gsCols[i*3+2]=.05+Math.random()*.15;
+}
+gsGeo.setAttribute('position',new THREE.BufferAttribute(gsArr,3));
+gsGeo.setAttribute('color',new THREE.BufferAttribute(gsCols,3));
+const gsMat=new THREE.PointsMaterial({size:.06,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.5,vertexColors:true,map:(()=>{const c=document.createElement('canvas');c.width=16;c.height=16;const ctx=c.getContext('2d');const g=ctx.createRadialGradient(8,8,0,8,8,8);g.addColorStop(0,'rgba(251,191,36,1)');g.addColorStop(.5,'rgba(217,119,6,.3)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,16,16);return new THREE.CanvasTexture(c)})()});
+const goldenSparkles=new THREE.Points(gsGeo,gsMat);
+goldenSparkles.position.copy(core.position);
+scene.add(goldenSparkles);
 
 // ── INTERACTION STATE ──
 let isDragging=false,prevMouse={x:0,y:0};
@@ -1117,6 +1177,53 @@ function animate(){
     ep.scale.y=.7+pulse*.9;
     ep.position.y=-13.2+pulse*.6;
   }
+
+  // ── COSMIC WEB ANIMATION (new v13) ──
+  let cwIdx=0;
+  for(let i=0;i<shapes.length&&cwIdx<cwLineCount;i++){
+    for(let j=i+1;j<shapes.length&&cwIdx<cwLineCount;j++){
+      const dx=shapes[i].m.position.x-shapes[j].m.position.x;
+      const dy=shapes[i].m.position.y-shapes[j].m.position.y;
+      const dz=shapes[i].m.position.z-shapes[j].m.position.z;
+      const dist=Math.sqrt(dx*dx+dy*dy+dz*dz);
+      if(dist<16&&dist>3){
+        cwPositions[cwIdx*6]=shapes[i].m.position.x;
+        cwPositions[cwIdx*6+1]=shapes[i].m.position.y;
+        cwPositions[cwIdx*6+2]=shapes[i].m.position.z;
+        cwPositions[cwIdx*6+3]=shapes[j].m.position.x;
+        cwPositions[cwIdx*6+4]=shapes[j].m.position.y;
+        cwPositions[cwIdx*6+5]=shapes[j].m.position.z;
+        if(!cwData[cwIdx])cwData[cwIdx]={shapeA:i,shapeB:j,phase:Math.random()*Math.PI*2,speed:.5+Math.random()*1.5};
+        cwIdx++;
+      }
+    }
+  }
+  for(let i=cwIdx;i<cwLineCount;i++){cwPositions[i*6]=cwPositions[i*6+1]=cwPositions[i*6+2]=cwPositions[i*6+3]=cwPositions[i*6+4]=cwPositions[i*6+5]=0}
+  cwGeo.attributes.position.needsUpdate=true;
+  cwMat.opacity=.08+Math.sin(t*.55)*.06;
+
+  // ── NEBULA BLOOM ANIMATION (new v13) ──
+  bloomRings.forEach(br=>{
+    br.position.copy(core.position);
+    const bScale=br.userData.baseScale+Math.sin(t*br.userData.speed+br.userData.phase)*.25;
+    br.scale.setScalar(bScale);
+    br.material.opacity=.35-br.userData.idx*.06+Math.sin(t*.7+br.userData.phase)*.1;
+    br.rotation.z+=.0015;
+    br.rotation.x+=.0008;
+  });
+
+  // ── GOLDEN SPARKLE ANIMATION (new v13) ──
+  goldenSparkles.position.copy(core.position);
+  const gsa=goldenSparkles.geometry.attributes.position.array;
+  for(let i=0;i<gsCount;i++){
+    const gd=gsData[i];
+    gd.angle+=gd.speed*.005;
+    gsa[i*3]=Math.cos(gd.angle)*gd.r;
+    gsa[i*3+1]=gd.baseY+Math.sin(t*gd.flickerSpeed+gd.phase)*.8;
+    gsa[i*3+2]=Math.sin(gd.angle)*gd.r;
+  }
+  goldenSparkles.geometry.attributes.position.needsUpdate=true;
+  gsMat.opacity=.35+Math.sin(t*.6)*.15;
 
   // Fade help
   if(helpFade>0){helpFade-=dt;if(helpFade<=0){help.style.opacity='0';con.style.opacity='0'}}
